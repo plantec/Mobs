@@ -24,7 +24,8 @@ public class MobInterpreter implements MobVisitor {
 	private ArrayDeque<MobExp> stk;
 	private MobContext context;
 
-	public MobInterpreter() {
+	public MobInterpreter(MobEnvironment env) {
+		this.context = new MobTopContext(env);
 		this.stk = new ArrayDeque<>();
 	}
 
@@ -37,7 +38,7 @@ public class MobInterpreter implements MobVisitor {
 
 	public List<MobExp> run(List<SNode> sexps) {
 		this.stk.clear();
-		List<MobExp> progs = new MobTreeBuilder().run(sexps);
+		List<MobExp> progs = new MobTreeBuilder(this.context.environment()).run(sexps);
 		progs.forEach(e->e.accept(this));
 		return this.result();
 	}

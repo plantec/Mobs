@@ -3,7 +3,6 @@ package mob.sinterpreter;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,22 +10,17 @@ import mob.model.MobAssign;
 import mob.model.MobExp;
 import mob.model.MobUnit;
 import mob.model.MobUnitDef;
-import mob.model.primitives.MobFalseDef;
-import mob.model.primitives.MobFloatDef;
-import mob.model.primitives.MobIntegerDef;
-import mob.model.primitives.MobNilDef;
-import mob.model.primitives.MobStringDef;
 import mob.model.primitives.MobSymbol;
-import mob.model.primitives.MobSymbolDef;
-import mob.model.primitives.MobTrueDef;
 import stree.parser.SNode;
 import stree.parser.SParser;
 import stree.parser.SVisitor;
 
 public class MobTreeBuilder implements SVisitor {
 	private ArrayDeque<MobExp> stk;
+	MobEnvironment env;
 	
-	public MobTreeBuilder() {
+	public MobTreeBuilder(MobEnvironment env) {
+		this.env = env;
 		this.stk = new ArrayDeque<>();
 	}
 	
@@ -83,15 +77,15 @@ public class MobTreeBuilder implements SVisitor {
 		String contents = node.parsedString();
 		MobExp exp;
 		if (contents.equals("true"))
-			exp = new MobTrueDef().newInstance();
+			exp = this.env.newTrue();
 		else if (contents.equals("false"))
-			exp = new MobFalseDef().newInstance();
+			exp = this.env.newFalse();
 		else if (contents.equals("nil")) 
-			exp = new MobNilDef().newInstance();
+			exp = this.env.newNil();
 		else
 			switch (contents.charAt(0)) {
 			case '"':
-				exp = new MobStringDef().newInstance(contents.substring(1, contents.length() - 1));
+				exp = this.env.newString(contents.substring(1, contents.length() - 1));
 				break;
 			case '0':
 			case '1':
@@ -107,14 +101,14 @@ public class MobTreeBuilder implements SVisitor {
 			case '-':
 				try {
 					Integer i = Integer.parseInt(contents);
-					exp = new MobIntegerDef().newInstance(i);
+					exp = this.env.newInteger(i);
 				} catch (NumberFormatException ex) {
 					Float f = Float.parseFloat(contents);
-					exp = new MobFloatDef().newInstance(f);
+					exp = this.env.newFloat(f);
 				}
 				break;
 			default:
-				exp =  new MobSymbolDef().newInstance(contents);
+				exp =  this.env.newSymbol(contents);
 			}
 		exp.setQuote(node.quote());
 		this.stk.push(exp);

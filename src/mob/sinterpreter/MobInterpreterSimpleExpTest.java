@@ -22,7 +22,8 @@ class MobInterpreterSimpleExpTest {
 
 	@Test
 	void test() throws IOException {
-		MobInterpreter interpreter = new MobInterpreter();
+		MobEnvironment env = new MobEnvironment();
+		MobInterpreter interpreter = new MobInterpreter(env);
 		List<MobExp> res;
 
 		res = interpreter.run("nil");
@@ -71,14 +72,11 @@ class MobInterpreterSimpleExpTest {
 		assertTrue(res.get(0) instanceof MobSymbol);
 		assertTrue(((MobSymbol) res.get(0)).rawValue().equals("def"));
 		
-		res = interpreter.run(":=");
-		assertTrue(res.get(0) instanceof MobAssign);
-		
 		res = interpreter.run("X := nil");
 		assertTrue(res.size() == 3);
 		assertTrue(res.get(0) instanceof MobSymbol);
 		assertTrue(res.get(0).parent() == null);
-		assertTrue(res.get(1) instanceof MobAssign);
+		assertTrue(res.get(1) instanceof MobSymbol);
 		assertTrue(res.get(1).parent() == null);
 		assertTrue(res.get(2) instanceof MobNil);
 		assertTrue(res.get(2).parent() == null);

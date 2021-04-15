@@ -23,7 +23,8 @@ class MobTreeBuilderTest {
 
 	@Test
 	void testPrimitives() {
-		MobTreeBuilder builder = new MobTreeBuilder();
+		MobEnvironment env = new MobEnvironment();
+		MobTreeBuilder builder = new MobTreeBuilder(env);
 		List<MobExp> trees;
 
 		trees = builder.run("nil");
@@ -79,7 +80,8 @@ class MobTreeBuilderTest {
 	
 	@Test
 	void testAssign1() throws IOException {
-		MobTreeBuilder builder = new MobTreeBuilder();
+		MobEnvironment env = new MobEnvironment();
+		MobTreeBuilder builder = new MobTreeBuilder(env);
 		List<MobExp> trees;
 		MobAssign assign;
 
@@ -118,7 +120,8 @@ class MobTreeBuilderTest {
 
 	@Test
 	void testMessageSend() throws IOException {
-		MobTreeBuilder builder = new MobTreeBuilder();
+		MobEnvironment env = new MobEnvironment();
+		MobTreeBuilder builder = new MobTreeBuilder(env);
 		List<MobExp> trees;
 		trees = builder.run("(robi setColor: (Color red))");
 		assertTrue(trees.get(0) instanceof MobUnit);

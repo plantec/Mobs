@@ -12,7 +12,8 @@ class MobInterpreterStatementTest {
 
 	@Test
 	void testAssign1() throws IOException {
-		MobInterpreter interpreter = new MobInterpreter();
+		MobEnvironment env = new MobEnvironment();
+		MobInterpreter interpreter = new MobInterpreter(env);
 		Object res;
 
 		res = interpreter.run("( X := nil )");
@@ -57,7 +58,8 @@ class MobInterpreterStatementTest {
 
 	@Test
 	void testAssign2() throws IOException {
-		MobInterpreter interpreter = new MobInterpreter();
+		MobEnvironment env = new MobEnvironment();
+		MobInterpreter interpreter = new MobInterpreter(env);
 		Object res;
 		MobVariable var;
 
