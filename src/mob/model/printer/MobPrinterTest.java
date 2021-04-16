@@ -7,13 +7,15 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import mob.model.MobExp;
+import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobTreeBuilder;
 
 class MobPrinterTest {
 
 	@Test
 	void test1() throws IOException {
-		MobTreeBuilder builder = new MobTreeBuilder();
+		MobEnvironment env = new MobEnvironment();
+		MobTreeBuilder builder = new MobTreeBuilder(env);
 		List<MobExp> res;
 
 		MobPrinter printer = new MobPrinter();
