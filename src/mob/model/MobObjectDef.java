@@ -3,10 +3,10 @@ import java.util.HashMap;
 
 import stree.parser.SNode;
 
-public abstract class MobEntityDef {
+public class MobObjectDef {
 	private HashMap<String, MobMethod> behavior;
 	
-	public MobEntityDef() {
+	public MobObjectDef() {
 		behavior = new HashMap<String, MobMethod>();
 	}
 	
@@ -17,8 +17,11 @@ public abstract class MobEntityDef {
 		return behavior.get(name);
 	}
 	
-	public abstract MobEntity newInstance();
-	public void run(MobExp receiver, SNode node) {
+	public MobObject newInstance() {
+		return new MobObject(this);
+	}
+	
+	public void run(MobObject receiver, SNode node) {
 		
 	}
 	

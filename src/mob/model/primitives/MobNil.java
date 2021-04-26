@@ -1,12 +1,12 @@
 package mob.model.primitives;
 
-import mob.model.MobEntity;
-import mob.model.MobEntityDef;
+import mob.model.MobObject;
+import mob.model.MobObjectDef;
 import mob.model.MobVisitor;
 
-public class MobNil extends MobEntity {
+public class MobNil extends MobObject {
 
-	public MobNil(MobEntityDef def) {
+	public MobNil(MobObjectDef def) {
 		super(def);
 	}
 

@@ -1,11 +1,11 @@
 package mob.model.primitives;
 
-import mob.model.MobEntityDef;
+import mob.model.MobObjectDef;
 import mob.model.MobVisitor;
 
 public class MobFalse extends MobBool {
 
-	public MobFalse(MobEntityDef def) {
+	public MobFalse(MobObjectDef def) {
 		super(def, false);
 	}
 

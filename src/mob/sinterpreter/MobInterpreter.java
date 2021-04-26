@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import mob.model.MobEntity;
 import mob.model.MobAssign;
-import mob.model.MobExp;
-import mob.model.MobUnit;
+import mob.model.MobObject;
 import mob.model.MobVisitor;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
@@ -21,7 +21,7 @@ import stree.parser.SNode;
 import stree.parser.SParser;
 
 public class MobInterpreter implements MobVisitor {	
-	private ArrayDeque<MobExp> stk;
+	private ArrayDeque<MobObject> stk;
 	private MobContext context;
 
 	public MobInterpreter(MobEnvironment env) {
@@ -29,21 +29,21 @@ public class MobInterpreter implements MobVisitor {
 		this.stk = new ArrayDeque<>();
 	}
 
-	public List<MobExp> result() {
-		List<MobExp> result = new ArrayList<>();
+	public List<MobObject> result() {
+		List<MobObject> result = new ArrayList<>();
 		this.stk.forEach(s -> result.add(s));
 		Collections.reverse(result);
 		return  result;
 	}
 
-	public List<MobExp> run(List<SNode> sexps) {
+	public List<MobObject> run(List<SNode> sexps) {
 		this.stk.clear();
-		List<MobExp> progs = new MobTreeBuilder(this.context.environment()).run(sexps);
+		List<MobEntity> progs = new MobTreeBuilder(this.context.environment()).run(sexps);
 		progs.forEach(e->e.accept(this));
 		return this.result();
 	}
 
-	public List<MobExp> run(String input) {
+	public List<MobObject> run(String input) {
 		SParser parser = new SParser();
 		List<SNode> n = null;
 		try {
@@ -61,11 +61,11 @@ public class MobInterpreter implements MobVisitor {
 		this.context = this.context.parent();
 	}
 	
-	private void push(MobExp exp) {
+	private void push(MobObject exp) {
 		this.stk.push(exp);
 	}
 	
-	private MobExp pop() {
+	private MobObject pop() {
 		return this.stk.pop();
 	}
 	

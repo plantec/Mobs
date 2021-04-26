@@ -28,14 +28,17 @@ public interface MobVisitor {
 	default void visitString(MobString mobString) {
 	}
 
-	default void visitUnit(MobUnit mobUnit) {
-	}
-
 	default void visitSymbol(MobSymbol mobSymbol) {
 	}
 
 	default void visitAssign(MobAssign mobAssign) {
-		
+
+	}
+
+	default void visitVarDecl(MobVarDecl mobVarDecl) {
+	}
+
+	default void visitObject(MobObject mobObject) {
 	}
 
 }

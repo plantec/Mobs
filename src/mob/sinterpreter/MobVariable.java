@@ -1,19 +1,18 @@
 package mob.sinterpreter;
 
-import mob.model.MobEntity;
-import mob.model.MobExp;
+import mob.model.MobObject;
 import mob.model.primitives.MobNilDef;
 
 public class MobVariable {
 	private String name;
-	private MobExp value;
+	private MobObject value;
 
-	public MobVariable(String name, MobEntity value) {
+	public MobVariable(String name, MobObject value) {
 		this.value = value;
 		this.name = name;
 	}
 
-	public MobVariable(MobEntity value) {
+	public MobVariable(MobObject value) {
 		this(null, value);
 	}
 
@@ -29,11 +28,11 @@ public class MobVariable {
 		return this.name;
 	}
 
-	public MobExp value() {
+	public MobObject value() {
 		return this.value;
 	}
 
-	public void setValue(MobExp mobExp) {
+	public void setValue(MobObject mobExp) {
 		this.value = mobExp;
 	}
 

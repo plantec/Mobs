@@ -1,11 +1,11 @@
 package mob.model.primitives;
 
-import mob.model.MobEntityDef;
+import mob.model.MobObjectDef;
 import mob.model.MobVisitor;
 
 public class MobString extends MobPrimitive<String> {
 
-	public MobString(MobEntityDef def, String mob) {
+	public MobString(MobObjectDef def, String mob) {
 		super(def, mob);
 	}
 

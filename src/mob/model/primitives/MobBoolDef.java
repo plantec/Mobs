@@ -1,7 +1,7 @@
 package mob.model.primitives;
 
-import mob.model.MobEntityDef;
+import mob.model.MobObjectDef;
 
-public abstract class MobBoolDef extends MobEntityDef {
+public abstract class MobBoolDef extends MobObjectDef {
 	
 }

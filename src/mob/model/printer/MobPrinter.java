@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import mob.model.MobAssign;
-import mob.model.MobExp;
-import mob.model.MobUnit;
+import mob.model.MobObject;
+import mob.model.MobVarDecl;
 import mob.model.MobVisitor;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
@@ -48,9 +48,9 @@ public class MobPrinter implements MobVisitor {
 		return this.stream;
 	}
 	
-	protected void forEachSepBy(List<? extends MobExp> l, Consumer<MobExp> cons, Doer d) {
+	protected void forEachSepBy(List<? extends MobObject> l, Consumer<MobObject> cons, Doer d) {
 		int count = 0;
-		for (MobExp e : l) {
+		for (MobObject e : l) {
 			cons.accept(e);
 			count++;
 			if (count < l.size()) {
@@ -143,20 +143,20 @@ public class MobPrinter implements MobVisitor {
 	}
 
 	@Override
-	public void visitUnit(MobUnit mobUnit) {
-		MobVisitor.super.visitUnit(mobUnit);
+	public void visitObject(MobObject mobObject) {
+		MobVisitor.super.visitObject(mobObject);
 		if (this.withIndentation && this.level > 0) {
 			this.write('\n');
 			for (int i = 0; i < level; i++) {
 				this.indent();
 			}
 		}
-		this.flushQuote(mobUnit.quote());
+		this.flushQuote(mobObject.quote());
 		this.write('(');
 		this.write(' ');
-		if (mobUnit.hasChildren()) {			
+		if (mobObject.hasChildren()) {			
 			this.level++;
-			this.forEachSepBy(mobUnit.children(), s -> s.accept(this), this::space);
+			this.forEachSepBy(mobObject.children(), s -> s.accept(this), this::space);
 			this.level--;
 		}
 		this.write(' ');
@@ -171,9 +171,36 @@ public class MobPrinter implements MobVisitor {
 	}
 
 	@Override
-	public void visitAssign(MobAssign mobOperation) {
-		MobVisitor.super.visitAssign(mobOperation);
-		this.forEachSepBy(mobOperation.children(), s -> s.accept(this), this::space);
+	public void visitAssign(MobAssign mobAssign) {
+		MobVisitor.super.visitAssign(mobAssign);
+		this.write('(');
+		this.write(' ');
+		mobAssign.left().accept(this);
+		this.write(' ');
+		this.write(":=");
+		this.write(' ');
+		mobAssign.right().accept(this);
+		this.write(' ');
+		this.write(')');
+	}
+
+	@Override
+	public void visitVarDecl(MobVarDecl mobVarDecl) {
+		MobVisitor.super.visitVarDecl(mobVarDecl);
+		this.flushQuote(mobVarDecl.quote());
+		this.write('(');
+		this.write(' ');
+		this.write("decl");
+		this.write(' ');
+		this.write(mobVarDecl.name());
+		this.write(' ');
+		if (mobVarDecl.initialValue() != null) {
+			this.write(":=");
+			this.write(' ');
+			mobVarDecl.initialValue().accept(this);
+			this.write(' ');
+		}
+		this.write(')');
 	}
 
 }

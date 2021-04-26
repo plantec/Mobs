@@ -1,8 +1,8 @@
 package mob.model.primitives;
 
-import mob.model.MobEntityDef;
+import mob.model.MobObjectDef;
 
-public class MobNilDef extends MobEntityDef {
+public class MobNilDef extends MobObjectDef {
 	private static MobNilDef nilDef = new MobNilDef();
 	private static MobNil nil = new MobNil(nilDef);
 	

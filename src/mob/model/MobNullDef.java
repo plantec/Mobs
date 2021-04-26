@@ -1,9 +1,9 @@
 package mob.model;
 
-public class MobNullDef extends MobEntityDef {
+public class MobNullDef extends MobObjectDef {
 
 	@Override
-	public MobEntity newInstance() {
+	public MobObject newInstance() {
 		throw new Error("Should't be sent");
 	}
 

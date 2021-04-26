@@ -1,13 +1,13 @@
 package mob.model.primitives;
 
-import mob.model.MobEntity;
-import mob.model.MobEntityDef;
+import mob.model.MobObject;
+import mob.model.MobObjectDef;
 
-public abstract class MobPrimitive<T> extends MobEntity {
+public abstract class MobPrimitive<T> extends MobObject {
 
 	private T rawValue;
 	
-	public MobPrimitive(MobEntityDef def, T value) {
+	public MobPrimitive(MobObjectDef def, T value) {
 		super(def);
 		this.rawValue = value;
 	}

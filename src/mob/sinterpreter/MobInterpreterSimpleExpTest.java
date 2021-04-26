@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import mob.model.MobAssign;
-import mob.model.MobExp;
+import mob.model.MobObject;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
@@ -24,7 +24,7 @@ class MobInterpreterSimpleExpTest {
 	void test() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		List<MobExp> res;
+		List<MobObject> res;
 
 		res = interpreter.run("nil");
 		assertTrue(res.get(0) instanceof MobNil);
