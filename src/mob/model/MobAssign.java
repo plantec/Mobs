@@ -2,7 +2,7 @@ package mob.model;
 
 public class MobAssign extends MobEntity {
 	MobObject left;
-	MobObject right;
+	MobEntity right;
 	
 	public MobObject left() {
 		return this.left;
@@ -11,11 +11,11 @@ public class MobAssign extends MobEntity {
 		this.left = left;
 		this.left.setParent(this);
 	}
-	public MobObject right() {
+	public MobEntity right() {
 		return this.right;
 	}
-	public void setRight(MobObject right) {
-		this.right = right;
+	public void setRight(MobEntity mobEntity) {
+		this.right = mobEntity;
 		this.right.setParent(this);
 	}
 	@Override

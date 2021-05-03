@@ -9,7 +9,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import mob.model.MobAssign;
+import mob.model.MobBinaryMessageSend;
 import mob.model.MobEntity;
+import mob.model.MobKeywordMessageSend;
 import mob.model.MobVarDecl;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
@@ -112,9 +114,35 @@ class MobTreeBuilderTest {
 		trees = builder.run("( X := (1 < z) )");
 		assertTrue(trees.get(0) instanceof MobAssign);
 		assign = (MobAssign) trees.get(0);
-		assertTrue((assign.right()).get(0).is(1));
-		assertTrue((assign.right()).get(1).is("<"));
-		assertTrue((assign.right()).get(2).is("z"));
+		assertTrue(assign.left() instanceof MobSymbol);
+		assertTrue(((MobSymbol)assign.left()).rawValue().equals("X"));
+		assertTrue(assign.right() instanceof MobBinaryMessageSend);
+		MobBinaryMessageSend right = (MobBinaryMessageSend) assign.right();
+		assertTrue(right.operator().equals("<"));
+		assertTrue(right.receiver() instanceof MobInteger);
+		assertTrue(right.argument() instanceof MobSymbol);
+		
+	}
+	
+	@Test
+	void testMessageSend1() throws IOException {
+		MobEnvironment env = new MobEnvironment();
+		MobTreeBuilder builder = new MobTreeBuilder(env);
+		List<MobEntity> trees;
+
+		trees = builder.run("( res set: (1 < z) )");
+		assertTrue(trees.get(0) instanceof MobKeywordMessageSend);
+		MobKeywordMessageSend kwms = (MobKeywordMessageSend) trees.get(0);
+		assertTrue(kwms.receiver() instanceof MobSymbol);
+		assertTrue(((MobSymbol)kwms.receiver()).rawValue().equals("res"));
+		assertTrue(kwms.keywords().size() == 1);
+		assertTrue(kwms.keywords().get(0).equals("set:"));
+		assertTrue(kwms.args().size() == 1);
+		assertTrue(kwms.args().get(0) instanceof MobBinaryMessageSend);
+		MobBinaryMessageSend right = (MobBinaryMessageSend) kwms.args().get(0);
+		assertTrue(right.operator().equals("<"));
+		assertTrue(right.receiver() instanceof MobInteger);
+		assertTrue(right.argument() instanceof MobSymbol);
 	}
 	
 	@Test
@@ -147,9 +175,10 @@ class MobTreeBuilderTest {
 		MobTreeBuilder builder = new MobTreeBuilder(env);
 		List<MobEntity> trees;
 		trees = builder.run("(robi setColor: (Color red))");
-		assertTrue(trees.get(0) instanceof MobEntity);
-		trees = builder.run("((robi x < space width) whileTrue: (robi translate: (1 @ 0)))");
-		assertTrue(trees.get(0) instanceof MobEntity);
+		assertTrue(trees.get(0) instanceof MobKeywordMessageSend);
+		trees = builder.run("((((robi x) < (space width)) whileTrue: (robi translate: (1 @ 0))))");
+		System.out.println(trees.get(0));
+		assertTrue(trees.get(0) instanceof MobKeywordMessageSend);
 	}
 
 	

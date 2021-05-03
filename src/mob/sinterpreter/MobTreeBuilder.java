@@ -7,9 +7,13 @@ import java.util.Collections;
 import java.util.List;
 
 import mob.model.MobAssign;
+import mob.model.MobBinaryMessageSend;
 import mob.model.MobEntity;
+import mob.model.MobKeywordMessageSend;
+import mob.model.MobMessageSend;
 import mob.model.MobObject;
 import mob.model.MobObjectDef;
+import mob.model.MobUnaryMessageSend;
 import mob.model.MobVarDecl;
 import mob.model.primitives.MobSymbol;
 import stree.parser.SNode;
@@ -58,14 +62,17 @@ public class MobTreeBuilder implements SVisitor {
 	@Override
 	public void visitNode(SNode node) {
 		ArrayList<MobEntity> children = new ArrayList<>();
-		node.children().forEach(s -> { s.accept(this); children.add(stk.pop());});
+		node.children().forEach(s -> {
+			s.accept(this);
+			children.add(stk.pop());
+		});
 		if (children.size() == 3) {
 			if (children.get(1) instanceof MobSymbol) {
 				MobSymbol symb = (MobSymbol) children.get(1);
 				if (symb.is(":=")) {
 					MobAssign assign = new MobAssign();
 					assign.setLeft((MobObject) children.get(0));
-					assign.setRight((MobObject) children.get(2));
+					assign.setRight(children.get(2));
 					stk.push(assign);
 					return;
 				}
@@ -87,13 +94,36 @@ public class MobTreeBuilder implements SVisitor {
 				return;
 			}
 		}
-		MobObject object = new MobObjectDef().newInstance();
-		object.setQuote(node.quote());
-		for (int i = 0; i < node.size(); i++) {
-			object.add((MobObject) children.get(i));
+		MobMessageSend send;
+		if (children.size() == 2) {
+			MobUnaryMessageSend unary = new MobUnaryMessageSend();
+			send = unary;
+			unary.setKeyword(((MobSymbol) children.get(1)).rawValue());
+		} else if (children.size() == 3) {
+			MobSymbol s = (MobSymbol) children.get(1);
+			String op = s.rawValue();
+			if (op.charAt(op.length() - 1) == ':') {
+				MobKeywordMessageSend keyword = new MobKeywordMessageSend();
+				send = keyword;
+				keyword.keywords().add(((MobSymbol) children.get(1)).rawValue());
+				keyword.args().add(children.get(2));
+			} else {
+				MobBinaryMessageSend binary = new MobBinaryMessageSend();
+				send = binary;
+				binary.setOperator(((MobSymbol) children.get(1)).rawValue());
+				binary.setArgument(children.get(2));
+			}
+		} else {
+			MobKeywordMessageSend keyword = new MobKeywordMessageSend();
+			send = keyword;
+			for (int i = 0; i < children.size(); i += 2) {
+				keyword.keywords().add(((MobSymbol) children.get(i)).rawValue());
+				keyword.args().add(children.get(i + 1));
+			}
 		}
-		stk.push(object);
-
+		send.setQuote(node.quote());
+		send.setReceiver(children.get(0));
+		stk.push(send);
 	}
 
 	@Override

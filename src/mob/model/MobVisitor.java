@@ -41,4 +41,16 @@ public interface MobVisitor {
 	default void visitObject(MobObject mobObject) {
 	}
 
+	default void visitUnaryMessageSend(MobUnaryMessageSend mobUnaryMessageSend) {
+		
+	}
+	default void visitBinaryMessageSend(MobBinaryMessageSend mobBinaryMessageSend) {
+		
+	}
+	default void visitKeywordMessageSend(MobKeywordMessageSend mobKeywordMessageSend) {
+		
+	}
+
+
+
 }
