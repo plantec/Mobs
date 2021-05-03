@@ -89,7 +89,7 @@ public class MobTreeBuilder implements SVisitor {
 				if (children.size() == 4 && children.get(2) instanceof MobSymbol) {
 					MobSymbol symb2 = (MobSymbol) children.get(2);
 					if (symb2.is(":=")) {
-						decl.setInitialValue((MobObject) children.get(3));
+						decl.setInitialValue(children.get(3));
 					}
 				}
 				stk.push(decl);
@@ -119,7 +119,7 @@ public class MobTreeBuilder implements SVisitor {
 			} else if (children.size() > 3) {
 				MobKeywordMessageSend keyword = new MobKeywordMessageSend();
 				send = keyword;
-				for (int i = 0; i < children.size(); i += 2) {
+				for (int i = 1; i < children.size(); i += 2) {
 					keyword.keywords().add(((MobSymbol) children.get(i)).rawValue());
 					keyword.args().add(children.get(i + 1));
 				}
@@ -129,6 +129,7 @@ public class MobTreeBuilder implements SVisitor {
 			stk.push(send);
 		} else {
 			MobSequence sequence = new MobSequence(new MobNullDef());
+			sequence.setQuote(node.quote());
 			sequence.addAll(children);
 			stk.push(sequence);
 		}

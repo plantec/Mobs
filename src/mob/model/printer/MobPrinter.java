@@ -245,11 +245,11 @@ public class MobPrinter implements MobVisitor {
 		this.write(' ');
 		receiver.accept(this);
 		this.write(' ');
-		int idx = 1;
+		int idx = 0;
 		for (String kw : mobKeywordMessageSend.keywords()) {
 			this.write(kw);
 			this.write(' ');
-			mobKeywordMessageSend.args().get(idx).accept(this);
+			mobKeywordMessageSend.args().get(idx++).accept(this);
 			this.write(' ');
 		}
 		this.write(')');
@@ -258,6 +258,7 @@ public class MobPrinter implements MobVisitor {
 	@Override
 	public void visitSequence(MobSequence mobSequence) {
 		MobVisitor.super.visitSequence(mobSequence);
+		this.flushQuote(mobSequence.quote());
 		this.write('(');
 		this.write(' ');
 		for (MobEntity e : mobSequence.children()) {

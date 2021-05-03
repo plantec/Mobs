@@ -3,19 +3,19 @@ package mob.model;
 public class MobVarDecl extends MobEntity {
 
 	String name;
-	MobObject initialValue;
+	MobEntity initialValue;
 	
 	public void setName(String name) {
 		this.name = name;
 	}
-	public void setInitialValue(MobObject mobExp) {
-		this.initialValue = mobExp;
+	public void setInitialValue(MobEntity mobEntity) {
+		this.initialValue = mobEntity;
 	}
 	
 	public String name() {
 		return this.name;
 	}
-	public MobObject initialValue() {
+	public MobEntity initialValue() {
 		return this.initialValue;
 	}
 
