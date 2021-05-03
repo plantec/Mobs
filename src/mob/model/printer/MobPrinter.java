@@ -7,7 +7,12 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import mob.model.MobAssign;
+import mob.model.MobBinaryMessageSend;
+import mob.model.MobEntity;
+import mob.model.MobKeywordMessageSend;
 import mob.model.MobObject;
+import mob.model.MobSequence;
+import mob.model.MobUnaryMessageSend;
 import mob.model.MobVarDecl;
 import mob.model.MobVisitor;
 import mob.model.primitives.MobFalse;
@@ -48,9 +53,9 @@ public class MobPrinter implements MobVisitor {
 		return this.stream;
 	}
 	
-	protected void forEachSepBy(List<? extends MobObject> l, Consumer<MobObject> cons, Doer d) {
+	protected void forEachSepBy(List<? extends MobEntity> l, Consumer<MobEntity> cons, Doer d) {
 		int count = 0;
-		for (MobObject e : l) {
+		for (MobEntity e : l) {
 			cons.accept(e);
 			count++;
 			if (count < l.size()) {
@@ -202,5 +207,65 @@ public class MobPrinter implements MobVisitor {
 		}
 		this.write(')');
 	}
+
+	@Override
+	public void visitUnaryMessageSend(MobUnaryMessageSend mobUnaryMessageSend) {
+		MobVisitor.super.visitUnaryMessageSend(mobUnaryMessageSend);
+		MobEntity receiver = mobUnaryMessageSend.receiver();
+		this.write('(');
+		this.write(' ');
+		receiver.accept(this);
+		this.write(' ');
+		this.write(mobUnaryMessageSend.keyword());
+		this.write(' ');
+		this.write(')');
+	}
+
+	@Override
+	public void visitBinaryMessageSend(MobBinaryMessageSend mobBinaryMessageSend) {
+		MobVisitor.super.visitBinaryMessageSend(mobBinaryMessageSend);
+		MobEntity receiver = mobBinaryMessageSend.receiver();
+		MobEntity arg = mobBinaryMessageSend.argument();
+		this.write('(');
+		this.write(' ');
+		receiver.accept(this);
+		this.write(' ');
+		this.write(mobBinaryMessageSend.operator());
+		this.write(' ');
+		arg.accept(this);
+		this.write(' ');
+		this.write(')');
+	}
+
+	@Override
+	public void visitKeywordMessageSend(MobKeywordMessageSend mobKeywordMessageSend) {
+		MobVisitor.super.visitKeywordMessageSend(mobKeywordMessageSend);
+		MobEntity receiver = mobKeywordMessageSend.receiver();
+		this.write('(');
+		this.write(' ');
+		receiver.accept(this);
+		this.write(' ');
+		int idx = 1;
+		for (String kw : mobKeywordMessageSend.keywords()) {
+			this.write(kw);
+			this.write(' ');
+			mobKeywordMessageSend.args().get(idx).accept(this);
+			this.write(' ');
+		}
+		this.write(')');
+	}
+
+	@Override
+	public void visitSequence(MobSequence mobSequence) {
+		MobVisitor.super.visitSequence(mobSequence);
+		this.write('(');
+		this.write(' ');
+		for (MobEntity e : mobSequence.children()) {
+			e.accept(this);
+			this.write(' ');
+		}
+		this.write(')');
+	}
+	
 
 }

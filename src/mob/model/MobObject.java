@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MobObject extends MobEntity  {
-	List<MobObject> mobs;
+	List<MobEntity> mobs;
 	private MobObjectDef def;
 	
 	public MobObject(MobObjectDef def) {
@@ -16,13 +16,13 @@ public class MobObject extends MobEntity  {
 		return this.def;
 	}
 		
-	public void add(MobObject mobExp) {
+	public void add(MobEntity mobExp) {
 		this.mobs.add(mobExp);
 		mobExp.setParent(this);
 	}
 	
-	public void addAll(List<MobObject> mobExpList) {
-		for (MobObject e : mobExpList) {
+	public void addAll(List<MobEntity> mobExpList) {
+		for (MobEntity e : mobExpList) {
 			this.add(e);
 		}
 	}
@@ -36,7 +36,7 @@ public class MobObject extends MobEntity  {
 		visitor.visitObject(this);
 	}
 
-	public MobObject get(int pos) {
+	public MobEntity get(int pos) {
 		return this.mobs.get(pos);
 	}
 
@@ -44,7 +44,7 @@ public class MobObject extends MobEntity  {
 		return this.size() > 0;
 	}
 
-	public List<MobObject> children() {
+	public List<MobEntity> children() {
 		return this.mobs;
 	}
 

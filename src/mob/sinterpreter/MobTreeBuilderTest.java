@@ -12,6 +12,7 @@ import mob.model.MobAssign;
 import mob.model.MobBinaryMessageSend;
 import mob.model.MobEntity;
 import mob.model.MobKeywordMessageSend;
+import mob.model.MobSequence;
 import mob.model.MobVarDecl;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
@@ -176,8 +177,7 @@ class MobTreeBuilderTest {
 		List<MobEntity> trees;
 		trees = builder.run("(robi setColor: (Color red))");
 		assertTrue(trees.get(0) instanceof MobKeywordMessageSend);
-		trees = builder.run("((((robi x) < (space width)) whileTrue: (robi translate: (1 @ 0))))");
-		System.out.println(trees.get(0));
+		trees = builder.run("(((robi x) < (space width)) whileTrue: (robi translate: (1 @ 0)))");
 		assertTrue(trees.get(0) instanceof MobKeywordMessageSend);
 	}
 
