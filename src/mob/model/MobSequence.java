@@ -8,7 +8,7 @@ public class MobSequence extends MobObject {
 
 	@Override
 	public void accept(MobVisitor visitor) {
-		visitor.visitSequance(this);
+		visitor.visitSequence(this);
 		
 	}
 
