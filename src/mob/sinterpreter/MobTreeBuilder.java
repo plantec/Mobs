@@ -94,6 +94,7 @@ public class MobTreeBuilder implements SVisitor {
 				return;
 			}
 		}
+		if (children.size() >= 2) {
 		MobMessageSend send;
 		if (children.size() == 2) {
 			MobUnaryMessageSend unary = new MobUnaryMessageSend();
@@ -113,7 +114,7 @@ public class MobTreeBuilder implements SVisitor {
 				binary.setOperator(((MobSymbol) children.get(1)).rawValue());
 				binary.setArgument(children.get(2));
 			}
-		} else {
+		} else if (children.size() > 3) {
 			MobKeywordMessageSend keyword = new MobKeywordMessageSend();
 			send = keyword;
 			for (int i = 0; i < children.size(); i += 2) {
@@ -124,6 +125,7 @@ public class MobTreeBuilder implements SVisitor {
 		send.setQuote(node.quote());
 		send.setReceiver(children.get(0));
 		stk.push(send);
+		} else 
 	}
 
 	@Override
