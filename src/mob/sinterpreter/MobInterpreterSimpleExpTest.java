@@ -8,8 +8,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import mob.model.MobAssign;
-import mob.model.MobObject;
+import mob.model.MobEntity;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
@@ -24,7 +23,7 @@ class MobInterpreterSimpleExpTest {
 	void test() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		List<MobObject> res;
+		List<MobEntity> res;
 
 		res = interpreter.run("nil");
 		assertTrue(res.get(0) instanceof MobNil);
@@ -68,17 +67,9 @@ class MobInterpreterSimpleExpTest {
 		assertTrue(res.get(0) instanceof MobFalse);
 		assertFalse( ((MobFalse) res.get(0)).rawValue());
 		
-		res = interpreter.run("def");
+		res = interpreter.run("monday");
 		assertTrue(res.get(0) instanceof MobSymbol);
-		assertTrue(((MobSymbol) res.get(0)).rawValue().equals("def"));
+		assertTrue(((MobSymbol) res.get(0)).rawValue().equals("monday"));
 		
-		res = interpreter.run("X := nil");
-		assertTrue(res.size() == 3);
-		assertTrue(res.get(0) instanceof MobSymbol);
-		assertTrue(res.get(0).parent() == null);
-		assertTrue(res.get(1) instanceof MobSymbol);
-		assertTrue(res.get(1).parent() == null);
-		assertTrue(res.get(2) instanceof MobNil);
-		assertTrue(res.get(2).parent() == null);
 	}
 }

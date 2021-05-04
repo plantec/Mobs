@@ -1,15 +1,50 @@
 package mob.sinterpreter;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import mob.model.MobEntity;
 import mob.model.primitives.*;
 
 public class MobTopContext extends MobContext {
 	MobEnvironment env;
+	private ArrayDeque<MobEntity> stk;
+	private MobInterpreter interpreter;
+
 	
-	public MobTopContext(MobEnvironment env) {
+	public MobTopContext(MobEnvironment env, MobInterpreter interpreter) {
 		super(null);
 		this.env = env;
+		this.interpreter = interpreter;
+		this.stk = new ArrayDeque<>();
 	}
 	
+	public List<MobEntity> result() {
+		List<MobEntity> result = new ArrayList<>();
+		this.stk.forEach(s -> result.add(s));
+		Collections.reverse(result);
+		return  result;
+	}
+	
+	public void clear() {
+		super.clear();
+		this.stk.clear();
+	}
+	
+	public MobInterpreter interpreter() {
+		return this.interpreter;
+	}
+
+	public void push(MobEntity exp) {
+		this.stk.push(exp);
+	}
+	
+	public MobEntity pop() {
+		return this.stk.pop();
+	}
+
 	public MobEnvironment environment() {
 		return this.env;
 	}

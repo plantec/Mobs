@@ -10,10 +10,8 @@ import mob.model.MobAssign;
 import mob.model.MobBinaryMessageSend;
 import mob.model.MobEntity;
 import mob.model.MobKeywordMessageSend;
-import mob.model.MobMessageSend;
 import mob.model.MobNullDef;
 import mob.model.MobObject;
-import mob.model.MobObjectDef;
 import mob.model.MobReturn;
 import mob.model.MobSequence;
 import mob.model.MobUnaryMessageSend;
@@ -133,8 +131,7 @@ public class MobTreeBuilder implements SVisitor {
 			String op = s.rawValue();
 			if (op.charAt(op.length() - 1) == ':') {
 				MobKeywordMessageSend keyword = new MobKeywordMessageSend();
-				keyword.keywords().add(((MobSymbol) children.get(1)).rawValue());
-				keyword.args().add(children.get(2));
+				keyword.add(((MobSymbol) children.get(1)).rawValue(), children.get(2));
 				keyword.setQuote(quote);
 				keyword.setReceiver(children.get(0));
 				stk.push(keyword);
@@ -151,8 +148,7 @@ public class MobTreeBuilder implements SVisitor {
 		if (children.size() > 3) {
 			MobKeywordMessageSend keyword = new MobKeywordMessageSend();
 			for (int i = 1; i < children.size(); i += 2) {
-				keyword.keywords().add(((MobSymbol) children.get(i)).rawValue());
-				keyword.args().add(children.get(i + 1));
+				keyword.add(((MobSymbol) children.get(i)).rawValue(), children.get(i + 1));
 			}
 			keyword.setQuote(quote);
 			keyword.setReceiver(children.get(0));

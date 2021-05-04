@@ -137,11 +137,11 @@ class MobTreeBuilderTest {
 		MobKeywordMessageSend kwms = (MobKeywordMessageSend) trees.get(0);
 		assertTrue(kwms.receiver() instanceof MobSymbol);
 		assertTrue(((MobSymbol)kwms.receiver()).rawValue().equals("res"));
-		assertTrue(kwms.keywords().size() == 1);
-		assertTrue(kwms.keywords().get(0).equals("set:"));
-		assertTrue(kwms.args().size() == 1);
-		assertTrue(kwms.args().get(0) instanceof MobBinaryMessageSend);
-		MobBinaryMessageSend right = (MobBinaryMessageSend) kwms.args().get(0);
+		assertTrue(kwms.keywords().length == 1);
+		assertTrue(kwms.keywords()[0].equals("set:"));
+		assertTrue(kwms.arguments().length == 1);
+		assertTrue(kwms.arguments()[0] instanceof MobBinaryMessageSend);
+		MobBinaryMessageSend right = (MobBinaryMessageSend) kwms.arguments()[0];
 		assertTrue(right.operator().equals("<"));
 		assertTrue(right.receiver() instanceof MobInteger);
 		assertTrue(right.argument() instanceof MobSymbol);

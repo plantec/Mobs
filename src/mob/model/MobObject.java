@@ -3,6 +3,8 @@ package mob.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import mob.sinterpreter.MobContext;
+
 public class MobObject extends MobEntity  {
 	List<MobEntity> mobs;
 	private MobObjectDef def;
@@ -46,6 +48,11 @@ public class MobObject extends MobEntity  {
 
 	public List<MobEntity> children() {
 		return this.mobs;
+	}
+	
+	public void run (MobContext ctx, String signature) {
+		MobMethod m = this.def.methodNamed(signature);
+		m.run(ctx, this);
 	}
 
 	

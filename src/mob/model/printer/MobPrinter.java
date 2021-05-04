@@ -263,7 +263,7 @@ public class MobPrinter implements MobVisitor {
 		for (String kw : mobKeywordMessageSend.keywords()) {
 			this.write(kw);
 			this.write(' ');
-			mobKeywordMessageSend.args().get(idx++).accept(this);
+			mobKeywordMessageSend.arguments()[idx++].accept(this);
 			this.write(' ');
 		}
 		this.write(')');

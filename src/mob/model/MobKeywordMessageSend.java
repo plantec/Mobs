@@ -5,21 +5,26 @@ import java.util.List;
 
 public class MobKeywordMessageSend extends MobMessageSend {
 	private List<String> keywords;
-	private List<MobEntity> args;
+	private List<MobEntity> arguments;
 	
 	public MobKeywordMessageSend() {
 		this.keywords = new ArrayList<>();
-		this.args = new ArrayList<>();
+		this.arguments = new ArrayList<>();
 	}
 	
-	public List<MobEntity> args() {
-		return this.args;
+	public void add(String keyword, MobEntity arg) {
+		this.keywords.add(keyword);
+		this.arguments.add(arg);
+		arg.setParent(this);
 	}
-
-	public List<String> keywords() {
-		return this.keywords;
+	
+	public String [] keywords() {
+		return this.keywords.toArray(new String[this.keywords.size()]);
 	}
-
+	public MobEntity [] arguments() {
+		return this.arguments.toArray(new MobEntity[this.arguments.size()]);
+	}
+	
 	@Override
 	public void accept(MobVisitor visitor) {
 		visitor.visitKeywordMessageSend(this);

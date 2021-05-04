@@ -1,14 +1,15 @@
 package mob.sinterpreter;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import mob.model.MobEntity;
+import mob.model.MobKeywordMessageSend;
+import mob.model.MobReturn;
+import mob.model.MobSequence;
+import mob.model.MobUnaryMessageSend;
 import mob.model.MobAssign;
-import mob.model.MobObject;
+import mob.model.MobBinaryMessageSend;
 import mob.model.MobVisitor;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
@@ -21,29 +22,24 @@ import stree.parser.SNode;
 import stree.parser.SParser;
 
 public class MobInterpreter implements MobVisitor {	
-	private ArrayDeque<MobObject> stk;
 	private MobContext context;
 
 	public MobInterpreter(MobEnvironment env) {
-		this.context = new MobTopContext(env);
-		this.stk = new ArrayDeque<>();
+		this.context = new MobTopContext(env, this);
 	}
 
-	public List<MobObject> result() {
-		List<MobObject> result = new ArrayList<>();
-		this.stk.forEach(s -> result.add(s));
-		Collections.reverse(result);
-		return  result;
+	public List<MobEntity> result() {
+		return this.context.result();
 	}
 
-	public List<MobObject> run(List<SNode> sexps) {
-		this.stk.clear();
+	public List<MobEntity> run(List<SNode> sexps) {
+		this.context = new MobTopContext(this.context.environment(), this);
 		List<MobEntity> progs = new MobTreeBuilder(this.context.environment()).run(sexps);
 		progs.forEach(e->e.accept(this));
 		return this.result();
 	}
 
-	public List<MobObject> run(String input) {
+	public List<MobEntity> run(String input) {
 		SParser parser = new SParser();
 		List<SNode> n = null;
 		try {
@@ -61,12 +57,12 @@ public class MobInterpreter implements MobVisitor {
 		this.context = this.context.parent();
 	}
 	
-	private void push(MobObject exp) {
-		this.stk.push(exp);
+	private void push(MobEntity exp) {
+		this.context.push(exp);
 	}
 	
-	private MobObject pop() {
-		return this.stk.pop();
+	private MobEntity pop() {
+		return this.context.pop();
 	}
 	
 	@Override
@@ -102,7 +98,7 @@ public class MobInterpreter implements MobVisitor {
 	@Override
 	public void visitAssign(MobAssign mobAssign) {
 		MobVisitor.super.visitAssign(mobAssign);
-		this.push(mobAssign);
+		this.push(mobAssign.left());
 	}
 	
 	@Override
@@ -118,8 +114,45 @@ public class MobInterpreter implements MobVisitor {
 	}
 
 	@Override
-	public void visitUnit(MobUnit mobUnit) {
-		MobVisitor.super.visitUnit(mobUnit);
+	public void visitUnaryMessageSend(MobUnaryMessageSend mobUnaryMessageSend) {
+		MobVisitor.super.visitUnaryMessageSend(mobUnaryMessageSend);
+		String name = mobUnaryMessageSend.keyword();
+		MobEntity receiver = mobUnaryMessageSend.receiver();
+		receiver.accept(this);
+		this.pop().run(this.context, name);
 	}
+
+	@Override
+	public void visitBinaryMessageSend(MobBinaryMessageSend mobBinaryMessageSend) {
+		MobVisitor.super.visitBinaryMessageSend(mobBinaryMessageSend);
+		String name = mobBinaryMessageSend.operator();
+		MobEntity receiver = mobBinaryMessageSend.receiver();
+		MobEntity arg = mobBinaryMessageSend.argument();
+		arg.accept(this);
+		receiver.accept(this);
+		this.pop().run(this.context, name);
+	}
+
+	@Override
+	public void visitKeywordMessageSend(MobKeywordMessageSend mobKeywordMessageSend) {
+		// TODO Auto-generated method stub
+		MobVisitor.super.visitKeywordMessageSend(mobKeywordMessageSend);
+	}
+
+	@Override
+	public void visitSequence(MobSequence mobSequence) {
+		MobVisitor.super.visitSequence(mobSequence);
+		for (MobEntity e : mobSequence.children()) {
+			e.accept(this);
+		}
+	}
+
+	@Override
+	public void visitReturn(MobReturn mobReturn) {
+		// TODO Auto-generated method stub
+		MobVisitor.super.visitReturn(mobReturn);
+	}
+	
+	
 	
 }

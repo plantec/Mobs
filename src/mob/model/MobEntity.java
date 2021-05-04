@@ -1,5 +1,7 @@
 package mob.model;
 
+import mob.sinterpreter.MobContext;
+
 public abstract class MobEntity {
 
 	private int quote;
@@ -24,6 +26,13 @@ public abstract class MobEntity {
 		return false;
 	}
 	
+	public String mobString() {
+		return this.toString();
+	}
+	
 	public abstract void accept(MobVisitor visitor);
+	
+	public void run (MobContext ctx, String signature) {}
+
 	
 }

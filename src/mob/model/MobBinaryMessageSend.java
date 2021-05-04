@@ -22,6 +22,7 @@ public class MobBinaryMessageSend extends MobMessageSend {
 
 	public void setArgument(MobEntity argument) {
 		this.argument = argument;
+		this.argument.setParent(this);
 	}
 
 

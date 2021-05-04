@@ -5,6 +5,10 @@ import mob.model.MobObjectDef;
 
 public abstract class MobPrimitiveDef<T> extends MobObjectDef {
 
+	
+	public MobPrimitiveDef() {
+	}
+	
 	@Override
 	public MobObject newInstance() {
 		throw new Error("Should not be sent");

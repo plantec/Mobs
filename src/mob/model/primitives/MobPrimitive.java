@@ -20,4 +20,8 @@ public abstract class MobPrimitive<T> extends MobObject {
 		return o.equals(rawValue);
 	}
 	
+	public String mobString() {
+		return rawValue.toString();
+	}
+
 }

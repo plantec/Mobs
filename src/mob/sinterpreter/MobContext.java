@@ -1,7 +1,9 @@
 package mob.sinterpreter;
 
 import java.util.HashMap;
+import java.util.List;
 
+import mob.model.MobEntity;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
@@ -21,6 +23,10 @@ public class MobContext {
 
 	public MobContext parent() {
 		return this.parent;
+	}
+	
+	public MobInterpreter interpreter() {
+		return this.parent().interpreter();
 	}
 
 	public void setParent(MobContext parent) {
@@ -52,6 +58,18 @@ public class MobContext {
 	
 	public void clear() {
 		this.variables.clear();
+	}
+
+	public List<MobEntity> result() {
+		return this.parent.result();
+	}
+	
+	public void push(MobEntity exp) {
+		this.parent.push(exp);
+	}
+
+	public MobEntity pop() {
+		return this.parent.pop();
 	}
 
 	public MobEnvironment environment() {
@@ -86,6 +104,6 @@ public class MobContext {
 	public MobNil newNil() {
 		return this.parent.newNil();
 	}
-
+	
 
 }
