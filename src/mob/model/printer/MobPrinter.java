@@ -11,6 +11,7 @@ import mob.model.MobBinaryMessageSend;
 import mob.model.MobEntity;
 import mob.model.MobKeywordMessageSend;
 import mob.model.MobObject;
+import mob.model.MobReturn;
 import mob.model.MobSequence;
 import mob.model.MobUnaryMessageSend;
 import mob.model.MobVarDecl;
@@ -205,6 +206,19 @@ public class MobPrinter implements MobVisitor {
 			mobVarDecl.initialValue().accept(this);
 			this.write(' ');
 		}
+		this.write(')');
+	}
+
+	@Override
+	public void visitReturn(MobReturn mobReturn) {
+		MobVisitor.super.visitReturn(mobReturn);
+		this.flushQuote(mobReturn.quote());
+		this.write('(');
+		this.write(' ');
+		this.write("^");
+		this.write(' ');
+		mobReturn.returned().accept(this);
+		this.write(' ');
 		this.write(')');
 	}
 

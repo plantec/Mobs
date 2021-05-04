@@ -57,4 +57,8 @@ public interface MobVisitor {
 
 	}
 
+	default void visitReturn(MobReturn mobReturn) {
+		
+	}
+
 }

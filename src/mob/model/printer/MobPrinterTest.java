@@ -124,10 +124,10 @@ class MobPrinterTest {
 		assertTrue(printer.result().toString().equals("( ( ( 1 + 1 ) + 3 ) negated )"));
 		
 		printer = new MobPrinter();
-		res = builder.run("( () add: 4 add: 6 add: (s size) ) ");
+		res = builder.run("( (decl l := ()) (l add: 4 add: 6 add: (s size) ) (^ l) ) ");
 		for (MobEntity s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
-		assertTrue(printer.result().toString().equals("( ( ) add: 4 add: 6 add: ( s size ) )"));
+		assertTrue(printer.result().toString().equals("( ( decl l := ( ) ) ( l add: 4 add: 6 add: ( s size ) ) ( ^ l ) )"));
 	}
 
 

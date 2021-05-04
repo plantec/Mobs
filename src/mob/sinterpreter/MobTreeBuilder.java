@@ -14,6 +14,7 @@ import mob.model.MobMessageSend;
 import mob.model.MobNullDef;
 import mob.model.MobObject;
 import mob.model.MobObjectDef;
+import mob.model.MobReturn;
 import mob.model.MobSequence;
 import mob.model.MobUnaryMessageSend;
 import mob.model.MobVarDecl;
@@ -61,6 +62,106 @@ public class MobTreeBuilder implements SVisitor {
 		return this.run(n);
 	}
 
+	private Boolean foundReturn(ArrayList<MobEntity> children, int quote) {
+		if (children.size() != 2)
+			return false;
+		if (!(children.get(0) instanceof MobSymbol))
+			return false;
+		if (!(((MobSymbol) children.get(0)).is("^")))
+			return false;
+		MobReturn ret = new MobReturn();
+		ret.setReturned(children.get(1));
+		ret.setQuote(quote);
+		stk.push(ret);
+		return true;
+	}
+
+	private Boolean foundAssign(ArrayList<MobEntity> children, int quote) {
+		if (children.size() != 3)
+			return false;
+		if (!(children.get(1) instanceof MobSymbol))
+			return false;
+		if (!(((MobSymbol) children.get(1)).is(":=")))
+			return false;
+		MobAssign assign = new MobAssign();
+		assign.setLeft((MobObject) children.get(0));
+		assign.setRight(children.get(2));
+		assign.setQuote(quote);
+		stk.push(assign);
+		return true;
+	}
+
+	private Boolean foundDecl(ArrayList<MobEntity> children, int quote) {
+		if (children.size() < 2)
+			return false;
+		if (!(children.get(0) instanceof MobSymbol))
+			return false;
+		if (!(children.get(1) instanceof MobSymbol))
+			return false;
+		MobSymbol symb0 = (MobSymbol) children.get(0);
+		MobSymbol symb1 = (MobSymbol) children.get(1);
+		if (!symb0.is("decl"))
+			return false;
+		MobVarDecl decl = new MobVarDecl();
+		decl.setName(symb1.rawValue());
+		if (children.size() == 4 && children.get(2) instanceof MobSymbol) {
+			MobSymbol symb2 = (MobSymbol) children.get(2);
+			if (symb2.is(":=")) {
+				decl.setInitialValue(children.get(3));
+			}
+		}
+		decl.setQuote(quote);
+		stk.push(decl);
+		return true;
+	}
+
+	private Boolean foundMessageSend(ArrayList<MobEntity> children, int quote) {
+		if (children.size() < 2)
+			return false;
+		if (!(children.get(1) instanceof MobSymbol))
+			return false;
+		if (children.size() == 2) {
+			MobUnaryMessageSend unary = new MobUnaryMessageSend();
+			unary.setKeyword(((MobSymbol) children.get(1)).rawValue());
+			unary.setQuote(quote);
+			unary.setReceiver(children.get(0));
+			stk.push(unary);
+			return true;
+		}
+		if (children.size() == 3) {
+			MobSymbol s = (MobSymbol) children.get(1);
+			String op = s.rawValue();
+			if (op.charAt(op.length() - 1) == ':') {
+				MobKeywordMessageSend keyword = new MobKeywordMessageSend();
+				keyword.keywords().add(((MobSymbol) children.get(1)).rawValue());
+				keyword.args().add(children.get(2));
+				keyword.setQuote(quote);
+				keyword.setReceiver(children.get(0));
+				stk.push(keyword);
+				return true;
+			}
+			MobBinaryMessageSend binary = new MobBinaryMessageSend();
+			binary.setOperator(((MobSymbol) children.get(1)).rawValue());
+			binary.setArgument(children.get(2));
+			binary.setQuote(quote);
+			binary.setReceiver(children.get(0));
+			stk.push(binary);
+			return true;
+		}
+		if (children.size() > 3) {
+			MobKeywordMessageSend keyword = new MobKeywordMessageSend();
+			for (int i = 1; i < children.size(); i += 2) {
+				keyword.keywords().add(((MobSymbol) children.get(i)).rawValue());
+				keyword.args().add(children.get(i + 1));
+			}
+			keyword.setQuote(quote);
+			keyword.setReceiver(children.get(0));
+			stk.push(keyword);
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public void visitNode(SNode node) {
 		ArrayList<MobEntity> children = new ArrayList<>();
@@ -68,71 +169,18 @@ public class MobTreeBuilder implements SVisitor {
 			s.accept(this);
 			children.add(stk.pop());
 		});
-		if (children.size() == 3) {
-			if (children.get(1) instanceof MobSymbol) {
-				MobSymbol symb = (MobSymbol) children.get(1);
-				if (symb.is(":=")) {
-					MobAssign assign = new MobAssign();
-					assign.setLeft((MobObject) children.get(0));
-					assign.setRight(children.get(2));
-					stk.push(assign);
-					return;
-				}
-			}
-		}
-		if (children.size() >= 2 && children.get(0) instanceof MobSymbol && children.get(1) instanceof MobSymbol) {
-			MobSymbol symb0 = (MobSymbol) children.get(0);
-			MobSymbol symb1 = (MobSymbol) children.get(1);
-			if (symb0.is("decl")) {
-				MobVarDecl decl = new MobVarDecl();
-				decl.setName(symb1.rawValue());
-				if (children.size() == 4 && children.get(2) instanceof MobSymbol) {
-					MobSymbol symb2 = (MobSymbol) children.get(2);
-					if (symb2.is(":=")) {
-						decl.setInitialValue(children.get(3));
-					}
-				}
-				stk.push(decl);
-				return;
-			}
-		}
-		if (children.size() >= 2 && children.get(1) instanceof MobSymbol) {
-			MobMessageSend send = null;
-			if (children.size() == 2) {
-				MobUnaryMessageSend unary = new MobUnaryMessageSend();
-				send = unary;
-				unary.setKeyword(((MobSymbol) children.get(1)).rawValue());
-			} else if (children.size() == 3) {
-				MobSymbol s = (MobSymbol) children.get(1);
-				String op = s.rawValue();
-				if (op.charAt(op.length() - 1) == ':') {
-					MobKeywordMessageSend keyword = new MobKeywordMessageSend();
-					send = keyword;
-					keyword.keywords().add(((MobSymbol) children.get(1)).rawValue());
-					keyword.args().add(children.get(2));
-				} else {
-					MobBinaryMessageSend binary = new MobBinaryMessageSend();
-					send = binary;
-					binary.setOperator(((MobSymbol) children.get(1)).rawValue());
-					binary.setArgument(children.get(2));
-				}
-			} else if (children.size() > 3) {
-				MobKeywordMessageSend keyword = new MobKeywordMessageSend();
-				send = keyword;
-				for (int i = 1; i < children.size(); i += 2) {
-					keyword.keywords().add(((MobSymbol) children.get(i)).rawValue());
-					keyword.args().add(children.get(i + 1));
-				}
-			}
-			send.setQuote(node.quote());
-			send.setReceiver(children.get(0));
-			stk.push(send);
-		} else {
-			MobSequence sequence = new MobSequence(new MobNullDef());
-			sequence.setQuote(node.quote());
-			sequence.addAll(children);
-			stk.push(sequence);
-		}
+		if (foundReturn(children, node.quote()))
+			return;
+		if (foundAssign(children, node.quote()))
+			return;
+		if (foundDecl(children, node.quote()))
+			return;
+		if (foundMessageSend(children, node.quote()))
+			return;
+		MobSequence sequence = new MobSequence(new MobNullDef());
+		sequence.setQuote(node.quote());
+		sequence.addAll(children);
+		stk.push(sequence);
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import mob.model.MobAssign;
 import mob.model.MobBinaryMessageSend;
 import mob.model.MobEntity;
 import mob.model.MobKeywordMessageSend;
+import mob.model.MobReturn;
 import mob.model.MobSequence;
 import mob.model.MobVarDecl;
 import mob.model.primitives.MobFalse;
@@ -179,6 +180,20 @@ class MobTreeBuilderTest {
 		assertTrue(trees.get(0) instanceof MobKeywordMessageSend);
 		trees = builder.run("(((robi x) < (space width)) whileTrue: (robi translate: (1 @ 0)))");
 		assertTrue(trees.get(0) instanceof MobKeywordMessageSend);
+	}
+	
+	@Test
+	void testProg1() throws IOException {
+		MobEnvironment env = new MobEnvironment();
+		MobTreeBuilder builder = new MobTreeBuilder(env);
+		List<MobEntity> trees;
+		trees = builder.run("((decl X := 0) (X := (X + 1)) (^ X))");
+		assertTrue(trees.get(0) instanceof MobSequence);
+		MobSequence seq = (MobSequence) trees.get(0);
+		assertTrue(seq.get(0) instanceof MobVarDecl);
+		assertTrue(seq.get(1) instanceof MobAssign);
+		assertTrue(seq.get(2) instanceof MobReturn);
+		assertTrue(((MobAssign)seq.get(1)).right() instanceof MobBinaryMessageSend);
 	}
 
 	
