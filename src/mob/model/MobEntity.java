@@ -1,6 +1,7 @@
 package mob.model;
 
 import mob.sinterpreter.MobContext;
+import mob.sinterpreter.MobEnvironment;
 
 public abstract class MobEntity {
 	private MobEntity parent;
@@ -24,6 +25,12 @@ public abstract class MobEntity {
 	public abstract void accept(MobVisitor visitor);
 	
 	public void run (MobContext ctx, String signature) {}
-
 	
+	public MobUnit asUnit(MobEnvironment env) {
+		return new MobUnit(env.unitDef(), this);
+	}
+	public String asUnitArg() {
+		return null;
+	}
+
 }

@@ -32,7 +32,6 @@ public interface MobVisitor {
 	}
 
 	default void visitAssign(MobAssign mobAssign) {
-
 	}
 
 	default void visitVarDecl(MobVarDecl mobVarDecl) {
@@ -41,27 +40,21 @@ public interface MobVisitor {
 	default void visitObject(MobObject mobObject) {
 	}
 
-	default void visitUnaryMessageSend(MobUnaryMessage mobUnaryMessage) {
-
+	default void visitUnaryMessage(MobUnaryMessage mobUnaryMessage) {
 	}
 
-	default void visitBinaryMessageSend(MobBinaryMessage mobBinaryMessage) {
-
+	default void visitBinaryMessage(MobBinaryMessage mobBinaryMessage) {
 	}
 
-	default void visitKeywordMessageSend(MobKeywordMessage mobKeywordMessage) {
-
+	default void visitKeywordMessage(MobKeywordMessage mobKeywordMessage) {
 	}
 
 	default void visitSequence(MobSequence mobSequence) {
-
 	}
 
 	default void visitReturn(MobReturn mobReturn) {
-		
 	}
 
 	default void visitUnit(MobUnit mobUnit) {
-		
 	}
 }

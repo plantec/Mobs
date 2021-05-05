@@ -13,5 +13,15 @@ public class MobSymbol extends MobPrimitive<String> {
 	public void accept(MobVisitor visitor) {
 		visitor.visitSymbol(this);
 	}
+	
+	public String asUnitArg() {
+		String ms = this.mobString();
+		if (ms.charAt(0) != ':') return null;
+		return ms.substring(1, ms.length());
+	}
 
+	public String toString() {
+		return "Symbol("+this.rawValue().toString()+")";
+	}
+	
 }

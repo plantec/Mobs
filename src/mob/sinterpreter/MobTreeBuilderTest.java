@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import mob.model.MobEntity;
 import mob.model.MobKeywordMessage;
 import mob.model.MobReturn;
 import mob.model.MobSequence;
+import mob.model.MobUnit;
 import mob.model.MobVarDecl;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
@@ -180,6 +182,7 @@ class MobTreeBuilderTest {
 		assertTrue(trees.get(0) instanceof MobKeywordMessage);
 		trees = builder.run("(((robi x) < (space width)) whileTrue: (robi translate: (1 @ 0)))");
 		assertTrue(trees.get(0) instanceof MobKeywordMessage);
+		System.out.println(Arrays.toString("a:b:c:d:".split("(?<=:)")));
 	}
 	
 	@Test
@@ -194,6 +197,25 @@ class MobTreeBuilderTest {
 		assertTrue(seq.get(1) instanceof MobAssign);
 		assertTrue(seq.get(2) instanceof MobReturn);
 		assertTrue(((MobAssign)seq.get(1)).right() instanceof MobBinaryMessage);
+	}
+	
+	@Test
+	void testUnit() throws IOException {
+		MobEnvironment env = new MobEnvironment();
+		MobTreeBuilder builder = new MobTreeBuilder(env);
+		List<MobEntity> trees;
+		trees = builder.run("'( (:a :b) ( (a  + b) + b ) ) ");
+		assertTrue(trees.get(0) instanceof MobUnit);
+		MobUnit unit = (MobUnit) trees.get(0);
+		assertTrue(unit.arguments().size() == 2);
+		assertTrue(unit.arguments().get(0).equals("a"));
+		assertTrue(unit.arguments().get(1).equals("b"));
+		assertTrue(unit.contents() instanceof MobSequence);
+		MobSequence seq = (MobSequence) unit.contents();
+		//assertTrue(seq.size()==1);
+		assertTrue(seq.get(0) instanceof MobBinaryMessage);
+		MobBinaryMessage m = (MobBinaryMessage) seq.get(0);
+		assertTrue(m.receiver() instanceof MobBinaryMessage);
 	}
 
 	

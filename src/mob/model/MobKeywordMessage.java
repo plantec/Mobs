@@ -25,9 +25,16 @@ public class MobKeywordMessage extends MobMessageSend {
 		return this.arguments.toArray(new MobEntity[this.arguments.size()]);
 	}
 	
+	public String selector() {
+		String s = "";
+		for (String e : this.keywords)
+			s = s + e;
+		return s;
+	}
+	
 	@Override
 	public void accept(MobVisitor visitor) {
-		visitor.visitKeywordMessageSend(this);
+		visitor.visitKeywordMessage(this);
 	}
 
 }

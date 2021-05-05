@@ -10,5 +10,5 @@ public abstract class MobMessageSend extends MobEntity {
 	public void setReceiver(MobEntity receiver) {
 		this.receiver = receiver;
 	}
-
+	
 }

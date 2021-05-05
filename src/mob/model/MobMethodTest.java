@@ -21,7 +21,7 @@ class MobMethodTest {
 		System.out.println(Arrays.toString("a;b;c;d".split("(?=;)")));
 		System.out.println(Arrays.toString("a;b;c;d".split("((?<=;)|(?=;))")));
 		
-		m = new MobMethod("x: anX y: anY z: aZ") {};
+		m = new MobMethod("x:y:z:") {};
 		System.out.println(m.selector());
 		assertTrue(m.selector().equals("x:y:z:"));
 		

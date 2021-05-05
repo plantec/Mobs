@@ -1,32 +1,20 @@
 package mob.model;
 
 public abstract class MobMethod implements MobRunable {
-	String [] signature;
+	String [] signatureElements;
 	
 	public MobMethod(String signature) {
-		this.signature = signature.split("[ \t]+");
+		this.signatureElements = signature.split("(?<=:)");
 	}
 	
-	public String[] selectorElements() {
-		String [] r = new String[this.signature.length/2];
-		for (int i = 0, j = 0; i < this.signature.length; i+=2, j++) {
-			r[j] = this.signature[i];
-		}
-		return r;
+	public String[] signatureElements() {
+		return this.signatureElements;
 	}
-	
-	public String[] arguments() {
-		String [] r = new String[this.signature.length/2];
-		for (int i = 1, j = 0; i < this.signature.length; i+=2, j++) {
-			r[j] = this.signature[i];
-		}
-		return r;
-	}
-	
+		
 	public String selector () {
 		String sel = "";
-		for (int i = 0; i < this.signature.length; i+=2) {
-			sel = sel + this.signature[i];
+		for (String s : signatureElements) {
+			sel = sel + s;
 		}
 		return sel;
 	}

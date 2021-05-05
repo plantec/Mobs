@@ -1,6 +1,10 @@
 package mob.sinterpreter;
 
+import java.util.List;
+
 import mob.model.MobEntity;
+import mob.model.MobNullDef;
+import mob.model.MobSequence;
 import mob.model.MobUnit;
 import mob.model.MobUnitDef;
 import mob.model.primitives.MobFalse;
@@ -38,6 +42,15 @@ public class MobEnvironment {
 		this.nilDef = new MobNilDef();
 		this.unitDef = new MobUnitDef();
 	}
+	
+	public MobFalseDef falseDef() { return this.falseDef; }
+	public MobTrueDef trueDef() { return this.trueDef; }
+	public MobFloatDef floatDef() { return this.floatDef; }
+	public MobIntegerDef integerDef() { return this.integerDef; }
+	public MobStringDef stringDef() { return this.stringDef; }
+	public MobSymbolDef symbolDef() { return this.symbolDef; }
+	public MobNilDef nilDef() { return this.nilDef; }
+	public MobUnitDef unitDef() { return this.unitDef; }
 
 	public MobFalse newFalse() {
 		return this.falseDef.newInstance();
@@ -67,9 +80,12 @@ public class MobEnvironment {
 		return this.nilDef.newInstance();
 	}
 	public MobUnit newUnit(MobEntity contents) {
-		return this.unitDef.newInstance(contents);
+		return this.unitDef.newInstance(this, contents);
 	}
 	
-	
-
+	public MobSequence newSequence(List<MobEntity> contents) {
+		MobSequence seq = new MobSequence(new MobNullDef());
+		seq.addAll(contents);
+		return seq;
+	}
 }

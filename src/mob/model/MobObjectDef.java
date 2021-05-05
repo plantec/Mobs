@@ -11,6 +11,7 @@ public class MobObjectDef {
 		this.addMethod(new MobMethod("println") {
 			public void run(MobContext ctx, MobEntity receiver) {
 				System.out.println(receiver.mobString());
+				ctx.push(receiver);
 			}
 		});
 	}

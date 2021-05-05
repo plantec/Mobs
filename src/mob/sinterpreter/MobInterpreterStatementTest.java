@@ -11,6 +11,7 @@ import mob.model.MobUnit;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobNil;
+import mob.model.primitives.MobString;
 import mob.model.primitives.MobTrue;
 
 class MobInterpreterStatementTest {
@@ -72,7 +73,21 @@ class MobInterpreterStatementTest {
 	void testKeywordMessageSend1() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		interpreter.run("(true ifTrue: '(99 println))");
+		List<MobEntity> result = interpreter.run("(true ifTrue: '(\"TRUE\" println) )");
+		assertTrue(result.size() == 1);
+		assertTrue(result.get(0) instanceof MobString);
+		result = interpreter.run("(true ifTrue: '(()(\"TRUE\" println)) ifFalse: '(()(\"FALSE\" println)) )");
+		assertTrue(result.size() == 1);
+		assertTrue(result.get(0) instanceof MobString);
+		result = interpreter.run("(false ifFalse: '(\"FALSE\" println) )");
+		assertTrue(result.size() == 1);
+		assertTrue(result.get(0) instanceof MobString);
+		result = interpreter.run("(false ifTrue: '(()(\"TRUE\" println)) ifFalse: '(()(\"FALSE\" println)) )");
+		assertTrue(result.size() == 1);
+		assertTrue(result.get(0) instanceof MobString);
+		result = interpreter.run("( (false ifTrue: '(\"TRUE\" println) ) ifFalse: '(\"FALSE 2\" println) )");
+		assertTrue(result.size() == 1);
+		assertTrue(result.get(0) instanceof MobString);
 	}
 	
 	@Test
@@ -82,9 +97,10 @@ class MobInterpreterStatementTest {
 		List<MobEntity> result = interpreter.run("'(10 println)");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobUnit);
-		
 		result = interpreter.run("( '(10 println) value)");
-		assertTrue(result.size() == 0);
+		assertTrue(result.size() == 1);
+		result = interpreter.run("( '( :v | (v println) ) value: 10)");
+		assertTrue(result.size() == 1);
 	}
 
 	@Test

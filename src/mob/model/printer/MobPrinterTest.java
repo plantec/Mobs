@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import mob.model.MobEntity;
+import mob.model.MobUnit;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobTreeBuilder;
 
@@ -136,5 +137,19 @@ class MobPrinterTest {
 		assertTrue(printer.result().toString().equals("( ( decl l := ( ) ) ( l add: 4 add: 6 add: ( s size ) ) ( ^ l ) )"));
 	}
 
+	@Test
+	void test4() throws IOException {
+		MobEnvironment env = new MobEnvironment();
+		MobTreeBuilder builder = new MobTreeBuilder(env);
+		List<MobEntity> res;
+
+		MobPrinter printer = new MobPrinter();
+		res = builder.run("'( :a :b :c | (a + b) + c)");
+		assertTrue(res.size() == 1);
+		assertTrue(res.get(0) instanceof MobUnit);
+		for (MobEntity s : res) s.accept(printer);
+		System.out.println(printer.result().toString());
+		assertTrue(printer.result().toString().equals("'( :a :b :c | ( a + b ) + c )"));
+	}
 
 }

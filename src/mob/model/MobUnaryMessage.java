@@ -14,7 +14,7 @@ public class MobUnaryMessage extends MobMessageSend {
 
 	@Override
 	public void accept(MobVisitor visitor) {
-		visitor.visitUnaryMessageSend(this);
+		visitor.visitUnaryMessage(this);
 	}
 
 }

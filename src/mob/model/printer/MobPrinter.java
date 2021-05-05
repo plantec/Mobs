@@ -137,7 +137,7 @@ public class MobPrinter implements MobVisitor {
 		MobVisitor.super.visitString(mobString);
 		this.write(mobString.rawValue());
 	}
-
+/*
 	@Override
 	public void visitObject(MobObject mobObject) {
 		MobVisitor.super.visitObject(mobObject);
@@ -157,7 +157,7 @@ public class MobPrinter implements MobVisitor {
 		this.write(' ');
 		this.write(')');
 	}
-
+*/
 	@Override
 	public void visitSymbol(MobSymbol mobSymbol) {
 		MobVisitor.super.visitSymbol(mobSymbol);
@@ -209,8 +209,8 @@ public class MobPrinter implements MobVisitor {
 	}
 
 	@Override
-	public void visitUnaryMessageSend(MobUnaryMessage mobUnaryMessage) {
-		MobVisitor.super.visitUnaryMessageSend(mobUnaryMessage);
+	public void visitUnaryMessage(MobUnaryMessage mobUnaryMessage) {
+		MobVisitor.super.visitUnaryMessage(mobUnaryMessage);
 		MobEntity receiver = mobUnaryMessage.receiver();
 		this.write('(');
 		this.write(' ');
@@ -222,8 +222,8 @@ public class MobPrinter implements MobVisitor {
 	}
 
 	@Override
-	public void visitBinaryMessageSend(MobBinaryMessage mobBinaryMessage) {
-		MobVisitor.super.visitBinaryMessageSend(mobBinaryMessage);
+	public void visitBinaryMessage(MobBinaryMessage mobBinaryMessage) {
+		MobVisitor.super.visitBinaryMessage(mobBinaryMessage);
 		MobEntity receiver = mobBinaryMessage.receiver();
 		MobEntity arg = mobBinaryMessage.argument();
 		this.write('(');
@@ -238,8 +238,8 @@ public class MobPrinter implements MobVisitor {
 	}
 
 	@Override
-	public void visitKeywordMessageSend(MobKeywordMessage mobKeywordMessage) {
-		MobVisitor.super.visitKeywordMessageSend(mobKeywordMessage);
+	public void visitKeywordMessage(MobKeywordMessage mobKeywordMessage) {
+		MobVisitor.super.visitKeywordMessage(mobKeywordMessage);
 		MobEntity receiver = mobKeywordMessage.receiver();
 		this.write('(');
 		this.write(' ');
@@ -271,7 +271,22 @@ public class MobPrinter implements MobVisitor {
 	public void visitUnit(MobUnit mobUnit) {
 		MobVisitor.super.visitUnit(mobUnit);
 		this.write('\'');
-		mobUnit.contents().accept(this);
+		if (!mobUnit.hasArguments()) {
+			mobUnit.contents().accept(this);
+			return;
+		}
+		this.write('(');
+		for (String a : mobUnit.arguments()) {
+			this.write(" :");
+			this.write(a);
+		}
+		this.write(" | ");
+		MobSequence sub = (MobSequence) mobUnit.contents();
+		for (MobEntity e : sub.children()) {
+			System.out.println(e);
+			e.accept(this);
+		}
+		this.write(" )");
 	}
 	
 

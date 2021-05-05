@@ -1,5 +1,7 @@
 package mob.model;
 
+import java.util.List;
+
 public class MobAssign extends MobEntity {
 	MobObject left;
 	MobEntity right;
@@ -22,5 +24,5 @@ public class MobAssign extends MobEntity {
 	public void accept(MobVisitor visitor) {
 		visitor.visitAssign(this);
 	}
-
+	
 }

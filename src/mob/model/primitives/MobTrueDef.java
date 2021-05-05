@@ -2,6 +2,7 @@ package mob.model.primitives;
 
 import mob.model.MobEntity;
 import mob.model.MobMethod;
+import mob.model.MobUnit;
 import mob.sinterpreter.MobContext;
 
 public class MobTrueDef extends MobBoolDef {
@@ -9,21 +10,30 @@ public class MobTrueDef extends MobBoolDef {
 	private static MobTrue mtrue = new MobTrue(trueDef);
 
 	public MobTrueDef() {
-		this.addMethod(new MobMethod("ifTrue: trueAction") {
+		this.addMethod(new MobMethod("ifTrue:") {
 			public void run(MobContext ctx, MobEntity receiver) {
-				System.out.println("ok");
-				ctx.pop().accept(ctx.interpreter());
+				MobUnit trueArg = (MobUnit) ctx.pop();
+				trueArg.contents().accept(ctx.interpreter());
 			}
 		});
-		this.addMethod(new MobMethod("ifFalse: falseAction") {
+		this.addMethod(new MobMethod("ifFalse:") {
 			public void run(MobContext ctx, MobEntity receiver) {
 				ctx.pop();
+				ctx.push(receiver);
 			}
 		});
-		this.addMethod(new MobMethod("ifTrue: trueAction ifFalse: falseAction") {
+		this.addMethod(new MobMethod("ifFalse:ifTrue:") {
+			public void run(MobContext ctx, MobEntity receiver) {
+				MobUnit trueArg = (MobUnit) ctx.pop();
+				ctx.pop();
+				trueArg.contents().accept(ctx.interpreter());
+			}
+		});
+		this.addMethod(new MobMethod("ifTrue:ifFalse:") {
 			public void run(MobContext ctx, MobEntity receiver) {
 				ctx.pop();
-				ctx.pop().accept(ctx.interpreter());
+				MobUnit trueArg = (MobUnit) ctx.pop();
+				trueArg.contents().accept(ctx.interpreter());
 			}
 		});
 

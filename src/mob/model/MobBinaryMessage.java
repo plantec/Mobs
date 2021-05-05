@@ -1,8 +1,10 @@
 package mob.model;
 
+import java.util.List;
+
 public class MobBinaryMessage extends MobMessageSend {
-	String operator;
-	MobEntity argument;
+	protected String operator;
+	protected MobEntity argument;
 	
 	
 	public String operator() {
@@ -28,7 +30,7 @@ public class MobBinaryMessage extends MobMessageSend {
 
 	@Override
 	public void accept(MobVisitor visitor) {
-		visitor.visitBinaryMessageSend(this);
+		visitor.visitBinaryMessage(this);
 	}
 
 }

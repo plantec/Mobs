@@ -10,7 +10,6 @@ import mob.model.MobAssign;
 import mob.model.MobBinaryMessage;
 import mob.model.MobEntity;
 import mob.model.MobKeywordMessage;
-import mob.model.MobNullDef;
 import mob.model.MobObject;
 import mob.model.MobReturn;
 import mob.model.MobSequence;
@@ -63,6 +62,10 @@ public class MobTreeBuilder implements SVisitor {
 	MobEntity quoted(MobEntity e, int q) {
 		if (q == 0)
 			return e;
+		if (e instanceof MobSequence) {
+			MobSequence seq = (MobSequence) e;
+			System.out.println(seq.children());
+		}
 		return quoted(env.newUnit(e), q - 1);
 	}
 
@@ -146,6 +149,10 @@ public class MobTreeBuilder implements SVisitor {
 			return true;
 		}
 		if (children.size() > 3) {
+			for (int i = 1; i < children.size(); i += 2) {
+				String kw = ((MobSymbol) children.get(i)).rawValue();
+				if (kw.charAt(kw.length() - 1) != ':') return false;
+			}
 			MobKeywordMessage keyword = new MobKeywordMessage();
 			for (int i = 1; i < children.size(); i += 2) {
 				keyword.add(((MobSymbol) children.get(i)).rawValue(), children.get(i + 1));
@@ -172,8 +179,7 @@ public class MobTreeBuilder implements SVisitor {
 			return;
 		if (foundMessageSend(children, node.quote()))
 			return;
-		MobSequence sequence = new MobSequence(new MobNullDef());
-		sequence.addAll(children);
+		MobSequence sequence = this.env.newSequence(children);
 		stk.push(quoted(sequence, node.quote()));
 	}
 

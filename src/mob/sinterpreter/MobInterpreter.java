@@ -121,8 +121,8 @@ public class MobInterpreter implements MobVisitor {
 	}
 
 	@Override
-	public void visitUnaryMessageSend(MobUnaryMessage mobUnaryMessage) {
-		MobVisitor.super.visitUnaryMessageSend(mobUnaryMessage);
+	public void visitUnaryMessage(MobUnaryMessage mobUnaryMessage) {
+		MobVisitor.super.visitUnaryMessage(mobUnaryMessage);
 		String name = mobUnaryMessage.keyword();
 		MobEntity receiver = mobUnaryMessage.receiver();
 		receiver.accept(this);
@@ -130,8 +130,8 @@ public class MobInterpreter implements MobVisitor {
 	}
 
 	@Override
-	public void visitBinaryMessageSend(MobBinaryMessage mobBinaryMessage) {
-		MobVisitor.super.visitBinaryMessageSend(mobBinaryMessage);
+	public void visitBinaryMessage(MobBinaryMessage mobBinaryMessage) {
+		MobVisitor.super.visitBinaryMessage(mobBinaryMessage);
 		String name = mobBinaryMessage.operator();
 		MobEntity receiver = mobBinaryMessage.receiver();
 		MobEntity arg = mobBinaryMessage.argument();
@@ -141,9 +141,14 @@ public class MobInterpreter implements MobVisitor {
 	}
 
 	@Override
-	public void visitKeywordMessageSend(MobKeywordMessage mobKeywordMessage) {
-		MobVisitor.super.visitKeywordMessageSend(mobKeywordMessage);
-		
+	public void visitKeywordMessage(MobKeywordMessage mobKeywordMessage) {
+		MobVisitor.super.visitKeywordMessage(mobKeywordMessage);
+		for (MobEntity e : mobKeywordMessage.arguments())
+			e.accept(this);
+		String selector = mobKeywordMessage.selector();
+		MobEntity receiver = mobKeywordMessage.receiver();
+		receiver.accept(this);
+		this.pop().run(this.context, selector);
 	}
 
 	@Override
