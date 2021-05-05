@@ -1,5 +1,8 @@
 package mob.sinterpreter;
 
+import mob.model.MobEntity;
+import mob.model.MobUnit;
+import mob.model.MobUnitDef;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFalseDef;
 import mob.model.primitives.MobFloat;
@@ -23,6 +26,7 @@ public class MobEnvironment {
 	private MobStringDef stringDef;
 	private MobSymbolDef symbolDef;
 	private MobNilDef nilDef;
+	private MobUnitDef unitDef;
 
 	public MobEnvironment() {
 		this.falseDef = new MobFalseDef();
@@ -32,6 +36,7 @@ public class MobEnvironment {
 		this.stringDef = new MobStringDef();
 		this.symbolDef = new MobSymbolDef();
 		this.nilDef = new MobNilDef();
+		this.unitDef = new MobUnitDef();
 	}
 
 	public MobFalse newFalse() {
@@ -61,5 +66,10 @@ public class MobEnvironment {
 	public MobNil newNil() {
 		return this.nilDef.newInstance();
 	}
+	public MobUnit newUnit(MobEntity contents) {
+		return this.unitDef.newInstance(contents);
+	}
+	
+	
 
 }

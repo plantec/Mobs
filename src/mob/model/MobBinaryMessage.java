@@ -1,6 +1,6 @@
 package mob.model;
 
-public class MobBinaryMessageSend extends MobMessageSend {
+public class MobBinaryMessage extends MobMessageSend {
 	String operator;
 	MobEntity argument;
 	

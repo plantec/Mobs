@@ -48,7 +48,7 @@ public class MobIntegerDef extends MobPrimitiveDef<Integer> {
 		});
 		this.addMethod(new MobMethod("/") {
 			public void run(MobContext ctx, MobEntity receiver) {
-				MobEntity arg1 = ctx.pop();
+					MobEntity arg1 = ctx.pop();
 				MobInteger r = (MobInteger) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
@@ -123,9 +123,10 @@ public class MobIntegerDef extends MobPrimitiveDef<Integer> {
 				MobInteger r = (MobInteger) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
-					ctx.push(r.rawValue().equals(arg.rawValue()) ? ctx.newTrue():ctx.newFalse());
+					ctx.push(r.rawValue() == arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					ctx.push(ctx.newFalse());
+					MobFloat arg = (MobFloat) arg1;
+					ctx.push((float)r.rawValue() == (float)arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -137,7 +138,8 @@ public class MobIntegerDef extends MobPrimitiveDef<Integer> {
 					MobInteger arg = (MobInteger) arg1;
 					ctx.push(r.rawValue().equals(arg.rawValue()) ? ctx.newFalse():ctx.newTrue());
 				} else {
-					ctx.push(ctx.newFalse());
+					MobFloat arg = (MobFloat) arg1;
+					ctx.push((float)r.rawValue() == (float)arg.rawValue() ? ctx.newFalse():ctx.newTrue());
 				}
 			}
 		});

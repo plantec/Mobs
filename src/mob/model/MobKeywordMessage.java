@@ -3,11 +3,11 @@ package mob.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MobKeywordMessageSend extends MobMessageSend {
+public class MobKeywordMessage extends MobMessageSend {
 	private List<String> keywords;
 	private List<MobEntity> arguments;
 	
-	public MobKeywordMessageSend() {
+	public MobKeywordMessage() {
 		this.keywords = new ArrayList<>();
 		this.arguments = new ArrayList<>();
 	}

@@ -9,9 +9,21 @@ public class MobTrueDef extends MobBoolDef {
 	private static MobTrue mtrue = new MobTrue(trueDef);
 
 	public MobTrueDef() {
-		this.addMethod(new MobMethod("ifTrue") {
+		this.addMethod(new MobMethod("ifTrue: trueAction") {
 			public void run(MobContext ctx, MobEntity receiver) {
-				MobEntity arg1 = ctx.pop();
+				System.out.println("ok");
+				ctx.pop().accept(ctx.interpreter());
+			}
+		});
+		this.addMethod(new MobMethod("ifFalse: falseAction") {
+			public void run(MobContext ctx, MobEntity receiver) {
+				ctx.pop();
+			}
+		});
+		this.addMethod(new MobMethod("ifTrue: trueAction ifFalse: falseAction") {
+			public void run(MobContext ctx, MobEntity receiver) {
+				ctx.pop();
+				ctx.pop().accept(ctx.interpreter());
 			}
 		});
 

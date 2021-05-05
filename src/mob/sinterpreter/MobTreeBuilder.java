@@ -7,14 +7,14 @@ import java.util.Collections;
 import java.util.List;
 
 import mob.model.MobAssign;
-import mob.model.MobBinaryMessageSend;
+import mob.model.MobBinaryMessage;
 import mob.model.MobEntity;
-import mob.model.MobKeywordMessageSend;
+import mob.model.MobKeywordMessage;
 import mob.model.MobNullDef;
 import mob.model.MobObject;
 import mob.model.MobReturn;
 import mob.model.MobSequence;
-import mob.model.MobUnaryMessageSend;
+import mob.model.MobUnaryMessage;
 import mob.model.MobVarDecl;
 import mob.model.primitives.MobSymbol;
 import stree.parser.SNode;
@@ -59,6 +59,12 @@ public class MobTreeBuilder implements SVisitor {
 		}
 		return this.run(n);
 	}
+	
+	MobEntity quoted(MobEntity e, int q) {
+		if (q == 0)
+			return e;
+		return quoted(env.newUnit(e), q - 1);
+	}
 
 	private Boolean foundReturn(ArrayList<MobEntity> children, int quote) {
 		if (children.size() != 2)
@@ -69,8 +75,7 @@ public class MobTreeBuilder implements SVisitor {
 			return false;
 		MobReturn ret = new MobReturn();
 		ret.setReturned(children.get(1));
-		ret.setQuote(quote);
-		stk.push(ret);
+		stk.push(quoted(ret, quote));
 		return true;
 	}
 
@@ -84,8 +89,7 @@ public class MobTreeBuilder implements SVisitor {
 		MobAssign assign = new MobAssign();
 		assign.setLeft((MobObject) children.get(0));
 		assign.setRight(children.get(2));
-		assign.setQuote(quote);
-		stk.push(assign);
+		stk.push(quoted(assign, quote));
 		return true;
 	}
 
@@ -108,51 +112,46 @@ public class MobTreeBuilder implements SVisitor {
 				decl.setInitialValue(children.get(3));
 			}
 		}
-		decl.setQuote(quote);
-		stk.push(decl);
+		stk.push(quoted(decl, quote));
 		return true;
 	}
-
+	
 	private Boolean foundMessageSend(ArrayList<MobEntity> children, int quote) {
 		if (children.size() < 2)
 			return false;
 		if (!(children.get(1) instanceof MobSymbol))
 			return false;
 		if (children.size() == 2) {
-			MobUnaryMessageSend unary = new MobUnaryMessageSend();
+			MobUnaryMessage unary = new MobUnaryMessage();
 			unary.setKeyword(((MobSymbol) children.get(1)).rawValue());
-			unary.setQuote(quote);
 			unary.setReceiver(children.get(0));
-			stk.push(unary);
+			stk.push(quoted(unary, quote));
 			return true;
 		}
 		if (children.size() == 3) {
 			MobSymbol s = (MobSymbol) children.get(1);
 			String op = s.rawValue();
 			if (op.charAt(op.length() - 1) == ':') {
-				MobKeywordMessageSend keyword = new MobKeywordMessageSend();
+				MobKeywordMessage keyword = new MobKeywordMessage();
 				keyword.add(((MobSymbol) children.get(1)).rawValue(), children.get(2));
-				keyword.setQuote(quote);
 				keyword.setReceiver(children.get(0));
-				stk.push(keyword);
+				stk.push(quoted(keyword, quote));
 				return true;
 			}
-			MobBinaryMessageSend binary = new MobBinaryMessageSend();
+			MobBinaryMessage binary = new MobBinaryMessage();
 			binary.setOperator(((MobSymbol) children.get(1)).rawValue());
 			binary.setArgument(children.get(2));
-			binary.setQuote(quote);
 			binary.setReceiver(children.get(0));
-			stk.push(binary);
+			stk.push(quoted(binary, quote));
 			return true;
 		}
 		if (children.size() > 3) {
-			MobKeywordMessageSend keyword = new MobKeywordMessageSend();
+			MobKeywordMessage keyword = new MobKeywordMessage();
 			for (int i = 1; i < children.size(); i += 2) {
 				keyword.add(((MobSymbol) children.get(i)).rawValue(), children.get(i + 1));
 			}
-			keyword.setQuote(quote);
 			keyword.setReceiver(children.get(0));
-			stk.push(keyword);
+			stk.push(quoted(keyword, quote));
 			return true;
 		}
 		return false;
@@ -174,9 +173,8 @@ public class MobTreeBuilder implements SVisitor {
 		if (foundMessageSend(children, node.quote()))
 			return;
 		MobSequence sequence = new MobSequence(new MobNullDef());
-		sequence.setQuote(node.quote());
 		sequence.addAll(children);
-		stk.push(sequence);
+		stk.push(quoted(sequence, node.quote()));
 	}
 
 	@Override
@@ -221,8 +219,6 @@ public class MobTreeBuilder implements SVisitor {
 			default:
 				exp = this.env.newSymbol(contents);
 			}
-		exp.setQuote(node.quote());
-		this.stk.push(exp);
+		this.stk.push(quoted(exp, node.quote()));
 	}
-
 }

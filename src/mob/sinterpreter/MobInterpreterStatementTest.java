@@ -7,15 +7,17 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import mob.model.MobEntity;
+import mob.model.MobUnit;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobNil;
+import mob.model.primitives.MobTrue;
 
 class MobInterpreterStatementTest {
 
 	
 	@Test
-	void testSimpleMessageSend() throws IOException {
+	void testBinaryMessageSend1() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
 		List<MobEntity> result = interpreter.run("(1 + 1)");
@@ -54,8 +56,35 @@ class MobInterpreterStatementTest {
 		r = (MobInteger) result.get(0);
 		assertTrue (r.rawValue() == -16);
 		
-		interpreter.run("( 10 println )");
-		interpreter.run("( (10 > 0) println )");
+		result = interpreter.run("( (10 > 0) )");
+		assertTrue(result.get(0) instanceof MobTrue);
+		result = interpreter.run("( (10 = 10) )");
+		assertTrue(result.get(0) instanceof MobTrue);
+		result = interpreter.run("( (10 = 10.0) )");
+		assertTrue(result.get(0) instanceof MobTrue);
+		result = interpreter.run("( (10.0 = 10.0) )");
+		assertTrue(result.get(0) instanceof MobTrue);
+		result = interpreter.run("( (10.0 = 10) )");
+		assertTrue(result.get(0) instanceof MobTrue);
+	}
+	
+	@Test
+	void testKeywordMessageSend1() throws IOException {
+		MobEnvironment env = new MobEnvironment();
+		MobInterpreter interpreter = new MobInterpreter(env);
+		interpreter.run("(true ifTrue: '(99 println))");
+	}
+	
+	@Test
+	void testUnit() throws IOException {
+		MobEnvironment env = new MobEnvironment();
+		MobInterpreter interpreter = new MobInterpreter(env);
+		List<MobEntity> result = interpreter.run("'(10 println)");
+		assertTrue(result.size() == 1);
+		assertTrue(result.get(0) instanceof MobUnit);
+		
+		result = interpreter.run("( '(10 println) value)");
+		assertTrue(result.size() == 0);
 	}
 
 	@Test
@@ -112,7 +141,6 @@ class MobInterpreterStatementTest {
 		MobVariable var;
 
 		res = interpreter.run("( (X := 1) (Y := X) ) ");
-		System.out.println(res);
 		assertTrue(res instanceof MobVariable);
 		var = (MobVariable) res;
 		assertTrue(var.name().equals("Y"));

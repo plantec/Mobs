@@ -9,9 +9,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import mob.model.MobAssign;
-import mob.model.MobBinaryMessageSend;
+import mob.model.MobBinaryMessage;
 import mob.model.MobEntity;
-import mob.model.MobKeywordMessageSend;
+import mob.model.MobKeywordMessage;
 import mob.model.MobReturn;
 import mob.model.MobSequence;
 import mob.model.MobVarDecl;
@@ -118,8 +118,8 @@ class MobTreeBuilderTest {
 		assign = (MobAssign) trees.get(0);
 		assertTrue(assign.left() instanceof MobSymbol);
 		assertTrue(((MobSymbol)assign.left()).rawValue().equals("X"));
-		assertTrue(assign.right() instanceof MobBinaryMessageSend);
-		MobBinaryMessageSend right = (MobBinaryMessageSend) assign.right();
+		assertTrue(assign.right() instanceof MobBinaryMessage);
+		MobBinaryMessage right = (MobBinaryMessage) assign.right();
 		assertTrue(right.operator().equals("<"));
 		assertTrue(right.receiver() instanceof MobInteger);
 		assertTrue(right.argument() instanceof MobSymbol);
@@ -133,15 +133,15 @@ class MobTreeBuilderTest {
 		List<MobEntity> trees;
 
 		trees = builder.run("( res set: (1 < z) )");
-		assertTrue(trees.get(0) instanceof MobKeywordMessageSend);
-		MobKeywordMessageSend kwms = (MobKeywordMessageSend) trees.get(0);
+		assertTrue(trees.get(0) instanceof MobKeywordMessage);
+		MobKeywordMessage kwms = (MobKeywordMessage) trees.get(0);
 		assertTrue(kwms.receiver() instanceof MobSymbol);
 		assertTrue(((MobSymbol)kwms.receiver()).rawValue().equals("res"));
 		assertTrue(kwms.keywords().length == 1);
 		assertTrue(kwms.keywords()[0].equals("set:"));
 		assertTrue(kwms.arguments().length == 1);
-		assertTrue(kwms.arguments()[0] instanceof MobBinaryMessageSend);
-		MobBinaryMessageSend right = (MobBinaryMessageSend) kwms.arguments()[0];
+		assertTrue(kwms.arguments()[0] instanceof MobBinaryMessage);
+		MobBinaryMessage right = (MobBinaryMessage) kwms.arguments()[0];
 		assertTrue(right.operator().equals("<"));
 		assertTrue(right.receiver() instanceof MobInteger);
 		assertTrue(right.argument() instanceof MobSymbol);
@@ -177,9 +177,9 @@ class MobTreeBuilderTest {
 		MobTreeBuilder builder = new MobTreeBuilder(env);
 		List<MobEntity> trees;
 		trees = builder.run("(robi setColor: (Color red))");
-		assertTrue(trees.get(0) instanceof MobKeywordMessageSend);
+		assertTrue(trees.get(0) instanceof MobKeywordMessage);
 		trees = builder.run("(((robi x) < (space width)) whileTrue: (robi translate: (1 @ 0)))");
-		assertTrue(trees.get(0) instanceof MobKeywordMessageSend);
+		assertTrue(trees.get(0) instanceof MobKeywordMessage);
 	}
 	
 	@Test
@@ -193,7 +193,7 @@ class MobTreeBuilderTest {
 		assertTrue(seq.get(0) instanceof MobVarDecl);
 		assertTrue(seq.get(1) instanceof MobAssign);
 		assertTrue(seq.get(2) instanceof MobReturn);
-		assertTrue(((MobAssign)seq.get(1)).right() instanceof MobBinaryMessageSend);
+		assertTrue(((MobAssign)seq.get(1)).right() instanceof MobBinaryMessage);
 	}
 
 	

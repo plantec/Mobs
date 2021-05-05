@@ -66,6 +66,86 @@ public class MobFloatDef extends MobPrimitiveDef<Float> {
 				ctx.push(ctx.newFloat(r.rawValue()*-1));
 			}
 		});
+		
+		this.addMethod(new MobMethod("<") {
+			public void run(MobContext ctx, MobEntity receiver) {
+				MobEntity arg1 = ctx.pop();
+				MobFloat r = (MobFloat) receiver;
+				if (arg1 instanceof MobInteger) {
+					MobInteger arg = (MobInteger) arg1;
+					ctx.push(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				} else {
+					MobFloat arg = (MobFloat) arg1;
+					ctx.push(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				}
+			}
+		});
+		this.addMethod(new MobMethod(">") {
+			public void run(MobContext ctx, MobEntity receiver) {
+				MobEntity arg1 = ctx.pop();
+				MobFloat r = (MobFloat) receiver;
+				if (arg1 instanceof MobInteger) {
+					MobInteger arg = (MobInteger) arg1;
+					ctx.push(r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				} else {
+					MobFloat arg = (MobFloat) arg1;
+					ctx.push(r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				}
+			}
+		});
+		this.addMethod(new MobMethod(">=") {
+			public void run(MobContext ctx, MobEntity receiver) {
+				MobEntity arg1 = ctx.pop();
+				MobFloat r = (MobFloat) receiver;
+				if (arg1 instanceof MobInteger) {
+					MobInteger arg = (MobInteger) arg1;
+					ctx.push(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				} else {
+					MobFloat arg = (MobFloat) arg1;
+					ctx.push(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				}
+			}
+		});
+		this.addMethod(new MobMethod("<=") {
+			public void run(MobContext ctx, MobEntity receiver) {
+				MobEntity arg1 = ctx.pop();
+				MobFloat r = (MobFloat) receiver;
+				if (arg1 instanceof MobInteger) {
+					MobInteger arg = (MobInteger) arg1;
+					ctx.push(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				} else {
+					MobFloat arg = (MobFloat) arg1;
+					ctx.push(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				}
+			}
+		});
+		this.addMethod(new MobMethod("=") {
+			public void run(MobContext ctx, MobEntity receiver) {
+				MobEntity arg1 = ctx.pop();
+				MobFloat r = (MobFloat) receiver;
+				if (arg1 instanceof MobInteger) {
+					MobInteger arg = (MobInteger) arg1;
+					ctx.push(r.rawValue() == (float)arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				} else {
+					MobFloat arg = (MobFloat) arg1;
+					ctx.push(r.rawValue() == (float)arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				}
+			}
+		});
+		this.addMethod(new MobMethod("~=") {
+			public void run(MobContext ctx, MobEntity receiver) {
+				MobEntity arg1 = ctx.pop();
+				MobFloat r = (MobFloat) receiver;
+				if (arg1 instanceof MobInteger) {
+					MobInteger arg = (MobInteger) arg1;
+					ctx.push(r.rawValue() == (float)arg.rawValue() ? ctx.newFalse():ctx.newTrue());
+				} else {
+					MobFloat arg = (MobFloat) arg1;
+					ctx.push(r.rawValue() == (float)arg.rawValue() ? ctx.newFalse():ctx.newTrue());
+				}
+			}
+		});
+
 	}
 	@Override
 	public MobFloat newInstance(Float mob) {

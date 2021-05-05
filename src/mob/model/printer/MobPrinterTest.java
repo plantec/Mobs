@@ -36,6 +36,12 @@ class MobPrinterTest {
 		System.out.println(printer.result().toString());
 		assertTrue(printer.result().toString().equals("( 'X )"));
 
+		res = builder.run("('(X) ''(Y))");
+		printer = new MobPrinter();
+		for (MobEntity s : res) s.accept(printer);
+		System.out.println(printer.result().toString());
+		assertTrue(printer.result().toString().equals("( '( X ) ''( Y ) )"));
+
 		res = builder.run("( 	X  )");
 		printer = new MobPrinter();
 		for (MobEntity s : res) s.accept(printer);

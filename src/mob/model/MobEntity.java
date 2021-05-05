@@ -3,8 +3,6 @@ package mob.model;
 import mob.sinterpreter.MobContext;
 
 public abstract class MobEntity {
-
-	private int quote;
 	private MobEntity parent;
 	
 	public MobEntity parent() {
@@ -15,13 +13,6 @@ public abstract class MobEntity {
 		this.parent = parent;
 	}
 
-	public int quote() {
-		return this.quote;
-	}
-	public void setQuote(int q) {
-		this.quote = q;
-	}
-	
 	public Boolean is(Object o) {
 		return false;
 	}

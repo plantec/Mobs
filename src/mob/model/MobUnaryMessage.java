@@ -1,6 +1,6 @@
 package mob.model;
 
-public class MobUnaryMessageSend extends MobMessageSend {
+public class MobUnaryMessage extends MobMessageSend {
 
 	private String keyword;
 	

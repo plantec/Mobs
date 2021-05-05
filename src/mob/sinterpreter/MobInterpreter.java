@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.util.List;
 
 import mob.model.MobEntity;
-import mob.model.MobKeywordMessageSend;
+import mob.model.MobKeywordMessage;
 import mob.model.MobReturn;
 import mob.model.MobSequence;
-import mob.model.MobUnaryMessageSend;
+import mob.model.MobUnaryMessage;
+import mob.model.MobUnit;
 import mob.model.MobAssign;
-import mob.model.MobBinaryMessageSend;
+import mob.model.MobBinaryMessage;
 import mob.model.MobVisitor;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
@@ -114,29 +115,35 @@ public class MobInterpreter implements MobVisitor {
 	}
 
 	@Override
-	public void visitUnaryMessageSend(MobUnaryMessageSend mobUnaryMessageSend) {
-		MobVisitor.super.visitUnaryMessageSend(mobUnaryMessageSend);
-		String name = mobUnaryMessageSend.keyword();
-		MobEntity receiver = mobUnaryMessageSend.receiver();
+	public void visitUnit(MobUnit mobUnit) {
+		MobVisitor.super.visitUnit(mobUnit);
+		this.push(mobUnit);
+	}
+
+	@Override
+	public void visitUnaryMessageSend(MobUnaryMessage mobUnaryMessage) {
+		MobVisitor.super.visitUnaryMessageSend(mobUnaryMessage);
+		String name = mobUnaryMessage.keyword();
+		MobEntity receiver = mobUnaryMessage.receiver();
 		receiver.accept(this);
 		this.pop().run(this.context, name);
 	}
 
 	@Override
-	public void visitBinaryMessageSend(MobBinaryMessageSend mobBinaryMessageSend) {
-		MobVisitor.super.visitBinaryMessageSend(mobBinaryMessageSend);
-		String name = mobBinaryMessageSend.operator();
-		MobEntity receiver = mobBinaryMessageSend.receiver();
-		MobEntity arg = mobBinaryMessageSend.argument();
+	public void visitBinaryMessageSend(MobBinaryMessage mobBinaryMessage) {
+		MobVisitor.super.visitBinaryMessageSend(mobBinaryMessage);
+		String name = mobBinaryMessage.operator();
+		MobEntity receiver = mobBinaryMessage.receiver();
+		MobEntity arg = mobBinaryMessage.argument();
 		arg.accept(this);
 		receiver.accept(this);
 		this.pop().run(this.context, name);
 	}
 
 	@Override
-	public void visitKeywordMessageSend(MobKeywordMessageSend mobKeywordMessageSend) {
-		// TODO Auto-generated method stub
-		MobVisitor.super.visitKeywordMessageSend(mobKeywordMessageSend);
+	public void visitKeywordMessageSend(MobKeywordMessage mobKeywordMessage) {
+		MobVisitor.super.visitKeywordMessageSend(mobKeywordMessage);
+		
 	}
 
 	@Override
