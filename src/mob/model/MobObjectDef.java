@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 import mob.sinterpreter.MobContext;
 
-public class MobObjectDef {
+public abstract class MobObjectDef {
 	private HashMap<String, MobMethod> behavior;
 	
 	public MobObjectDef() {
@@ -23,9 +23,7 @@ public class MobObjectDef {
 	public MobMethod methodNamed(String name) {
 		return behavior.get(name);
 	}
+
+	public abstract MobObject newInstance();
 	
-	public MobObject newInstance() {
-		return new MobObject(this);
-	}
-		
 }

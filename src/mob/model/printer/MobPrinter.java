@@ -10,7 +10,8 @@ import mob.model.MobAssign;
 import mob.model.MobBinaryMessage;
 import mob.model.MobEntity;
 import mob.model.MobKeywordMessage;
-import mob.model.MobObject;
+import mob.model.MobParameterList;
+import mob.model.MobQuoted;
 import mob.model.MobReturn;
 import mob.model.MobSequence;
 import mob.model.MobUnaryMessage;
@@ -137,27 +138,7 @@ public class MobPrinter implements MobVisitor {
 		MobVisitor.super.visitString(mobString);
 		this.write(mobString.rawValue());
 	}
-/*
-	@Override
-	public void visitObject(MobObject mobObject) {
-		MobVisitor.super.visitObject(mobObject);
-		if (this.withIndentation && this.level > 0) {
-			this.write('\n');
-			for (int i = 0; i < level; i++) {
-				this.indent();
-			}
-		}
-		this.write('(');
-		this.write(' ');
-		if (mobObject.hasChildren()) {			
-			this.level++;
-			this.forEachSepBy(mobObject.children(), s -> s.accept(this), this::space);
-			this.level--;
-		}
-		this.write(' ');
-		this.write(')');
-	}
-*/
+
 	@Override
 	public void visitSymbol(MobSymbol mobSymbol) {
 		MobVisitor.super.visitSymbol(mobSymbol);
@@ -167,15 +148,19 @@ public class MobPrinter implements MobVisitor {
 	@Override
 	public void visitAssign(MobAssign mobAssign) {
 		MobVisitor.super.visitAssign(mobAssign);
-		this.write('(');
-		this.write(' ');
+		if (mobAssign.showParenthesis()) {
+			this.write('(');
+			this.write(' ');
+		}
 		mobAssign.left().accept(this);
 		this.write(' ');
 		this.write(":=");
 		this.write(' ');
 		mobAssign.right().accept(this);
-		this.write(' ');
-		this.write(')');
+		if (mobAssign.showParenthesis()) {
+			this.write(' ');
+			this.write(')');
+		}
 	}
 
 	@Override
@@ -199,26 +184,36 @@ public class MobPrinter implements MobVisitor {
 	@Override
 	public void visitReturn(MobReturn mobReturn) {
 		MobVisitor.super.visitReturn(mobReturn);
-		this.write('(');
-		this.write(' ');
+		if (mobReturn.showParenthesis()) {
+			this.write('(');
+			this.write(' ');
+		}
 		this.write("^");
-		this.write(' ');
-		mobReturn.returned().accept(this);
-		this.write(' ');
-		this.write(')');
+		if (mobReturn.returned() != null) {
+			this.write(' ');
+			mobReturn.returned().accept(this);
+		}
+		if (mobReturn.showParenthesis()) {
+			this.write(' ');
+			this.write(')');
+		}
 	}
 
 	@Override
 	public void visitUnaryMessage(MobUnaryMessage mobUnaryMessage) {
 		MobVisitor.super.visitUnaryMessage(mobUnaryMessage);
 		MobEntity receiver = mobUnaryMessage.receiver();
-		this.write('(');
-		this.write(' ');
+		if (mobUnaryMessage.showParenthesis()) {
+			this.write('(');
+			this.write(' ');
+		}
 		receiver.accept(this);
 		this.write(' ');
 		this.write(mobUnaryMessage.keyword());
-		this.write(' ');
-		this.write(')');
+		if (mobUnaryMessage.showParenthesis()) {
+			this.write(' ');
+			this.write(')');
+		}
 	}
 
 	@Override
@@ -226,23 +221,29 @@ public class MobPrinter implements MobVisitor {
 		MobVisitor.super.visitBinaryMessage(mobBinaryMessage);
 		MobEntity receiver = mobBinaryMessage.receiver();
 		MobEntity arg = mobBinaryMessage.argument();
-		this.write('(');
-		this.write(' ');
+		if (mobBinaryMessage.showParenthesis()) {
+			this.write('(');
+			this.write(' ');
+		}
 		receiver.accept(this);
 		this.write(' ');
 		this.write(mobBinaryMessage.operator());
 		this.write(' ');
 		arg.accept(this);
-		this.write(' ');
-		this.write(')');
+		if (mobBinaryMessage.showParenthesis()) {
+			this.write(' ');
+			this.write(')');
+		}
 	}
 
 	@Override
 	public void visitKeywordMessage(MobKeywordMessage mobKeywordMessage) {
 		MobVisitor.super.visitKeywordMessage(mobKeywordMessage);
 		MobEntity receiver = mobKeywordMessage.receiver();
-		this.write('(');
-		this.write(' ');
+		if (mobKeywordMessage.showParenthesis()) {
+			this.write('(');
+			this.write(' ');
+		}
 		receiver.accept(this);
 		this.write(' ');
 		int idx = 0;
@@ -250,9 +251,14 @@ public class MobPrinter implements MobVisitor {
 			this.write(kw);
 			this.write(' ');
 			mobKeywordMessage.arguments()[idx++].accept(this);
-			this.write(' ');
+			if (idx < mobKeywordMessage.keywords().length) {
+				this.write(' ');
+			}
 		}
-		this.write(')');
+		if (mobKeywordMessage.showParenthesis()) {
+			this.write(' ');
+			this.write(')');
+		}
 	}
 
 	@Override
@@ -270,24 +276,36 @@ public class MobPrinter implements MobVisitor {
 	@Override
 	public void visitUnit(MobUnit mobUnit) {
 		MobVisitor.super.visitUnit(mobUnit);
+		this.write('[');
+		if (mobUnit.hasParameters()) {
+			this.write(' ');
+			mobUnit.plist().accept(this);
+		}
+		if (!mobUnit.code().isEmpty()) {
+			this.write(' ');
+			for (MobEntity e : mobUnit.code())
+				e.accept(this);
+		}
+		this.write(" ]");
+	}
+
+	@Override
+	public void visitQuoted(MobQuoted mobQuoted) {
+		MobVisitor.super.visitQuoted(mobQuoted);
 		this.write('\'');
-		if (!mobUnit.hasArguments()) {
-			mobUnit.contents().accept(this);
-			return;
+		mobQuoted.entity().accept(this);
+	}
+
+	@Override
+	public void visitParameterList(MobParameterList mobParameterList) {
+		MobVisitor.super.visitParameterList(mobParameterList);
+		this.write('{');
+		this.write(' ');
+		for (int i = 0; i < mobParameterList.size(); i++) {
+			this.write(mobParameterList.get(i));
+			this.write(' ');
 		}
-		this.write('(');
-		for (String a : mobUnit.arguments()) {
-			this.write(" :");
-			this.write(a);
-		}
-		this.write(" | ");
-		MobSequence sub = (MobSequence) mobUnit.contents();
-		for (MobEntity e : sub.children()) {
-			System.out.println(e);
-			e.accept(this);
-		}
-		this.write(" )");
+		this.write('}');
 	}
 	
-
 }

@@ -1,7 +1,5 @@
 package mob.model;
 
-import java.util.List;
-
 public class MobAssign extends MobEntity {
 	MobObject left;
 	MobEntity right;

@@ -13,7 +13,8 @@ public class MobTrueDef extends MobBoolDef {
 		this.addMethod(new MobMethod("ifTrue:") {
 			public void run(MobContext ctx, MobEntity receiver) {
 				MobUnit trueArg = (MobUnit) ctx.pop();
-				trueArg.contents().accept(ctx.interpreter());
+				for (MobEntity e : trueArg.code())
+					e.accept(ctx.interpreter());
 			}
 		});
 		this.addMethod(new MobMethod("ifFalse:") {
@@ -26,14 +27,16 @@ public class MobTrueDef extends MobBoolDef {
 			public void run(MobContext ctx, MobEntity receiver) {
 				MobUnit trueArg = (MobUnit) ctx.pop();
 				ctx.pop();
-				trueArg.contents().accept(ctx.interpreter());
+				for (MobEntity e : trueArg.code())
+					e.accept(ctx.interpreter());
 			}
 		});
 		this.addMethod(new MobMethod("ifTrue:ifFalse:") {
 			public void run(MobContext ctx, MobEntity receiver) {
 				ctx.pop();
 				MobUnit trueArg = (MobUnit) ctx.pop();
-				trueArg.contents().accept(ctx.interpreter());
+				for (MobEntity e : trueArg.code())
+					e.accept(ctx.interpreter());
 			}
 		});
 

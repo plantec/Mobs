@@ -13,7 +13,8 @@ public class MobFalseDef extends MobBoolDef {
 		this.addMethod(new MobMethod("ifFalse:") {
 			public void run(MobContext ctx, MobEntity receiver) {
 				MobUnit falseArg = (MobUnit) ctx.pop();
-				falseArg.contents().accept(ctx.interpreter());
+				for (MobEntity e : falseArg.code())
+					e.accept(ctx.interpreter());
 			}
 		});
 		this.addMethod(new MobMethod("ifTrue:") {
@@ -22,18 +23,20 @@ public class MobFalseDef extends MobBoolDef {
 				ctx.push(receiver);
 			}
 		});
-		this.addMethod(new MobMethod("ifFalse:ifTrue:") {
-			public void run(MobContext ctx, MobEntity receiver) {
-				ctx.pop();
-				MobUnit falseArg = (MobUnit) ctx.pop();
-				falseArg.contents().accept(ctx.interpreter());
-			}
-		});
 		this.addMethod(new MobMethod("ifTrue:ifFalse:") {
 			public void run(MobContext ctx, MobEntity receiver) {
 				MobUnit falseArg = (MobUnit) ctx.pop();
 				ctx.pop();
-				falseArg.contents().accept(ctx.interpreter());
+				for (MobEntity e : falseArg.code())
+					e.accept(ctx.interpreter());
+			}
+		});
+		this.addMethod(new MobMethod("ifFalse:ifTrue:") {
+			public void run(MobContext ctx, MobEntity receiver) {
+				ctx.pop();
+				MobUnit falseArg = (MobUnit) ctx.pop();
+				for (MobEntity e : falseArg.code())
+					e.accept(ctx.interpreter());
 			}
 		});
 

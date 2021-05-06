@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mob.sinterpreter.MobContext;
-import mob.sinterpreter.MobEnvironment;
 
 public class MobUnitDef extends MobObjectDef {
 
@@ -12,17 +11,21 @@ public class MobUnitDef extends MobObjectDef {
 		this.addMethod(new MobMethod("value") {
 			public void run(MobContext ctx, MobEntity receiver) {
 				MobUnit unit = (MobUnit) receiver;
-				unit.contents().accept(ctx.interpreter());
+				for (MobEntity e : unit.code())
+					e.accept(ctx.interpreter());
 			}
 		});
+		
 		this.addMethod(new MobMethod("value:") {
 			public void run(MobContext ctx, MobEntity receiver) {
 				MobUnit unit = (MobUnit) receiver;
 				MobEntity arg = ctx.pop();
 				List<MobEntity> argList = new ArrayList<>();
 				argList.add(arg);
-				if (! (unit.arguments().size() != argList.size()) ) {
-					throw new Error(unit.arguments().size() + " intended formal arguments but "+ argList.size() +" arguments actually passed");
+				if (!unit.hasParameters()) 
+					throw new Error("0 intended formal parameters but "+ argList.size() +" arguments actually passed");
+				if (! (unit.plist().size() != argList.size()) ) {
+					throw new Error(unit.plist().size() + " intended formal parameters but "+ argList.size() +" arguments actually passed");
 				}
 				unit.accept(ctx.interpreter());
 			}
@@ -31,10 +34,6 @@ public class MobUnitDef extends MobObjectDef {
 
 	public MobUnit newInstance() {
 		return new MobUnit(this);
-	}
-
-	public MobUnit newInstance(MobEnvironment env, MobEntity contents) {	
-		return contents.asUnit(env);
 	}
 
 }

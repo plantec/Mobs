@@ -37,9 +37,6 @@ public interface MobVisitor {
 	default void visitVarDecl(MobVarDecl mobVarDecl) {
 	}
 
-	default void visitObject(MobObject mobObject) {
-	}
-
 	default void visitUnaryMessage(MobUnaryMessage mobUnaryMessage) {
 	}
 
@@ -56,5 +53,11 @@ public interface MobVisitor {
 	}
 
 	default void visitUnit(MobUnit mobUnit) {
+	}
+
+	default void visitQuoted(MobQuoted mobQuoted) {
+	}
+
+	default void visitParameterList(MobParameterList mobParameterList) {
 	}
 }

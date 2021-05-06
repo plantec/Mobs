@@ -79,8 +79,8 @@ public class MobEnvironment {
 	public MobNil newNil() {
 		return this.nilDef.newInstance();
 	}
-	public MobUnit newUnit(MobEntity contents) {
-		return this.unitDef.newInstance(this, contents);
+	public MobUnit newUnit() {
+		return this.unitDef.newInstance();
 	}
 	
 	public MobSequence newSequence(List<MobEntity> contents) {

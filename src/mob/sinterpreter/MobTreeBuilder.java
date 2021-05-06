@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 
 import mob.model.MobAssign;
@@ -11,9 +12,12 @@ import mob.model.MobBinaryMessage;
 import mob.model.MobEntity;
 import mob.model.MobKeywordMessage;
 import mob.model.MobObject;
+import mob.model.MobParameterList;
+import mob.model.MobQuoted;
 import mob.model.MobReturn;
 import mob.model.MobSequence;
 import mob.model.MobUnaryMessage;
+import mob.model.MobUnit;
 import mob.model.MobVarDecl;
 import mob.model.primitives.MobSymbol;
 import stree.parser.SNode;
@@ -21,7 +25,7 @@ import stree.parser.SParser;
 import stree.parser.SVisitor;
 
 public class MobTreeBuilder implements SVisitor {
-	private ArrayDeque<MobEntity> stk;
+	private Deque<MobEntity> stk;
 	MobEnvironment env;
 
 	public MobTreeBuilder(MobEnvironment env) {
@@ -62,28 +66,70 @@ public class MobTreeBuilder implements SVisitor {
 	MobEntity quoted(MobEntity e, int q) {
 		if (q == 0)
 			return e;
-		if (e instanceof MobSequence) {
-			MobSequence seq = (MobSequence) e;
-			System.out.println(seq.children());
-		}
-		return quoted(env.newUnit(e), q - 1);
+		return quoted(new MobQuoted(e), q - 1);
 	}
 
+	private Boolean foundParameterList(SNode node, ArrayList<MobEntity> children) {
+		if (node.openTag() != '{') return false;
+		MobParameterList plist = new MobParameterList();
+		for (MobEntity e : children) 
+			plist.add(e.mobString());
+		stk.push(plist);
+		return true;
+	}
+	
+	private Boolean foundUnit(SNode node, ArrayList<MobEntity> children) {
+		if (node.openTag() != '[') return false;
+		MobUnit unit = env.newUnit();
+		if (children.size() == 0) {
+			stk.push(quoted(unit, node.quote()));
+			return true;
+		}
+		int start = 0;
+		if (children.get(0) instanceof MobParameterList) {
+			unit.setPlist((MobParameterList) children.get(0));
+			start = 1;
+		}
+		ArrayList<MobEntity> subs = new ArrayList<>();
+		for (int i = start; i < children.size(); i++) 
+			subs.add(children.get(i));
+		
+		if (foundReturn(subs, 0))
+			unit.addCode(stk.pop().withoutParenthesis());
+		else if (foundAssign(subs, 0))
+			unit.addCode(stk.pop().withoutParenthesis());
+		else if (foundMessageSend(subs, 0))
+			unit.addCode(stk.pop().withoutParenthesis());
+		else {
+			for (MobEntity e : subs)
+				unit.addCode(e);
+		}
+		stk.push(quoted(unit, node.quote()));
+		return true;
+	}
+	
 	private Boolean foundReturn(ArrayList<MobEntity> children, int quote) {
-		if (children.size() != 2)
-			return false;
+		if (children.size() < 1) return false;
 		if (!(children.get(0) instanceof MobSymbol))
 			return false;
 		if (!(((MobSymbol) children.get(0)).is("^")))
 			return false;
+		
+		ArrayList<MobEntity> subs = new ArrayList<>();
+		for (int i = 1; i < children.size(); i++) 
+			subs.add(children.get(i));
+		
 		MobReturn ret = new MobReturn();
-		ret.setReturned(children.get(1));
+		if (foundMessageSend(subs, 0))
+			ret.setReturned(stk.pop().withoutParenthesis());
+		else if (children.size() > 1)
+			ret.setReturned(children.get(1));
 		stk.push(quoted(ret, quote));
 		return true;
 	}
 
 	private Boolean foundAssign(ArrayList<MobEntity> children, int quote) {
-		if (children.size() != 3)
+		if (children.size() < 3)
 			return false;
 		if (!(children.get(1) instanceof MobSymbol))
 			return false;
@@ -91,7 +137,16 @@ public class MobTreeBuilder implements SVisitor {
 			return false;
 		MobAssign assign = new MobAssign();
 		assign.setLeft((MobObject) children.get(0));
-		assign.setRight(children.get(2));
+		
+		ArrayList<MobEntity> subs = new ArrayList<>();
+		for (int i = 2; i < children.size(); i++) 
+			subs.add(children.get(i));
+		if (foundMessageSend(subs, 0))
+			assign.setRight(stk.pop().withoutParenthesis());
+		else if (foundAssign(subs, 0))
+			assign.setRight(stk.pop().withoutParenthesis());
+		else 
+			assign.setRight(children.get(2));
 		stk.push(quoted(assign, quote));
 		return true;
 	}
@@ -109,10 +164,18 @@ public class MobTreeBuilder implements SVisitor {
 			return false;
 		MobVarDecl decl = new MobVarDecl();
 		decl.setName(symb1.rawValue());
-		if (children.size() == 4 && children.get(2) instanceof MobSymbol) {
+		if (children.size() >= 4 && children.get(2) instanceof MobSymbol) {
 			MobSymbol symb2 = (MobSymbol) children.get(2);
 			if (symb2.is(":=")) {
-				decl.setInitialValue(children.get(3));
+				ArrayList<MobEntity> subs = new ArrayList<>();
+				for (int i = 3; i < children.size(); i++) 
+					subs.add(children.get(i));
+				if (foundMessageSend(subs, 0))
+					decl.setInitialValue(stk.pop().withoutParenthesis());
+				else if (foundAssign(subs, 0))
+					decl.setInitialValue(stk.pop().withoutParenthesis());
+				else 
+					decl.setInitialValue(children.get(3));
 			}
 		}
 		stk.push(quoted(decl, quote));
@@ -171,11 +234,15 @@ public class MobTreeBuilder implements SVisitor {
 			s.accept(this);
 			children.add(stk.pop());
 		});
+		if (foundUnit(node, children))
+			return;
+		if (foundParameterList(node, children))
+			return;
+		if (foundDecl(children, node.quote()))
+			return;
 		if (foundReturn(children, node.quote()))
 			return;
 		if (foundAssign(children, node.quote()))
-			return;
-		if (foundDecl(children, node.quote()))
 			return;
 		if (foundMessageSend(children, node.quote()))
 			return;

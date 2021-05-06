@@ -1,7 +1,5 @@
 package mob.model;
 
-import java.util.List;
-
 public class MobBinaryMessage extends MobMessageSend {
 	protected String operator;
 	protected MobEntity argument;

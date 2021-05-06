@@ -1,15 +1,24 @@
 package mob.model;
 
 import mob.sinterpreter.MobContext;
-import mob.sinterpreter.MobEnvironment;
 
 public abstract class MobEntity {
 	private MobEntity parent;
+	Boolean showParenthesis = true;
 	
 	public MobEntity parent() {
 		return this.parent;
 	}
+	
+	public MobEntity withoutParenthesis() {
+		this.showParenthesis = false;
+		return this;
+	}
 
+	public Boolean showParenthesis() {
+		return this.showParenthesis;
+	}
+	
 	public void setParent(MobEntity parent) {
 		this.parent = parent;
 	}
@@ -26,11 +35,4 @@ public abstract class MobEntity {
 	
 	public void run (MobContext ctx, String signature) {}
 	
-	public MobUnit asUnit(MobEnvironment env) {
-		return new MobUnit(env.unitDef(), this);
-	}
-	public String asUnitArg() {
-		return null;
-	}
-
 }
