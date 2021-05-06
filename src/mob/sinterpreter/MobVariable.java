@@ -11,6 +11,10 @@ public class MobVariable {
 		this.name = name;
 	}
 
+	public MobVariable(String name) {
+		this(name, null);
+	}
+
 	public MobVariable(MobEntity value) {
 		this(null, value);
 	}

@@ -1,9 +1,12 @@
 package mob.sinterpreter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import mob.model.MobEntity;
+import mob.model.MobParameterList;
+import mob.model.MobUnit;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
@@ -15,16 +18,32 @@ import mob.model.primitives.MobTrue;
 public class MobContext {
 	private MobContext parent;
 	private HashMap<String, MobVariable> variables;
-	
+	private List<MobVariable> parameters;
+
 	public MobContext(MobContext parent) {
 		this.parent = parent;
 		this.variables = new HashMap<>();
+		this.parameters = new ArrayList<>();
+	}
+
+	public MobContext(MobContext parent, MobUnit unit) {
+		this(parent);
+		MobParameterList pl = unit.plist();
+		if (pl != null) {
+			for (int i = 0; i < pl.size(); i++) {
+				parameters.add(new MobVariable(pl.get(i)));
+			}
+		}
+	}
+	
+	public void setParameterValue(int idx, MobEntity value) {
+		this.parameters.get(idx).setValue(value);
 	}
 
 	public MobContext parent() {
 		return this.parent;
 	}
-	
+
 	public MobInterpreter interpreter() {
 		return this.parent().interpreter();
 	}
@@ -46,16 +65,25 @@ public class MobContext {
 	}
 
 	public MobVariable getVariableByName(String name) {
-		return this.variables.get(name);
+		MobVariable v = this.variables.get(name);
+		if (v != null)
+			return v;
+		for (MobVariable p : this.parameters) {
+			if (p.name().equals(name))
+				return p;
+		}
+		return null;
 	}
 
 	public MobVariable lookupVariableByName(String name) {
 		MobVariable v = this.getVariableByName(name);
 		if (v != null)
 			return v;
+		if (this.parent == null)
+			return null;
 		return this.parent.lookupVariableByName(name);
 	}
-	
+
 	public void clear() {
 		this.variables.clear();
 	}
@@ -63,7 +91,7 @@ public class MobContext {
 	public List<MobEntity> result() {
 		return this.parent.result();
 	}
-	
+
 	public void push(MobEntity exp) {
 		this.parent.push(exp);
 	}
@@ -76,7 +104,6 @@ public class MobContext {
 		return this.parent.environment();
 	}
 
-	
 	public MobFalse newFalse() {
 		return this.parent.newFalse();
 	}
@@ -104,6 +131,5 @@ public class MobContext {
 	public MobNil newNil() {
 		return this.parent.newNil();
 	}
-	
 
 }

@@ -5,10 +5,12 @@ import java.util.List;
 
 import mob.model.MobEntity;
 import mob.model.MobKeywordMessage;
+import mob.model.MobQuoted;
 import mob.model.MobReturn;
 import mob.model.MobSequence;
 import mob.model.MobUnaryMessage;
 import mob.model.MobUnit;
+import mob.model.MobVarDecl;
 import mob.model.MobAssign;
 import mob.model.MobBinaryMessage;
 import mob.model.MobVisitor;
@@ -51,10 +53,17 @@ public class MobInterpreter implements MobVisitor {
 		return this.run(n);
 	}
 	
-	private void pushContext() {
+	public MobContext topContext() {
+		return this.context;
+	}
+
+	public void pushContext(MobUnit unit) {
+		this.context = new MobContext(this.context, unit);
+	}
+	public void pushContext() {
 		this.context = new MobContext(this.context);
 	}
-	private void popContext() {
+	public void popContext() {
 		this.context = this.context.parent();
 	}
 	
@@ -93,13 +102,21 @@ public class MobInterpreter implements MobVisitor {
 	@Override
 	public void visitSymbol(MobSymbol mobSymbol) {
 		MobVisitor.super.visitSymbol(mobSymbol);
-		this.push(mobSymbol);
+		MobVariable v = context.lookupVariableByName(mobSymbol.rawValue());
+		if (v == null) {
+			throw new Error("Undeclared variable '" + mobSymbol.rawValue() + "'");
+		}
+		this.push(v.value());
 	}
 
 	@Override
 	public void visitAssign(MobAssign mobAssign) {
 		MobVisitor.super.visitAssign(mobAssign);
-		this.push(mobAssign.left());
+		mobAssign.right().accept(this);
+		MobSymbol n = (MobSymbol) mobAssign.left();
+		MobVariable var = context.lookupVariableByName(n.rawValue());
+		var.setValue(this.pop());
+		this.push(var.value());
 	}
 	
 	@Override
@@ -137,7 +154,8 @@ public class MobInterpreter implements MobVisitor {
 		MobEntity arg = mobBinaryMessage.argument();
 		arg.accept(this);
 		receiver.accept(this);
-		this.pop().run(this.context, name);
+		MobEntity e = this.pop();
+		e.run(this.context, name);
 	}
 
 	@Override
@@ -161,9 +179,29 @@ public class MobInterpreter implements MobVisitor {
 
 	@Override
 	public void visitReturn(MobReturn mobReturn) {
-		// TODO Auto-generated method stub
 		MobVisitor.super.visitReturn(mobReturn);
 	}
+
+	@Override
+	public void visitVarDecl(MobVarDecl mobVarDecl) {
+		MobVisitor.super.visitVarDecl(mobVarDecl);
+		MobEntity val;
+		if (mobVarDecl.initialValue() == null) {
+			val = context.newNil();
+		} else {
+			mobVarDecl.initialValue().accept(this);
+			val = this.pop();
+		}
+		MobVariable var = new MobVariable(mobVarDecl.name(), val);
+		context.addVariable(var);
+	}
+
+	@Override
+	public void visitQuoted(MobQuoted mobQuoted) {
+		MobVisitor.super.visitQuoted(mobQuoted);
+		this.push(mobQuoted);
+	}
+
 	
 	
 	

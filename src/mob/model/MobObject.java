@@ -15,6 +15,9 @@ public abstract class MobObject extends MobEntity  {
 		
 	public void run (MobContext ctx, String signature) {
 		MobMethod m = this.def.methodNamed(signature);
+		if (m == null) {
+			throw new Error(this.mobString() + " does not understand '" + signature + "'");
+		}
 		m.run(ctx, this);
 	}	
 }
