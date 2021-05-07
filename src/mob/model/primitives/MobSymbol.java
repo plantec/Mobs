@@ -1,21 +1,16 @@
 package mob.model.primitives;
 
-import mob.model.MobObjectDef;
-import mob.model.MobVisitor;
+import mob.ast.MobAstVisitor;
 
 public class MobSymbol extends MobPrimitive<String> {
 
-	public MobSymbol(MobObjectDef def, String mob) {
+	public MobSymbol(MobObjectClass def, String mob) {
 		super(def, mob);
 	}
 
 	@Override
-	public void accept(MobVisitor visitor) {
+	public void accept(MobAstVisitor visitor) {
 		visitor.visitSymbol(this);
-	}
-	
-	public String toString() {
-		return "Symbol("+this.rawValue().toString()+")";
 	}
 	
 }

@@ -7,25 +7,24 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 
-import mob.model.MobAssign;
-import mob.model.MobBinaryMessage;
-import mob.model.MobEntity;
-import mob.model.MobKeywordMessage;
-import mob.model.MobObject;
-import mob.model.MobParameterList;
-import mob.model.MobQuoted;
-import mob.model.MobReturn;
-import mob.model.MobSequence;
-import mob.model.MobUnaryMessage;
-import mob.model.MobUnit;
-import mob.model.MobVarDecl;
+import mob.ast.MobAssign;
+import mob.ast.MobAstElement;
+import mob.ast.MobBinaryMessage;
+import mob.ast.MobKeywordMessage;
+import mob.ast.MobQuoted;
+import mob.ast.MobReturn;
+import mob.ast.MobUnaryMessage;
+import mob.ast.MobVarDecl;
+import mob.model.primitives.MobObject;
+import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobSymbol;
+import mob.model.primitives.MobUnit;
 import stree.parser.SNode;
 import stree.parser.SParser;
 import stree.parser.SVisitor;
 
 public class MobTreeBuilder implements SVisitor {
-	private Deque<MobEntity> stk;
+	private Deque<MobAstElement> stk;
 	MobEnvironment env;
 
 	public MobTreeBuilder(MobEnvironment env) {
@@ -37,14 +36,14 @@ public class MobTreeBuilder implements SVisitor {
 		this.stk.clear();
 	}
 
-	public List<MobEntity> result() {
-		List<MobEntity> result = new ArrayList<>();
+	public List<MobAstElement> result() {
+		List<MobAstElement> result = new ArrayList<>();
 		this.stk.forEach(s -> result.add(s));
 		Collections.reverse(result);
 		return result;
 	}
 
-	public List<MobEntity> run(List<SNode> sexps) {
+	public List<MobAstElement> run(List<SNode> sexps) {
 		this.reset();
 		for (SNode n : sexps) {
 			n.accept(this);
@@ -52,7 +51,7 @@ public class MobTreeBuilder implements SVisitor {
 		return this.result();
 	}
 
-	public List<MobEntity> run(String input) {
+	public List<MobAstElement> run(String input) {
 		SParser parser = new SParser();
 		List<SNode> n = null;
 		try {
@@ -62,73 +61,88 @@ public class MobTreeBuilder implements SVisitor {
 		}
 		return this.run(n);
 	}
-	
-	MobEntity quoted(MobEntity e, int q) {
+
+	MobAstElement quoted(MobAstElement e, int q) {
 		if (q == 0)
 			return e;
 		return quoted(new MobQuoted(e), q - 1);
 	}
 
-	private Boolean foundParameterList(SNode node, ArrayList<MobEntity> children) {
-		if (node.openTag() != '{') return false;
-		MobParameterList plist = new MobParameterList();
-		for (MobEntity e : children) 
-			plist.add(e.mobString());
-		stk.push(plist);
+	private Boolean foundParameters(SNode node, ArrayList<MobAstElement> children) {
+		if (node.openTag() != '{')
+			return false;
+		MobSequence parameters = this.env.newSequence(children);
+		stk.push(parameters);
 		return true;
 	}
+
+	private int parametersEnd(ArrayList<MobAstElement> children) {
+		for (int pos = 0; pos < children.size(); pos++) {
+			MobAstElement c = children.get(pos);
+			if (c.is("|")) {
+				return pos;
+			}
+		}
+		return -1;
+	}
 	
-	private Boolean foundUnit(SNode node, ArrayList<MobEntity> children) {
-		if (node.openTag() != '[') return false;
+	private Boolean foundUnit(SNode node, ArrayList<MobAstElement> children) {
+		if (node.openTag() != '[')
+			return false;
 		MobUnit unit = env.newUnit();
 		if (children.size() == 0) {
 			stk.push(quoted(unit, node.quote()));
 			return true;
 		}
 		int start = 0;
-		if (children.get(0) instanceof MobParameterList) {
-			unit.setPlist((MobParameterList) children.get(0));
-			start = 1;
+		int mark = this.parametersEnd(children);
+		if (mark > -1) {
+			start = mark + 1;
+			for (int i = 0; i < mark; i++) {
+				MobSymbol s = (MobSymbol) children.get(i);
+				unit.addParameter(s.rawValue());
+			}	
 		}
-		ArrayList<MobEntity> subs = new ArrayList<>();
-		for (int i = start; i < children.size(); i++) 
+		ArrayList<MobAstElement> subs = new ArrayList<>();
+		for (int i = start; i < children.size(); i++)
 			subs.add(children.get(i));
-		
+
 		if (foundReturn(subs, 0))
-			unit.addCode(stk.pop().withoutParenthesis());
+			unit.addCode(stk.pop());
 		else if (foundAssign(subs, 0))
-			unit.addCode(stk.pop().withoutParenthesis());
+			unit.addCode(stk.pop());
 		else if (foundMessageSend(subs, 0))
-			unit.addCode(stk.pop().withoutParenthesis());
+			unit.addCode(stk.pop());
 		else {
-			for (MobEntity e : subs)
+			for (MobAstElement e : subs)
 				unit.addCode(e);
 		}
 		stk.push(quoted(unit, node.quote()));
 		return true;
 	}
-	
-	private Boolean foundReturn(ArrayList<MobEntity> children, int quote) {
-		if (children.size() < 1) return false;
+
+	private Boolean foundReturn(ArrayList<MobAstElement> children, int quote) {
+		if (children.size() < 1)
+			return false;
 		if (!(children.get(0) instanceof MobSymbol))
 			return false;
 		if (!(((MobSymbol) children.get(0)).is("^")))
 			return false;
-		
-		ArrayList<MobEntity> subs = new ArrayList<>();
-		for (int i = 1; i < children.size(); i++) 
+
+		ArrayList<MobAstElement> subs = new ArrayList<>();
+		for (int i = 1; i < children.size(); i++)
 			subs.add(children.get(i));
-		
+
 		MobReturn ret = new MobReturn();
 		if (foundMessageSend(subs, 0))
-			ret.setReturned(stk.pop().withoutParenthesis());
+			ret.setReturned(stk.pop());
 		else if (children.size() > 1)
 			ret.setReturned(children.get(1));
 		stk.push(quoted(ret, quote));
 		return true;
 	}
 
-	private Boolean foundAssign(ArrayList<MobEntity> children, int quote) {
+	private Boolean foundAssign(ArrayList<MobAstElement> children, int quote) {
 		if (children.size() < 3)
 			return false;
 		if (!(children.get(1) instanceof MobSymbol))
@@ -137,21 +151,21 @@ public class MobTreeBuilder implements SVisitor {
 			return false;
 		MobAssign assign = new MobAssign();
 		assign.setLeft((MobObject) children.get(0));
-		
-		ArrayList<MobEntity> subs = new ArrayList<>();
-		for (int i = 2; i < children.size(); i++) 
+
+		ArrayList<MobAstElement> subs = new ArrayList<>();
+		for (int i = 2; i < children.size(); i++)
 			subs.add(children.get(i));
 		if (foundMessageSend(subs, 0))
-			assign.setRight(stk.pop().withoutParenthesis());
+			assign.setRight(stk.pop());
 		else if (foundAssign(subs, 0))
-			assign.setRight(stk.pop().withoutParenthesis());
-		else 
+			assign.setRight(stk.pop());
+		else
 			assign.setRight(children.get(2));
 		stk.push(quoted(assign, quote));
 		return true;
 	}
 
-	private Boolean foundDecl(ArrayList<MobEntity> children, int quote) {
+	private Boolean foundDecl(ArrayList<MobAstElement> children, int quote) {
 		if (children.size() < 2)
 			return false;
 		if (!(children.get(0) instanceof MobSymbol))
@@ -167,22 +181,22 @@ public class MobTreeBuilder implements SVisitor {
 		if (children.size() >= 4 && children.get(2) instanceof MobSymbol) {
 			MobSymbol symb2 = (MobSymbol) children.get(2);
 			if (symb2.is(":=")) {
-				ArrayList<MobEntity> subs = new ArrayList<>();
-				for (int i = 3; i < children.size(); i++) 
+				ArrayList<MobAstElement> subs = new ArrayList<>();
+				for (int i = 3; i < children.size(); i++)
 					subs.add(children.get(i));
 				if (foundMessageSend(subs, 0))
-					decl.setInitialValue(stk.pop().withoutParenthesis());
+					decl.setInitialValue(stk.pop());
 				else if (foundAssign(subs, 0))
-					decl.setInitialValue(stk.pop().withoutParenthesis());
-				else 
+					decl.setInitialValue(stk.pop());
+				else
 					decl.setInitialValue(children.get(3));
 			}
 		}
 		stk.push(quoted(decl, quote));
 		return true;
 	}
-	
-	private Boolean foundMessageSend(ArrayList<MobEntity> children, int quote) {
+
+	private Boolean foundMessageSend(ArrayList<MobAstElement> children, int quote) {
 		if (children.size() < 2)
 			return false;
 		if (!(children.get(1) instanceof MobSymbol))
@@ -199,13 +213,13 @@ public class MobTreeBuilder implements SVisitor {
 			String op = s.rawValue();
 			if (op.charAt(op.length() - 1) == ':') {
 				MobKeywordMessage keyword = new MobKeywordMessage();
-				keyword.add(((MobSymbol) children.get(1)).rawValue(), children.get(2));
+				keyword.add(((MobSymbol) children.get(1)), children.get(2));
 				keyword.setReceiver(children.get(0));
 				stk.push(quoted(keyword, quote));
 				return true;
 			}
 			MobBinaryMessage binary = new MobBinaryMessage();
-			binary.setOperator(((MobSymbol) children.get(1)).rawValue());
+			binary.setOperator(((MobSymbol) children.get(1)));
 			binary.setArgument(children.get(2));
 			binary.setReceiver(children.get(0));
 			stk.push(quoted(binary, quote));
@@ -214,11 +228,12 @@ public class MobTreeBuilder implements SVisitor {
 		if (children.size() > 3) {
 			for (int i = 1; i < children.size(); i += 2) {
 				String kw = ((MobSymbol) children.get(i)).rawValue();
-				if (kw.charAt(kw.length() - 1) != ':') return false;
+				if (kw.charAt(kw.length() - 1) != ':')
+					return false;
 			}
 			MobKeywordMessage keyword = new MobKeywordMessage();
 			for (int i = 1; i < children.size(); i += 2) {
-				keyword.add(((MobSymbol) children.get(i)).rawValue(), children.get(i + 1));
+				keyword.add(((MobSymbol) children.get(i)), children.get(i + 1));
 			}
 			keyword.setReceiver(children.get(0));
 			stk.push(quoted(keyword, quote));
@@ -229,14 +244,14 @@ public class MobTreeBuilder implements SVisitor {
 
 	@Override
 	public void visitNode(SNode node) {
-		ArrayList<MobEntity> children = new ArrayList<>();
+		ArrayList<MobAstElement> children = new ArrayList<>();
 		node.children().forEach(s -> {
 			s.accept(this);
 			children.add(stk.pop());
 		});
 		if (foundUnit(node, children))
 			return;
-		if (foundParameterList(node, children))
+		if (foundParameters(node, children))
 			return;
 		if (foundDecl(children, node.quote()))
 			return;
@@ -254,44 +269,38 @@ public class MobTreeBuilder implements SVisitor {
 	public void visitLeaf(SNode node) {
 		String contents = node.parsedString();
 		MobObject exp;
-		if (contents.equals("true"))
-			exp = this.env.newTrue();
-		else if (contents.equals("false"))
-			exp = this.env.newFalse();
-		else if (contents.equals("nil"))
-			exp = this.env.newNil();
-		else
-			switch (contents.charAt(0)) {
-			case '"':
-				exp = this.env.newString(contents.substring(1, contents.length() - 1));
-				break;
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-			case '+':
-			case '-':
+
+		switch (contents.charAt(0)) {
+		case '"':
+			exp = this.env.newString(contents.substring(1, contents.length() - 1));
+			break;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		case '+':
+		case '-':
+			try {
+				Integer i = Integer.parseInt(contents);
+				exp = this.env.newInteger(i);
+			} catch (NumberFormatException ex) {
 				try {
-					Integer i = Integer.parseInt(contents);
-					exp = this.env.newInteger(i);
-				} catch (NumberFormatException ex) {
-					try {
-						Float f = Float.parseFloat(contents);
-						exp = this.env.newFloat(f);
-					} catch (NumberFormatException ex2) {
-						exp = this.env.newSymbol(contents);
-					}
+					Float f = Float.parseFloat(contents);
+					exp = this.env.newFloat(f);
+				} catch (NumberFormatException ex2) {
+					exp = this.env.newSymbol(contents);
 				}
-				break;
-			default:
-				exp = this.env.newSymbol(contents);
 			}
+			break;
+		default:
+			exp = this.env.newSymbol(contents);
+		}
 		this.stk.push(quoted(exp, node.quote()));
 	}
 }

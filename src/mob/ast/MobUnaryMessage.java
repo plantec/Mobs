@@ -1,6 +1,6 @@
-package mob.model;
+package mob.ast;
 
-public class MobUnaryMessage extends MobMessageSend {
+public class MobUnaryMessage extends MobMessage {
 
 	private String keyword;
 	
@@ -13,7 +13,7 @@ public class MobUnaryMessage extends MobMessageSend {
 	}
 
 	@Override
-	public void accept(MobVisitor visitor) {
+	public void accept(MobAstVisitor visitor) {
 		visitor.visitUnaryMessage(this);
 	}
 

@@ -2,62 +2,79 @@ package mob.sinterpreter;
 
 import java.util.List;
 
-import mob.model.MobEntity;
-import mob.model.MobNullDef;
-import mob.model.MobSequence;
-import mob.model.MobUnit;
-import mob.model.MobUnitDef;
+import mob.ast.MobAstElement;
 import mob.model.primitives.MobFalse;
-import mob.model.primitives.MobFalseDef;
+import mob.model.primitives.MobFalseClass;
 import mob.model.primitives.MobFloat;
-import mob.model.primitives.MobFloatDef;
+import mob.model.primitives.MobFloatClass;
 import mob.model.primitives.MobInteger;
-import mob.model.primitives.MobIntegerDef;
+import mob.model.primitives.MobIntegerClass;
 import mob.model.primitives.MobNil;
-import mob.model.primitives.MobNilDef;
+import mob.model.primitives.MobNilClass;
+import mob.model.primitives.MobObjectClass;
+import mob.model.primitives.MobSequence;
+import mob.model.primitives.MobSequenceClass;
 import mob.model.primitives.MobString;
-import mob.model.primitives.MobStringDef;
+import mob.model.primitives.MobStringClass;
 import mob.model.primitives.MobSymbol;
-import mob.model.primitives.MobSymbolDef;
+import mob.model.primitives.MobSymbolClass;
 import mob.model.primitives.MobTrue;
-import mob.model.primitives.MobTrueDef;
+import mob.model.primitives.MobTrueClass;
+import mob.model.primitives.MobUnit;
+import mob.model.primitives.MobUnitClass;
 
 public class MobEnvironment {
-	private MobFalseDef falseDef;
-	private MobTrueDef trueDef;
-	private MobFloatDef floatDef;
-	private MobIntegerDef integerDef;
-	private MobStringDef stringDef;
-	private MobSymbolDef symbolDef;
-	private MobNilDef nilDef;
-	private MobUnitDef unitDef;
-
+	private MobFalseClass falseDef;
+	private MobTrueClass trueDef;
+	private MobFloatClass floatDef;
+	private MobIntegerClass integerDef;
+	private MobStringClass stringDef;
+	private MobSymbolClass symbolDef;
+	private MobNilClass nilDef;
+	private MobUnitClass unitDef;
+	private MobObjectClass objectDef;
+	private MobObjectClass objectMetaDef;
+	
+	private MobNil nil_;
+	private MobFalse false_;
+	private MobTrue true_;
+	
 	public MobEnvironment() {
-		this.falseDef = new MobFalseDef();
-		this.trueDef = new MobTrueDef();
-		this.floatDef = new MobFloatDef();
-		this.integerDef = new MobIntegerDef();
-		this.stringDef = new MobStringDef();
-		this.symbolDef = new MobSymbolDef();
-		this.nilDef = new MobNilDef();
-		this.unitDef = new MobUnitDef();
+		this.objectMetaDef = new MobObjectClass(null);
+		this.objectMetaDef.setDefinition(this.objectMetaDef);
+		this.objectDef = new MobObjectClass(objectMetaDef);
+		this.floatDef = new MobFloatClass(this.objectDef);
+		this.integerDef = new MobIntegerClass(this.objectDef);
+		this.stringDef = new MobStringClass(this.objectDef);
+		this.symbolDef = new MobSymbolClass(this.objectDef);
+		this.unitDef = new MobUnitClass(this.objectDef);
+		this.nilDef = new MobNilClass(this.objectDef);
+		this.falseDef = new MobFalseClass(this.objectDef);
+		this.trueDef = new MobTrueClass(this.objectDef);
+
+		this.nil_ = this.nilDef.newInstance();
+		this.true_ = this.trueDef.newInstance();
+		this.false_ = this.falseDef.newInstance();
 	}
 	
-	public MobFalseDef falseDef() { return this.falseDef; }
-	public MobTrueDef trueDef() { return this.trueDef; }
-	public MobFloatDef floatDef() { return this.floatDef; }
-	public MobIntegerDef integerDef() { return this.integerDef; }
-	public MobStringDef stringDef() { return this.stringDef; }
-	public MobSymbolDef symbolDef() { return this.symbolDef; }
-	public MobNilDef nilDef() { return this.nilDef; }
-	public MobUnitDef unitDef() { return this.unitDef; }
+	public MobFalseClass falseDef() { return this.falseDef; }
+	public MobTrueClass trueDef() { return this.trueDef; }
+	public MobFloatClass floatDef() { return this.floatDef; }
+	public MobIntegerClass integerDef() { return this.integerDef; }
+	public MobStringClass stringDef() { return this.stringDef; }
+	public MobSymbolClass symbolDef() { return this.symbolDef; }
+	public MobNilClass nilDef() { return this.nilDef; }
+	public MobUnitClass unitDef() { return this.unitDef; }
 
+	public MobNil newNil() {
+		return this.nil_;
+	}
 	public MobFalse newFalse() {
-		return this.falseDef.newInstance();
+		return this.false_;
 	}
 
 	public MobTrue newTrue() {
-		return this.trueDef.newInstance();
+		return this.true_;
 	}
 
 	public MobFloat newFloat(Float p) {
@@ -76,15 +93,12 @@ public class MobEnvironment {
 		return this.symbolDef.newInstance(p);
 	}
 
-	public MobNil newNil() {
-		return this.nilDef.newInstance();
-	}
 	public MobUnit newUnit() {
 		return this.unitDef.newInstance();
 	}
 	
-	public MobSequence newSequence(List<MobEntity> contents) {
-		MobSequence seq = new MobSequence(new MobNullDef());
+	public MobSequence newSequence(List<MobAstElement> contents) {
+		MobSequence seq = new MobSequence(new MobSequenceClass(this.objectDef));
 		seq.addAll(contents);
 		return seq;
 	}

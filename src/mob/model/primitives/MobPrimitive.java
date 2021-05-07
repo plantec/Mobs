@@ -1,13 +1,12 @@
 package mob.model.primitives;
 
-import mob.model.MobObject;
-import mob.model.MobObjectDef;
+import mob.ast.MobAstElement;
 
-public abstract class MobPrimitive<T> extends MobObject {
+public abstract class MobPrimitive<T> extends MobObject implements MobAstElement {
 
 	private T rawValue;
 	
-	public MobPrimitive(MobObjectDef def, T value) {
+	public MobPrimitive(MobObjectClass def, T value) {
 		super(def);
 		this.rawValue = value;
 	}
@@ -20,8 +19,8 @@ public abstract class MobPrimitive<T> extends MobObject {
 		return o.equals(rawValue);
 	}
 	
-	public String mobString() {
-		return rawValue.toString();
+	public String toString() {
+		return this.rawValue().toString();
 	}
 
 }

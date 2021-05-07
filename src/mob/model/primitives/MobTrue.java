@@ -1,16 +1,15 @@
 package mob.model.primitives;
 
-import mob.model.MobObjectDef;
-import mob.model.MobVisitor;
+import mob.ast.MobAstVisitor;
 
-public class MobTrue extends MobBool {
+public class MobTrue extends MobBoolean {
 
-	public MobTrue(MobObjectDef def) {
+	public MobTrue(MobObjectClass def) {
 		super(def, true);
 	}
 
 	@Override
-	public void accept(MobVisitor visitor) {
+	public void accept(MobAstVisitor visitor) {
 			visitor.visitTrue(this);
 	}
 }

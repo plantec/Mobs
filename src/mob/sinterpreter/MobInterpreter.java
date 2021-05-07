@@ -3,46 +3,47 @@ package mob.sinterpreter;
 import java.io.IOException;
 import java.util.List;
 
-import mob.model.MobEntity;
-import mob.model.MobKeywordMessage;
-import mob.model.MobQuoted;
-import mob.model.MobReturn;
-import mob.model.MobSequence;
-import mob.model.MobUnaryMessage;
-import mob.model.MobUnit;
-import mob.model.MobVarDecl;
-import mob.model.MobAssign;
-import mob.model.MobBinaryMessage;
-import mob.model.MobVisitor;
+import mob.ast.MobAssign;
+import mob.ast.MobAstElement;
+import mob.ast.MobAstVisitor;
+import mob.ast.MobBinaryMessage;
+import mob.ast.MobKeywordMessage;
+import mob.ast.MobQuoted;
+import mob.ast.MobReturn;
+import mob.ast.MobUnaryMessage;
+import mob.ast.MobVarDecl;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobNil;
+import mob.model.primitives.MobObject;
+import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobTrue;
+import mob.model.primitives.MobUnit;
 import stree.parser.SNode;
 import stree.parser.SParser;
 
-public class MobInterpreter implements MobVisitor {	
+public class MobInterpreter implements MobAstVisitor {	
 	private MobContext context;
 
 	public MobInterpreter(MobEnvironment env) {
 		this.context = new MobTopContext(env, this);
 	}
 
-	public List<MobEntity> result() {
+	public List<MobAstElement> result() {
 		return this.context.result();
 	}
 
-	public List<MobEntity> run(List<SNode> sexps) {
+	public List<MobAstElement> run(List<SNode> sexps) {
 		this.context = new MobTopContext(this.context.environment(), this);
-		List<MobEntity> progs = new MobTreeBuilder(this.context.environment()).run(sexps);
+		List<MobAstElement> progs = new MobTreeBuilder(this.context.environment()).run(sexps);
 		progs.forEach(e->e.accept(this));
 		return this.result();
 	}
 
-	public List<MobEntity> run(String input) {
+	public List<MobAstElement> run(String input) {
 		SParser parser = new SParser();
 		List<SNode> n = null;
 		try {
@@ -67,41 +68,41 @@ public class MobInterpreter implements MobVisitor {
 		this.context = this.context.parent();
 	}
 	
-	private void push(MobEntity exp) {
+	private void push(MobAstElement exp) {
 		this.context.push(exp);
 	}
 	
-	private MobEntity pop() {
+	private MobAstElement pop() {
 		return this.context.pop();
 	}
 	
 	@Override
 	public void visitTrue(MobTrue mobTrue) {
-		MobVisitor.super.visitTrue(mobTrue);
+		MobAstVisitor.super.visitTrue(mobTrue);
 		this.push(mobTrue);
 	}
 
 	@Override
 	public void visitFalse(MobFalse mobFalse) {
-		MobVisitor.super.visitFalse(mobFalse);
+		MobAstVisitor.super.visitFalse(mobFalse);
 		this.push(mobFalse);
 	}
 
 	@Override
 	public void visitFloat(MobFloat mobFloat) {
-		MobVisitor.super.visitFloat(mobFloat);
+		MobAstVisitor.super.visitFloat(mobFloat);
 		this.push(mobFloat);
 	}
 
 	@Override
 	public void visitInteger(MobInteger mobInteger) {
-		MobVisitor.super.visitInteger(mobInteger);
+		MobAstVisitor.super.visitInteger(mobInteger);
 		this.push(mobInteger);
 	}
 
 	@Override
 	public void visitSymbol(MobSymbol mobSymbol) {
-		MobVisitor.super.visitSymbol(mobSymbol);
+		MobAstVisitor.super.visitSymbol(mobSymbol);
 		MobVariable v = context.lookupVariableByName(mobSymbol.rawValue());
 		if (v == null) {
 			throw new Error("Undeclared variable '" + mobSymbol.rawValue() + "'");
@@ -111,7 +112,7 @@ public class MobInterpreter implements MobVisitor {
 
 	@Override
 	public void visitAssign(MobAssign mobAssign) {
-		MobVisitor.super.visitAssign(mobAssign);
+		MobAstVisitor.super.visitAssign(mobAssign);
 		mobAssign.right().accept(this);
 		MobSymbol n = (MobSymbol) mobAssign.left();
 		MobVariable var = context.lookupVariableByName(n.rawValue());
@@ -121,71 +122,71 @@ public class MobInterpreter implements MobVisitor {
 	
 	@Override
 	public void visitNil(MobNil mobNil) {
-		MobVisitor.super.visitNil(mobNil);
+		MobAstVisitor.super.visitNil(mobNil);
 		this.push(mobNil);
 	}
 
 	@Override
 	public void visitString(MobString mobString) {
-		MobVisitor.super.visitString(mobString);
+		MobAstVisitor.super.visitString(mobString);
 		this.push(mobString);
 	}
 
 	@Override
 	public void visitUnit(MobUnit mobUnit) {
-		MobVisitor.super.visitUnit(mobUnit);
+		MobAstVisitor.super.visitUnit(mobUnit);
 		this.push(mobUnit);
 	}
 
 	@Override
 	public void visitUnaryMessage(MobUnaryMessage mobUnaryMessage) {
-		MobVisitor.super.visitUnaryMessage(mobUnaryMessage);
+		MobAstVisitor.super.visitUnaryMessage(mobUnaryMessage);
 		String name = mobUnaryMessage.keyword();
-		MobEntity receiver = mobUnaryMessage.receiver();
+		MobAstElement receiver = mobUnaryMessage.receiver();
 		receiver.accept(this);
-		this.pop().run(this.context, name);
+		((MobObject)this.pop()).run(this.context, name);
 	}
 
 	@Override
 	public void visitBinaryMessage(MobBinaryMessage mobBinaryMessage) {
-		MobVisitor.super.visitBinaryMessage(mobBinaryMessage);
-		String name = mobBinaryMessage.operator();
-		MobEntity receiver = mobBinaryMessage.receiver();
-		MobEntity arg = mobBinaryMessage.argument();
+		MobAstVisitor.super.visitBinaryMessage(mobBinaryMessage);
+		MobSymbol name = mobBinaryMessage.operator();
+		MobAstElement receiver = mobBinaryMessage.receiver();
+		MobAstElement arg = mobBinaryMessage.argument();
 		arg.accept(this);
 		receiver.accept(this);
-		MobEntity e = this.pop();
-		e.run(this.context, name);
+		MobAstElement e = this.pop();
+		((MobObject)e).run(this.context, name.rawValue());
 	}
 
 	@Override
 	public void visitKeywordMessage(MobKeywordMessage mobKeywordMessage) {
-		MobVisitor.super.visitKeywordMessage(mobKeywordMessage);
-		for (MobEntity e : mobKeywordMessage.arguments())
+		MobAstVisitor.super.visitKeywordMessage(mobKeywordMessage);
+		for (MobAstElement e : mobKeywordMessage.arguments())
 			e.accept(this);
 		String selector = mobKeywordMessage.selector();
-		MobEntity receiver = mobKeywordMessage.receiver();
+		MobAstElement receiver = mobKeywordMessage.receiver();
 		receiver.accept(this);
-		this.pop().run(this.context, selector);
+		((MobObject)this.pop()).run(this.context, selector);
 	}
 
 	@Override
 	public void visitSequence(MobSequence mobSequence) {
-		MobVisitor.super.visitSequence(mobSequence);
-		for (MobEntity e : mobSequence.children()) {
+		MobAstVisitor.super.visitSequence(mobSequence);
+		for (MobAstElement e : mobSequence.children()) {
 			e.accept(this);
 		}
 	}
 
 	@Override
 	public void visitReturn(MobReturn mobReturn) {
-		MobVisitor.super.visitReturn(mobReturn);
+		MobAstVisitor.super.visitReturn(mobReturn);
 	}
 
 	@Override
 	public void visitVarDecl(MobVarDecl mobVarDecl) {
-		MobVisitor.super.visitVarDecl(mobVarDecl);
-		MobEntity val;
+		MobAstVisitor.super.visitVarDecl(mobVarDecl);
+		MobAstElement val;
 		if (mobVarDecl.initialValue() == null) {
 			val = context.newNil();
 		} else {
@@ -198,11 +199,7 @@ public class MobInterpreter implements MobVisitor {
 
 	@Override
 	public void visitQuoted(MobQuoted mobQuoted) {
-		MobVisitor.super.visitQuoted(mobQuoted);
+		MobAstVisitor.super.visitQuoted(mobQuoted);
 		this.push(mobQuoted);
 	}
-
-	
-	
-	
 }

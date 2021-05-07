@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import mob.model.MobEntity;
-import mob.model.MobParameterList;
-import mob.model.MobUnit;
+import mob.ast.MobAstElement;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
@@ -14,6 +12,7 @@ import mob.model.primitives.MobNil;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobTrue;
+import mob.model.primitives.MobUnit;
 
 public class MobContext {
 	private MobContext parent;
@@ -28,15 +27,13 @@ public class MobContext {
 
 	public MobContext(MobContext parent, MobUnit unit) {
 		this(parent);
-		MobParameterList pl = unit.plist();
-		if (pl != null) {
-			for (int i = 0; i < pl.size(); i++) {
-				parameters.add(new MobVariable(pl.get(i)));
-			}
+		List<String> pl = unit.parameters();
+		for (int i = 0; i < pl.size(); i++) {
+			parameters.add(new MobVariable(pl.get(i)));
 		}
 	}
-	
-	public void setParameterValue(int idx, MobEntity value) {
+
+	public void setParameterValue(int idx, MobAstElement value) {
 		this.parameters.get(idx).setValue(value);
 	}
 
@@ -88,15 +85,15 @@ public class MobContext {
 		this.variables.clear();
 	}
 
-	public List<MobEntity> result() {
+	public List<MobAstElement> result() {
 		return this.parent.result();
 	}
 
-	public void push(MobEntity exp) {
+	public void push(MobAstElement exp) {
 		this.parent.push(exp);
 	}
 
-	public MobEntity pop() {
+	public MobAstElement pop() {
 		return this.parent.pop();
 	}
 

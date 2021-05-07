@@ -6,15 +6,15 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import mob.model.MobEntity;
-import mob.model.MobQuoted;
-import mob.model.MobSequence;
-import mob.model.MobUnit;
+import mob.ast.MobAstElement;
+import mob.ast.MobQuoted;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobNil;
+import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobTrue;
+import mob.model.primitives.MobUnit;
 
 class MobInterpreterStatementTest {
 
@@ -23,7 +23,7 @@ class MobInterpreterStatementTest {
 	void testBinaryMessageSend1() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		List<MobEntity> result = interpreter.run("(1 + 1)");
+		List<MobAstElement> result = interpreter.run("(1 + 1)");
 		assertTrue(result.size()==1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		MobInteger r = (MobInteger) result.get(0);
@@ -75,7 +75,7 @@ class MobInterpreterStatementTest {
 	void testKeywordMessageSend1() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		List<MobEntity> result = interpreter.run("(true ifTrue: [ \"TRUE\" println ] )");
+		List<MobAstElement> result = interpreter.run("(true ifTrue: [ \"TRUE\" println ] )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobString);
 		result = interpreter.run("(true ifTrue: [ \"TRUE\" println ]  ifFalse: [ \"FALSE\" println] ) ");
@@ -96,7 +96,7 @@ class MobInterpreterStatementTest {
 	void testUnit1() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		List<MobEntity> result = interpreter.run("(10 println)");
+		List<MobAstElement> result = interpreter.run("(10 println)");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(10));
@@ -113,43 +113,43 @@ class MobInterpreterStatementTest {
 	void testUnit2() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		List<MobEntity> result;
-		result = interpreter.run("( [ {v}  v println  ] value: 10 )");
+		List<MobAstElement> result;
+		result = interpreter.run("( [ v |  v println  ] value: 10 )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(10));
 		
-		result = interpreter.run("( [ {v} (decl X := 1) ((v + X) println)  ] value: 10 )");
+		result = interpreter.run("( [ v | (decl X := 1) ((v + X) println)  ] value: 10 )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(11));
 		
-		result = interpreter.run("( [ {v} (decl X := 1) ((v + X) println)  ] value: (9 + 1) )");
+		result = interpreter.run("( [ v | (decl X := 1) ((v + X) println)  ] value: (9 + 1) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(11));
 		
-		result = interpreter.run("( (decl p := 9 + 1) ( [ {v} (decl X := 1) ((v + X) println)  ] value: p ) )");
+		result = interpreter.run("( (decl p := 9 + 1) ( [ v | (decl X := 1) ((v + X) println)  ] value: p ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(11));
 		
-		result = interpreter.run("( (decl p := [ 9 + 1 ] ) ( [ {v} (decl X := 1) (((v value) + X) println)  ] value: p ) )");
+		result = interpreter.run("( (decl p := [ 9 + 1 ] ) ( [ v | (decl X := 1) (((v value) + X) println)  ] value: p ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(11));
 		
-		result = interpreter.run("( [ { u v} (decl X := 1) (((v + X) + u) println)  ] value: 10 value: 5)");
+		result = interpreter.run("( [ u v | (decl X := 1) (((v + X) + u) println)  ] value: 10 value: 5)");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(16));
 		
-		result = interpreter.run("( [ { u v} (decl X := 1) (((v + X) + u) println)  ] values: '( 10 5 ) )");
+		result = interpreter.run("( [ u v | (decl X := 1) (((v + X) + u) println)  ] values: '( 10 5 ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(16));
 		
-		result = interpreter.run("( [ { u v} (decl X := 1) (((v + X) + (u value)) println)  ] values: '( [9 + 1] 5 ) )");
+		result = interpreter.run("( [ u v | (decl X := 1) (((v + X) + (u value)) println)  ] values: '( [9 + 1] 5 ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(16));
@@ -159,7 +159,7 @@ class MobInterpreterStatementTest {
 	void testQuoted() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		List<MobEntity> result;
+		List<MobAstElement> result;
 		result = interpreter.run("( '( 10 5 ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobQuoted);
@@ -181,7 +181,7 @@ class MobInterpreterStatementTest {
 	void testAssign1() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		List<MobEntity> res;
+		List<MobAstElement> res;
 
 		res = interpreter.run("( (decl X) (X := nil) )");
 		assertTrue(res.size() == 1);

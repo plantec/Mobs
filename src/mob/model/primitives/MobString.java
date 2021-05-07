@@ -1,16 +1,15 @@
 package mob.model.primitives;
 
-import mob.model.MobObjectDef;
-import mob.model.MobVisitor;
+import mob.ast.MobAstVisitor;
 
 public class MobString extends MobPrimitive<String> {
 
-	public MobString(MobObjectDef def, String mob) {
+	public MobString(MobObjectClass def, String mob) {
 		super(def, mob);
 	}
 
 	@Override
-	public void accept(MobVisitor visitor) {
+	public void accept(MobAstVisitor visitor) {
 		visitor.visitString(this);
 		
 	}

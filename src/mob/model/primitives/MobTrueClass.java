@@ -1,52 +1,47 @@
 package mob.model.primitives;
 
-import mob.model.MobEntity;
-import mob.model.MobMethod;
-import mob.model.MobUnit;
+import mob.ast.MobAstElement;
 import mob.sinterpreter.MobContext;
+import mob.sinterpreter.MobMethod;
 
-public class MobTrueDef extends MobBoolDef {
-	private static MobTrueDef trueDef = new MobTrueDef();
-	private static MobTrue mtrue = new MobTrue(trueDef);
+public class MobTrueClass extends MobBooleanClass {
 
-	public MobTrueDef() {
+	public MobTrueClass(MobObjectClass def) {
+		super(def);
 		this.addMethod(new MobMethod("ifTrue:") {
-			public void run(MobContext ctx, MobEntity receiver) {
+			public void run(MobContext ctx, MobAstElement receiver) {
 				MobUnit trueArg = (MobUnit) ctx.pop();
-				for (MobEntity e : trueArg.code())
+				for (MobAstElement e : trueArg.code())
 					e.accept(ctx.interpreter());
 			}
 		});
 		this.addMethod(new MobMethod("ifFalse:") {
-			public void run(MobContext ctx, MobEntity receiver) {
+			public void run(MobContext ctx, MobAstElement receiver) {
 				ctx.pop();
 				ctx.push(receiver);
 			}
 		});
 		this.addMethod(new MobMethod("ifFalse:ifTrue:") {
-			public void run(MobContext ctx, MobEntity receiver) {
+			public void run(MobContext ctx, MobAstElement receiver) {
 				MobUnit trueArg = (MobUnit) ctx.pop();
 				ctx.pop();
-				for (MobEntity e : trueArg.code())
+				for (MobAstElement e : trueArg.code())
 					e.accept(ctx.interpreter());
 			}
 		});
 		this.addMethod(new MobMethod("ifTrue:ifFalse:") {
-			public void run(MobContext ctx, MobEntity receiver) {
+			public void run(MobContext ctx, MobAstElement receiver) {
 				ctx.pop();
 				MobUnit trueArg = (MobUnit) ctx.pop();
-				for (MobEntity e : trueArg.code())
+				for (MobAstElement e : trueArg.code())
 					e.accept(ctx.interpreter());
 			}
 		});
 
 	}
-	
-	
-	
+		
 	@Override
 	public MobTrue newInstance() {
-		return MobTrueDef.mtrue;
+		return new MobTrue(this);
 	}
-
 }

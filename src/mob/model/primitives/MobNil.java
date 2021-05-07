@@ -1,19 +1,17 @@
 package mob.model.primitives;
 
-import mob.model.MobObject;
-import mob.model.MobObjectDef;
-import mob.model.MobVisitor;
+import mob.ast.MobAstElement;
+import mob.ast.MobAstVisitor;
 
-public class MobNil extends MobObject {
+public class MobNil extends MobObject implements MobAstElement {
 
-	public MobNil(MobObjectDef def) {
+	public MobNil(MobObjectClass def) {
 		super(def);
 	}
 
 	@Override
-	public void accept(MobVisitor visitor) {
-		visitor.visitNil(this);
-		
+	public void accept(MobAstVisitor visitor) {
+		visitor.visitNil(this);		
 	}
 
 }

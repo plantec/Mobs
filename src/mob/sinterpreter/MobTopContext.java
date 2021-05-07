@@ -5,24 +5,30 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import mob.model.MobEntity;
+import mob.ast.MobAstElement;
 import mob.model.primitives.*;
 
 public class MobTopContext extends MobContext {
 	MobEnvironment env;
-	private ArrayDeque<MobEntity> stk;
+	private ArrayDeque<MobAstElement> stk;
 	private MobInterpreter interpreter;
 
 	
 	public MobTopContext(MobEnvironment env, MobInterpreter interpreter) {
 		super(null);
 		this.env = env;
+		this.addVariable(new MobVariable("true", this.newTrue()));
+		this.addVariable(new MobVariable("false", this.newFalse()));
+		this.addVariable(new MobVariable("nil", this.newNil()));
+		this.addVariable(new MobVariable("String", this.env.stringDef()));
+		this.addVariable(new MobVariable("Integer", this.env.integerDef()));
+		this.addVariable(new MobVariable("Float", this.env.floatDef()));
 		this.interpreter = interpreter;
 		this.stk = new ArrayDeque<>();
 	}
 	
-	public List<MobEntity> result() {
-		List<MobEntity> result = new ArrayList<>();
+	public List<MobAstElement> result() {
+		List<MobAstElement> result = new ArrayList<>();
 		this.stk.forEach(s -> result.add(s));
 		Collections.reverse(result);
 		return  result;
@@ -37,11 +43,11 @@ public class MobTopContext extends MobContext {
 		return this.interpreter;
 	}
 
-	public void push(MobEntity exp) {
+	public void push(MobAstElement exp) {
 		this.stk.push(exp);
 	}
 	
-	public MobEntity pop() {
+	public MobAstElement pop() {
 		return this.stk.pop();
 	}
 

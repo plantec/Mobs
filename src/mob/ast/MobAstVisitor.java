@@ -1,14 +1,16 @@
-package mob.model;
+package mob.ast;
 
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobNil;
+import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobTrue;
+import mob.model.primitives.MobUnit;
 
-public interface MobVisitor {
+public interface MobAstVisitor {
 
 	default void visitTrue(MobTrue mobTrue) {
 	}
@@ -58,6 +60,4 @@ public interface MobVisitor {
 	default void visitQuoted(MobQuoted mobQuoted) {
 	}
 
-	default void visitParameterList(MobParameterList mobParameterList) {
-	}
 }

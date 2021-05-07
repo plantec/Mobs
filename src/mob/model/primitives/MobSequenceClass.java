@@ -1,22 +1,24 @@
-package mob.model;
+package mob.model.primitives;
 
-import mob.model.primitives.MobInteger;
+import mob.ast.MobAstElement;
 import mob.sinterpreter.MobContext;
+import mob.sinterpreter.MobMethod;
 
-public class MobSequenceDef extends MobObjectDef {
-	public MobSequenceDef() {
+public class MobSequenceClass extends MobObjectClass {
+	public MobSequenceClass(MobObjectClass def) {
+		super(def);
 		this.addMethod(new MobMethod("add:") {
-			public void run(MobContext ctx, MobEntity receiver) {
+			public void run(MobContext ctx, MobAstElement receiver) {
 				MobSequence seq = (MobSequence) receiver;
-				MobEntity obj = ctx.pop();
+				MobAstElement obj = ctx.pop();
 				seq.add(obj);
 				ctx.push(seq);
 			}
 		});
 		this.addMethod(new MobMethod("at:put:") {
-			public void run(MobContext ctx, MobEntity receiver) {
+			public void run(MobContext ctx, MobAstElement receiver) {
 				MobSequence seq = (MobSequence) receiver;
-				MobEntity obj = ctx.pop();
+				MobAstElement obj = ctx.pop();
 				MobInteger pos = (MobInteger) ctx.pop();
 				seq.set(pos.rawValue(), obj);
 				ctx.push(seq);
@@ -24,7 +26,7 @@ public class MobSequenceDef extends MobObjectDef {
 		});
 		
 		this.addMethod(new MobMethod("at:") {
-			public void run(MobContext ctx, MobEntity receiver) {
+			public void run(MobContext ctx, MobAstElement receiver) {
 				MobSequence seq = (MobSequence) receiver;
 				MobInteger arg = (MobInteger) ctx.pop();
 				ctx.push(seq.get(arg.rawValue()));
@@ -35,5 +37,4 @@ public class MobSequenceDef extends MobObjectDef {
 	public MobUnit newInstance() {
 		return new MobUnit(this);
 	}
-
 }

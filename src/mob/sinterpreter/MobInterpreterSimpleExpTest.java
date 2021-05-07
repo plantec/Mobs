@@ -8,13 +8,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import mob.model.MobEntity;
+import mob.ast.MobAstElement;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobNil;
 import mob.model.primitives.MobString;
-import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobTrue;
 
 class MobInterpreterSimpleExpTest {
@@ -23,7 +22,7 @@ class MobInterpreterSimpleExpTest {
 	void test() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		List<MobEntity> res;
+		List<MobAstElement> res;
 
 		res = interpreter.run("nil");
 		assertTrue(res.get(0) instanceof MobNil);
@@ -67,9 +66,7 @@ class MobInterpreterSimpleExpTest {
 		assertTrue(res.get(0) instanceof MobFalse);
 		assertFalse( ((MobFalse) res.get(0)).rawValue());
 		
-		res = interpreter.run("monday");
-		assertTrue(res.get(0) instanceof MobSymbol);
-		assertTrue(((MobSymbol) res.get(0)).rawValue().equals("monday"));
-		
+		res = interpreter.run("(decl monday) (monday)");
+		assertTrue(res.get(0) instanceof MobNil);
 	}
 }

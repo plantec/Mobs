@@ -1,14 +1,12 @@
 package mob.model.primitives;
 
-import mob.model.MobObject;
-import mob.model.MobObjectDef;
-
-public abstract class MobPrimitiveDef<T> extends MobObjectDef {
+public abstract class MobPrimitiveClass<T> extends MobObjectClass {
 
 	
-	public MobPrimitiveDef() {
+	public MobPrimitiveClass(MobObjectClass def) {
+		super(def);
 	}
-	
+
 	@Override
 	public MobObject newInstance() {
 		throw new Error("Should not be sent");

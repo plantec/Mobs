@@ -6,31 +6,31 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.function.Consumer;
 
-import mob.model.MobAssign;
-import mob.model.MobBinaryMessage;
 import mob.model.MobEntity;
-import mob.model.MobKeywordMessage;
-import mob.model.MobParameterList;
-import mob.model.MobQuoted;
-import mob.model.MobReturn;
-import mob.model.MobSequence;
-import mob.model.MobUnaryMessage;
-import mob.model.MobUnit;
-import mob.model.MobVarDecl;
-import mob.model.MobVisitor;
+import mob.ast.MobAssign;
+import mob.ast.MobAstElement;
+import mob.ast.MobAstVisitor;
+import mob.ast.MobBinaryMessage;
+import mob.ast.MobKeywordMessage;
+import mob.ast.MobQuoted;
+import mob.ast.MobReturn;
+import mob.ast.MobUnaryMessage;
+import mob.ast.MobVarDecl;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobNil;
+import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobTrue;
+import mob.model.primitives.MobUnit;
 
 interface Doer {
 	public void execute();
 }
 
-public class MobPrinter implements MobVisitor {
+public class MobPrinter implements MobAstVisitor {
 
 	protected OutputStream stream;
 	Boolean withIndentation;
@@ -55,7 +55,7 @@ public class MobPrinter implements MobVisitor {
 	public OutputStream result() {
 		return this.stream;
 	}
-	
+
 	protected void forEachSepBy(List<? extends MobEntity> l, Consumer<MobEntity> cons, Doer d) {
 		int count = 0;
 		for (MobEntity e : l) {
@@ -84,7 +84,7 @@ public class MobPrinter implements MobVisitor {
 			throw new Error(e);
 		}
 	}
-	
+
 	protected void write(char c) {
 		try {
 			this.stream.write(c);
@@ -101,71 +101,67 @@ public class MobPrinter implements MobVisitor {
 			throw new Error(e);
 		}
 	}
-	
+
 	@Override
 	public void visitTrue(MobTrue mobTrue) {
-		MobVisitor.super.visitTrue(mobTrue);
+		MobAstVisitor.super.visitTrue(mobTrue);
 		this.write("true");
 	}
 
 	@Override
 	public void visitFalse(MobFalse mobFalse) {
-		MobVisitor.super.visitFalse(mobFalse);
+		MobAstVisitor.super.visitFalse(mobFalse);
 		this.write("false");
 	}
 
 	@Override
 	public void visitFloat(MobFloat mobFloat) {
-		MobVisitor.super.visitFloat(mobFloat);
+		MobAstVisitor.super.visitFloat(mobFloat);
 		this.write(mobFloat.rawValue().toString());
 
 	}
 
 	@Override
 	public void visitInteger(MobInteger mobInteger) {
-		MobVisitor.super.visitInteger(mobInteger);
+		MobAstVisitor.super.visitInteger(mobInteger);
 		this.write(mobInteger.rawValue().toString());
 	}
 
 	@Override
 	public void visitNil(MobNil mobNil) {
-		MobVisitor.super.visitNil(mobNil);
+		MobAstVisitor.super.visitNil(mobNil);
 		this.write("nil");
 	}
 
 	@Override
 	public void visitString(MobString mobString) {
-		MobVisitor.super.visitString(mobString);
+		MobAstVisitor.super.visitString(mobString);
 		this.write(mobString.rawValue());
 	}
 
 	@Override
 	public void visitSymbol(MobSymbol mobSymbol) {
-		MobVisitor.super.visitSymbol(mobSymbol);
+		MobAstVisitor.super.visitSymbol(mobSymbol);
 		this.write(mobSymbol.rawValue());
 	}
 
 	@Override
 	public void visitAssign(MobAssign mobAssign) {
-		MobVisitor.super.visitAssign(mobAssign);
-		if (mobAssign.showParenthesis()) {
-			this.write('(');
-			this.write(' ');
-		}
+		MobAstVisitor.super.visitAssign(mobAssign);
+		this.write('(');
+		this.write(' ');
 		mobAssign.left().accept(this);
 		this.write(' ');
 		this.write(":=");
 		this.write(' ');
 		mobAssign.right().accept(this);
-		if (mobAssign.showParenthesis()) {
-			this.write(' ');
-			this.write(')');
-		}
+		this.write(' ');
+		this.write(')');
 	}
 
 	@Override
 	public void visitVarDecl(MobVarDecl mobVarDecl) {
-		MobVisitor.super.visitVarDecl(mobVarDecl);
+		MobAstVisitor.super.visitVarDecl(mobVarDecl);
 		this.write('(');
 		this.write(' ');
 		this.write("decl");
@@ -183,90 +179,74 @@ public class MobPrinter implements MobVisitor {
 
 	@Override
 	public void visitReturn(MobReturn mobReturn) {
-		MobVisitor.super.visitReturn(mobReturn);
-		if (mobReturn.showParenthesis()) {
-			this.write('(');
-			this.write(' ');
-		}
+		MobAstVisitor.super.visitReturn(mobReturn);
+		this.write('(');
+		this.write(' ');
 		this.write("^");
 		if (mobReturn.returned() != null) {
 			this.write(' ');
 			mobReturn.returned().accept(this);
 		}
-		if (mobReturn.showParenthesis()) {
-			this.write(' ');
-			this.write(')');
-		}
+		this.write(' ');
+		this.write(')');
 	}
 
 	@Override
 	public void visitUnaryMessage(MobUnaryMessage mobUnaryMessage) {
-		MobVisitor.super.visitUnaryMessage(mobUnaryMessage);
-		MobEntity receiver = mobUnaryMessage.receiver();
-		if (mobUnaryMessage.showParenthesis()) {
-			this.write('(');
-			this.write(' ');
-		}
+		MobAstVisitor.super.visitUnaryMessage(mobUnaryMessage);
+		MobAstElement receiver = mobUnaryMessage.receiver();
+		this.write('(');
+		this.write(' ');
 		receiver.accept(this);
 		this.write(' ');
 		this.write(mobUnaryMessage.keyword());
-		if (mobUnaryMessage.showParenthesis()) {
-			this.write(' ');
-			this.write(')');
-		}
+		this.write(' ');
+		this.write(')');
 	}
 
 	@Override
 	public void visitBinaryMessage(MobBinaryMessage mobBinaryMessage) {
-		MobVisitor.super.visitBinaryMessage(mobBinaryMessage);
-		MobEntity receiver = mobBinaryMessage.receiver();
-		MobEntity arg = mobBinaryMessage.argument();
-		if (mobBinaryMessage.showParenthesis()) {
-			this.write('(');
-			this.write(' ');
-		}
+		MobAstVisitor.super.visitBinaryMessage(mobBinaryMessage);
+		MobAstElement receiver = mobBinaryMessage.receiver();
+		MobAstElement arg = mobBinaryMessage.argument();
+		this.write('(');
+		this.write(' ');
 		receiver.accept(this);
 		this.write(' ');
-		this.write(mobBinaryMessage.operator());
+		this.write(mobBinaryMessage.operator().rawValue());
 		this.write(' ');
 		arg.accept(this);
-		if (mobBinaryMessage.showParenthesis()) {
-			this.write(' ');
-			this.write(')');
-		}
+		this.write(' ');
+		this.write(')');
 	}
 
 	@Override
 	public void visitKeywordMessage(MobKeywordMessage mobKeywordMessage) {
-		MobVisitor.super.visitKeywordMessage(mobKeywordMessage);
-		MobEntity receiver = mobKeywordMessage.receiver();
-		if (mobKeywordMessage.showParenthesis()) {
-			this.write('(');
-			this.write(' ');
-		}
+		MobAstVisitor.super.visitKeywordMessage(mobKeywordMessage);
+		MobAstElement receiver = mobKeywordMessage.receiver();
+		this.write('(');
+		this.write(' ');
 		receiver.accept(this);
 		this.write(' ');
 		int idx = 0;
-		for (String kw : mobKeywordMessage.keywords()) {
-			this.write(kw);
+		for (MobSymbol kw : mobKeywordMessage.keywords()) {
+			this.write(kw.rawValue());
 			this.write(' ');
 			mobKeywordMessage.arguments()[idx++].accept(this);
 			if (idx < mobKeywordMessage.keywords().length) {
 				this.write(' ');
 			}
 		}
-		if (mobKeywordMessage.showParenthesis()) {
-			this.write(' ');
-			this.write(')');
-		}
+		this.write(' ');
+		this.write(')');
 	}
 
 	@Override
 	public void visitSequence(MobSequence mobSequence) {
-		MobVisitor.super.visitSequence(mobSequence);
+		MobAstVisitor.super.visitSequence(mobSequence);
 		this.write('(');
 		this.write(' ');
-		for (MobEntity e : mobSequence.children()) {
+		for (MobAstElement e : mobSequence.children()) {
 			e.accept(this);
 			this.write(' ');
 		}
@@ -275,15 +255,19 @@ public class MobPrinter implements MobVisitor {
 
 	@Override
 	public void visitUnit(MobUnit mobUnit) {
-		MobVisitor.super.visitUnit(mobUnit);
+		MobAstVisitor.super.visitUnit(mobUnit);
 		this.write('[');
 		if (mobUnit.hasParameters()) {
-			this.write(' ');
-			mobUnit.plist().accept(this);
+			this.write(" ");
+			for (String p : mobUnit.parameters()) {
+				this.write(p);
+				this.write(' ');
+			}
+			this.write('|');
 		}
 		if (!mobUnit.code().isEmpty()) {
 			this.write(' ');
-			for (MobEntity e : mobUnit.code())
+			for (MobAstElement e : mobUnit.code())
 				e.accept(this);
 		}
 		this.write(" ]");
@@ -291,21 +275,9 @@ public class MobPrinter implements MobVisitor {
 
 	@Override
 	public void visitQuoted(MobQuoted mobQuoted) {
-		MobVisitor.super.visitQuoted(mobQuoted);
+		MobAstVisitor.super.visitQuoted(mobQuoted);
 		this.write('\'');
 		mobQuoted.entity().accept(this);
 	}
 
-	@Override
-	public void visitParameterList(MobParameterList mobParameterList) {
-		MobVisitor.super.visitParameterList(mobParameterList);
-		this.write('{');
-		this.write(' ');
-		for (int i = 0; i < mobParameterList.size(); i++) {
-			this.write(mobParameterList.get(i));
-			this.write(' ');
-		}
-		this.write('}');
-	}
-	
 }

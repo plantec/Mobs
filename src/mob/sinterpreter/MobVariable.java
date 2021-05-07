@@ -1,12 +1,12 @@
 package mob.sinterpreter;
 
-import mob.model.MobEntity;
+import mob.ast.MobAstElement;
 
 public class MobVariable {
 	private String name;
-	private MobEntity value;
+	private MobAstElement value;
 
-	public MobVariable(String name, MobEntity value) {
+	public MobVariable(String name, MobAstElement value) {
 		this.value = value;
 		this.name = name;
 	}
@@ -15,7 +15,7 @@ public class MobVariable {
 		this(name, null);
 	}
 
-	public MobVariable(MobEntity value) {
+	public MobVariable(MobAstElement value) {
 		this(null, value);
 	}
 
@@ -23,11 +23,11 @@ public class MobVariable {
 		return this.name;
 	}
 
-	public MobEntity value() {
+	public MobAstElement value() {
 		return this.value;
 	}
 
-	public void setValue(MobEntity mobExp) {
+	public void setValue(MobAstElement mobExp) {
 		this.value = mobExp;
 	}
 

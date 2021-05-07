@@ -7,22 +7,22 @@ class MobPrimitiveTest {
 
 	@Test
 	void testPrimitiveTypes() {
-		MobIntegerDef n = new MobIntegerDef();
+		MobIntegerClass n = new MobIntegerClass(null);
 		MobInteger ii = n.newInstance(1);
 		assertTrue(ii.rawValue() instanceof Integer);
 		assertTrue(ii.rawValue() == 1);
-		MobTrueDef td = new MobTrueDef();
+		MobTrueClass td = new MobTrueClass(null);
 		MobTrue t = td.newInstance();
 		assertTrue(t.rawValue() instanceof Boolean);
 		assertTrue(t.rawValue());
-		MobFalseDef fd = new MobFalseDef();
+		MobFalseClass fd = new MobFalseClass(null);
 		MobFalse f = fd.newInstance();
 		assertFalse(f.rawValue());
-		MobStringDef sd = new MobStringDef();
+		MobStringClass sd = new MobStringClass(null);
 		MobString s = sd.newInstance("Hello");
 		assertTrue(s.rawValue() instanceof String);
 		assertTrue(s.rawValue().equals("Hello"));
-		MobSymbolDef syd = new MobSymbolDef();
+		MobSymbolClass syd = new MobSymbolClass(null);
 		MobSymbol sy = syd.newInstance("X");
 		assertTrue(sy.rawValue() instanceof String);
 		assertTrue(sy.rawValue().equals("X"));
