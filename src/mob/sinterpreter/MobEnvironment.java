@@ -27,50 +27,52 @@ import mob.model.primitives.MobUnit;
 import mob.model.primitives.MobUnitClass;
 
 public class MobEnvironment {
-	private MobFalseClass falseDef;
-	private MobTrueClass trueDef;
-	private MobFloatClass floatDef;
-	private MobIntegerClass integerDef;
-	private MobCharacterClass characterDef;
-	private MobStringClass stringDef;
-	private MobSymbolClass symbolDef;
-	private MobNilClass nilDef;
-	private MobUnitClass unitDef;
-	private MobClass objectDef;
-	private MobMetaClass objectMetaDef;
+	private MobFalseClass falseClass;
+	private MobTrueClass trueClass;
+	private MobFloatClass floatClass;
+	private MobIntegerClass integerClass;
+	private MobCharacterClass characterClass;
+	private MobStringClass stringClass;
+	private MobSymbolClass symbolClass;
+	private MobNilClass nilClass;
+	private MobUnitClass unitClass;
+	private MobClass mobClass;
+	private MobMetaClass mobMetaClass;
 	
 	private MobNil nil_;
 	private MobFalse false_;
 	private MobTrue true_;
 	
 	public MobEnvironment() {
-		this.objectMetaDef = new MobMetaClass(null);
-		this.objectMetaDef.setDefinition(this.objectMetaDef);
-		this.objectDef = new MobClass(objectMetaDef);
-		this.floatDef = new MobFloatClass(this.objectMetaDef);
-		this.integerDef = new MobIntegerClass(this.objectMetaDef);
-		this.characterDef = new MobCharacterClass(this.objectMetaDef);
-		this.stringDef = new MobStringClass(this.objectMetaDef);
-		this.symbolDef = new MobSymbolClass(this.objectMetaDef);
-		this.unitDef = new MobUnitClass(this.objectMetaDef);
-		this.nilDef = new MobNilClass(this.objectDef);
-		this.falseDef = new MobFalseClass(this.objectDef);
-		this.trueDef = new MobTrueClass(this.objectDef);
+		this.mobMetaClass = new MobMetaClass(this, null);
+		this.mobMetaClass.setDefinition(this.mobMetaClass);
+		this.mobClass = new MobClass(this, mobMetaClass);
+		this.floatClass = new MobFloatClass(this, this.mobMetaClass);
+		this.integerClass = new MobIntegerClass(this, this.mobMetaClass);
+		this.characterClass = new MobCharacterClass(this, this.mobMetaClass);
+		this.stringClass = new MobStringClass(this, this.mobMetaClass);
+		this.symbolClass = new MobSymbolClass(this, this.mobMetaClass);
+		this.unitClass = new MobUnitClass(this, this.mobMetaClass);
+		this.nilClass = new MobNilClass(this, this.mobClass);
+		this.falseClass = new MobFalseClass(this, this.mobClass);
+		this.trueClass = new MobTrueClass(this, this.mobClass);
 
-		this.nil_ = this.nilDef.newInstance();
-		this.true_ = this.trueDef.newInstance();
-		this.false_ = this.falseDef.newInstance();
+		this.nil_ = this.nilClass.newInstance();
+		this.true_ = this.trueClass.newInstance();
+		this.false_ = this.falseClass.newInstance();
 	}
 	
-	public MobFalseClass falseDef() { return this.falseDef; }
-	public MobTrueClass trueDef() { return this.trueDef; }
-	public MobFloatClass floatDef() { return this.floatDef; }
-	public MobIntegerClass integerDef() { return this.integerDef; }
-	public MobCharacterClass characterDef() { return this.characterDef; }
-	public MobStringClass stringDef() { return this.stringDef; }
-	public MobSymbolClass symbolDef() { return this.symbolDef; }
-	public MobNilClass nilDef() { return this.nilDef; }
-	public MobUnitClass unitDef() { return this.unitDef; }
+	public MobClass mobMetaClass() { return this.mobMetaClass; }
+	public MobClass mobClass() { return this.mobClass; }
+	public MobFalseClass falseClass() { return this.falseClass; }
+	public MobTrueClass trueClass() { return this.trueClass; }
+	public MobFloatClass floatClass() { return this.floatClass; }
+	public MobIntegerClass integerClass() { return this.integerClass; }
+	public MobCharacterClass characterClass() { return this.characterClass; }
+	public MobStringClass stringClass() { return this.stringClass; }
+	public MobSymbolClass symbolClass() { return this.symbolClass; }
+	public MobNilClass nilClass() { return this.nilClass; }
+	public MobUnitClass unitClass() { return this.unitClass; }
 
 	public MobNil newNil() {
 		return this.nil_;
@@ -84,31 +86,31 @@ public class MobEnvironment {
 	}
 
 	public MobFloat newFloat(Float p) {
-		return this.floatDef.newInstance(p);
+		return this.floatClass.newInstance(p);
 	}
 
 	public MobInteger newInteger(Integer p) {
-		return this.integerDef.newInstance(p);
+		return this.integerClass.newInstance(p);
 	}
 
 	public MobCharacter newCharacter(Character p) {
-		return this.characterDef.newInstance(p);
+		return this.characterClass.newInstance(p);
 	}
 
 	public MobString newString(String p) {
-		return this.stringDef.newInstance(p);
+		return this.stringClass.newInstance(p);
 	}
 
 	public MobSymbol newSymbol(String p) {
-		return this.symbolDef.newInstance(p);
+		return this.symbolClass.newInstance(p);
 	}
 
 	public MobUnit newUnit() {
-		return this.unitDef.newInstance();
+		return this.unitClass.newInstance();
 	}
 	
 	public MobSequence newSequence(List<MobAstElement> contents) {
-		MobSequence seq = new MobSequence(new MobSequenceClass(this.objectDef));
+		MobSequence seq = new MobSequence(new MobSequenceClass(this, this.mobClass));
 		seq.addAll(contents);
 		return seq;
 	}

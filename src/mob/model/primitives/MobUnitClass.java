@@ -1,15 +1,15 @@
 package mob.model.primitives;
 
 import mob.ast.MobAstElement;
-import mob.ast.MobAstVisitor;
 import mob.ast.MobQuoted;
 import mob.sinterpreter.MobContext;
+import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
 public class MobUnitClass extends MobClass {
 
-	public MobUnitClass(MobClass def) {
-		super(def);
+	public MobUnitClass(MobEnvironment environment, MobClass def) {
+		super(environment, def);
 		this.addMethod(new MobMethod("value") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobUnit unit = (MobUnit) receiver;

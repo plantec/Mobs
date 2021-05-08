@@ -1,15 +1,16 @@
 package mob.model.primitives;
 
-public class MobNilClass extends MobClass {
-	private static MobNilClass nilDef = new MobNilClass(null);
-	private static MobNil nil = new MobNil(nilDef);
-	
-	public MobNilClass(MobClass def) {
-		super(def);
-	}
+import mob.sinterpreter.MobEnvironment;
 
+public class MobNilClass extends MobClass {
+	
+	public MobNilClass(MobEnvironment environment, MobClass def) {
+		super(environment, def);
+	}
+	
 	@Override
 	public MobNil newInstance() {
-		return MobNilClass.nil;
+		return new MobNil(this);
 	}
+
 }

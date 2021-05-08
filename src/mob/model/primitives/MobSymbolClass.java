@@ -1,9 +1,11 @@
 package mob.model.primitives;
 
+import mob.sinterpreter.MobEnvironment;
+
 public class MobSymbolClass extends MobPrimitiveClass<String> {
 	
-	public MobSymbolClass(MobClass def) {
-		super(def);
+	public MobSymbolClass(MobEnvironment environment, MobClass def) {
+		super(environment, def);
 	}
 
 	@Override

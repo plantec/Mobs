@@ -1,10 +1,11 @@
 package mob.model.primitives;
 
+import mob.sinterpreter.MobEnvironment;
 
 public class MobCharacterClass extends MobPrimitiveClass<Character> {
 
-	public MobCharacterClass(MobClass def) {
-		super(def);
+	public MobCharacterClass(MobEnvironment environment, MobClass def) {
+		super(environment, def);
 	}
 
 	@Override

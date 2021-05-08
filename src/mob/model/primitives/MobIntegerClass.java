@@ -2,12 +2,13 @@ package mob.model.primitives;
 
 import mob.ast.MobAstElement;
 import mob.sinterpreter.MobContext;
+import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
 public class MobIntegerClass extends MobPrimitiveClass<Integer> {
 
-	public MobIntegerClass(MobClass def) {
-		super(def);
+	public MobIntegerClass(MobEnvironment environment, MobClass def) {
+		super(environment, def);
 		this.addMethod(new MobMethod("+") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobAstElement arg1 = ctx.pop();

@@ -4,14 +4,16 @@ import java.util.HashMap;
 
 import mob.ast.MobAstElement;
 import mob.sinterpreter.MobContext;
+import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 import mob.sinterpreter.MobObjectMethod;
 
 public class MobClass extends MobObject {
 	private HashMap<String, MobMethod> methodDict;
-
-	public MobClass(MobClass def) {
-		super(def);
+	private MobClass superclass;
+	
+	public MobClass(MobEnvironment environment, MobClass def) {
+		super(environment, def);
 		methodDict = new HashMap<String, MobMethod>();
 		this.addMethod(new MobMethod("println") {
 			public void run(MobContext ctx, MobAstElement receiver) {
@@ -36,6 +38,10 @@ public class MobClass extends MobObject {
 			}
 		});
 	}
+	
+	public MobClass superclass() {
+		return this.superclass;
+	}
 
 	public void addMethod(MobMethod definition) {
 		methodDict.put(definition.selector(), definition);
@@ -45,12 +51,23 @@ public class MobClass extends MobObject {
 		return methodDict.get(signature);
 	}
 
+	public MobMethod lookupMethodNamed(String signature) {
+		MobMethod found = methodDict.get(signature);
+		if (found != null) {
+			return found;
+		}
+		if (this.superclass != null) {
+			return this.superclass.lookupMethodNamed(signature);
+		}
+		return null;
+	}
+
 	public MobObject newInstance() {
 		return new MobObject(this);
 	}
 	
 	public void run(MobContext ctx, MobObject receiver, String signature) {
-		MobMethod m = this.methodNamed(signature);
+		MobMethod m = this.lookupMethodNamed(signature);
 		if (m == null)
 			throw new Error(receiver.toString() + " does not understand '" + signature + "'");
 		m.run(ctx, receiver);

@@ -2,12 +2,13 @@ package mob.model.primitives;
 
 import mob.ast.MobAstElement;
 import mob.sinterpreter.MobContext;
+import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
 public class MobFalseClass extends MobBooleanClass {
 
-	public MobFalseClass(MobClass def) {
-		super(def);
+	public MobFalseClass(MobEnvironment environment, MobClass def) {
+		super(environment, def);
 		this.addMethod(new MobMethod("ifFalse:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobUnit falseArg = (MobUnit) ctx.pop();

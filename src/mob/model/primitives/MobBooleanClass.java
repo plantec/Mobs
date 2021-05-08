@@ -1,9 +1,11 @@
 package mob.model.primitives;
 
+import mob.sinterpreter.MobEnvironment;
+
 public abstract class MobBooleanClass extends MobClass {
 
-	public MobBooleanClass(MobClass def) {
-		super(def);
+	public MobBooleanClass(MobEnvironment environment, MobClass def) {
+		super(environment, def);
 	}
 	
 }
