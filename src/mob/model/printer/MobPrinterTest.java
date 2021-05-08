@@ -31,17 +31,17 @@ class MobPrinterTest {
 		System.out.println(printer.result().toString());
 		assertTrue(printer.result().toString().equals("( X )"));
 
-		res = builder.run("('X)");
+		res = builder.run("(`X)");
 		printer = new MobPrinter();
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
-		assertTrue(printer.result().toString().equals("( 'X )"));
+		assertTrue(printer.result().toString().equals("( `X )"));
 
-		res = builder.run("('(X) ''(Y))");
+		res = builder.run("(`(X) ``(Y))");
 		printer = new MobPrinter();
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
-		assertTrue(printer.result().toString().equals("( '( X ) ''( Y ) )"));
+		assertTrue(printer.result().toString().equals("( `( X ) ``( Y ) )"));
 
 		res = builder.run("( 	X  )");
 		printer = new MobPrinter();
@@ -61,11 +61,11 @@ class MobPrinterTest {
 		System.out.println(printer.result().toString());
 		assertTrue(printer.result().toString().equals("( X ( Y ) Z )"));
 
-		res = builder.run("( X ''( 'Y ) Z )");
+		res = builder.run("( X ``( `Y ) Z )");
 		printer = new MobPrinter();
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
-		assertTrue(printer.result().toString().equals("( X ''( 'Y ) Z )"));
+		assertTrue(printer.result().toString().equals("( X ``( `Y ) Z )"));
 
 		res = builder.run("((X = 1) ( Y = X ) Z)");
 		printer = new MobPrinter();

@@ -276,7 +276,7 @@ public class MobPrinter implements MobAstVisitor {
 	@Override
 	public void visitQuoted(MobQuoted mobQuoted) {
 		MobAstVisitor.super.visitQuoted(mobQuoted);
-		this.write('\'');
+		this.write('`');
 		mobQuoted.entity().accept(this);
 	}
 
