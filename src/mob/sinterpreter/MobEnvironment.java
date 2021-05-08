@@ -3,6 +3,8 @@ package mob.sinterpreter;
 import java.util.List;
 
 import mob.ast.MobAstElement;
+import mob.model.primitives.MobCharacter;
+import mob.model.primitives.MobCharacterClass;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFalseClass;
 import mob.model.primitives.MobFloat;
@@ -11,7 +13,8 @@ import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobIntegerClass;
 import mob.model.primitives.MobNil;
 import mob.model.primitives.MobNilClass;
-import mob.model.primitives.MobObjectClass;
+import mob.model.primitives.MobClass;
+import mob.model.primitives.MobMetaClass;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobSequenceClass;
 import mob.model.primitives.MobString;
@@ -28,26 +31,28 @@ public class MobEnvironment {
 	private MobTrueClass trueDef;
 	private MobFloatClass floatDef;
 	private MobIntegerClass integerDef;
+	private MobCharacterClass characterDef;
 	private MobStringClass stringDef;
 	private MobSymbolClass symbolDef;
 	private MobNilClass nilDef;
 	private MobUnitClass unitDef;
-	private MobObjectClass objectDef;
-	private MobObjectClass objectMetaDef;
+	private MobClass objectDef;
+	private MobMetaClass objectMetaDef;
 	
 	private MobNil nil_;
 	private MobFalse false_;
 	private MobTrue true_;
 	
 	public MobEnvironment() {
-		this.objectMetaDef = new MobObjectClass(null);
+		this.objectMetaDef = new MobMetaClass(null);
 		this.objectMetaDef.setDefinition(this.objectMetaDef);
-		this.objectDef = new MobObjectClass(objectMetaDef);
-		this.floatDef = new MobFloatClass(this.objectDef);
-		this.integerDef = new MobIntegerClass(this.objectDef);
-		this.stringDef = new MobStringClass(this.objectDef);
-		this.symbolDef = new MobSymbolClass(this.objectDef);
-		this.unitDef = new MobUnitClass(this.objectDef);
+		this.objectDef = new MobClass(objectMetaDef);
+		this.floatDef = new MobFloatClass(this.objectMetaDef);
+		this.integerDef = new MobIntegerClass(this.objectMetaDef);
+		this.characterDef = new MobCharacterClass(this.objectMetaDef);
+		this.stringDef = new MobStringClass(this.objectMetaDef);
+		this.symbolDef = new MobSymbolClass(this.objectMetaDef);
+		this.unitDef = new MobUnitClass(this.objectMetaDef);
 		this.nilDef = new MobNilClass(this.objectDef);
 		this.falseDef = new MobFalseClass(this.objectDef);
 		this.trueDef = new MobTrueClass(this.objectDef);
@@ -61,6 +66,7 @@ public class MobEnvironment {
 	public MobTrueClass trueDef() { return this.trueDef; }
 	public MobFloatClass floatDef() { return this.floatDef; }
 	public MobIntegerClass integerDef() { return this.integerDef; }
+	public MobCharacterClass characterDef() { return this.characterDef; }
 	public MobStringClass stringDef() { return this.stringDef; }
 	public MobSymbolClass symbolDef() { return this.symbolDef; }
 	public MobNilClass nilDef() { return this.nilDef; }
@@ -83,6 +89,10 @@ public class MobEnvironment {
 
 	public MobInteger newInteger(Integer p) {
 		return this.integerDef.newInstance(p);
+	}
+
+	public MobCharacter newCharacter(Character p) {
+		return this.characterDef.newInstance(p);
 	}
 
 	public MobString newString(String p) {

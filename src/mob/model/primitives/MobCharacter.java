@@ -2,15 +2,15 @@ package mob.model.primitives;
 
 import mob.ast.MobAstVisitor;
 
-public class MobInteger extends MobPrimitive<Integer> {
+public class MobCharacter extends MobPrimitive<Character> {
 
-	public MobInteger(MobClass def, Integer mob) {
+	public MobCharacter(MobClass def, Character mob) {
 		super(def, mob);
 	}
 
 	@Override
 	public void accept(MobAstVisitor visitor) {
-		visitor.visitInteger(this);
+		visitor.visitCharacter(this);
 	}
 
 }

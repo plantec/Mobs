@@ -6,9 +6,9 @@ import mob.ast.MobQuoted;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobMethod;
 
-public class MobUnitClass extends MobObjectClass {
+public class MobUnitClass extends MobClass {
 
-	public MobUnitClass(MobObjectClass def) {
+	public MobUnitClass(MobClass def) {
 		super(def);
 		this.addMethod(new MobMethod("value") {
 			public void run(MobContext ctx, MobAstElement receiver) {

@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import mob.ast.MobAstElement;
+import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
@@ -50,11 +51,19 @@ class MobInterpreterSimpleExpTest {
 		res = interpreter.run("1.40e-45f");
 		assertTrue(res.get(0) instanceof MobFloat);
 		
-		res = interpreter.run("\"Hello world\"");
+		res = interpreter.run("$a");
+		assertTrue(res.get(0) instanceof MobCharacter);
+		assertTrue( ((MobCharacter) res.get(0)).rawValue().equals('a'));
+
+		res = interpreter.run("$$");
+		assertTrue(res.get(0) instanceof MobCharacter);
+		assertTrue( ((MobCharacter) res.get(0)).rawValue().equals('$'));
+		
+		res = interpreter.run("'Hello world'");
 		assertTrue(res.get(0) instanceof MobString);
 		assertTrue( ((MobString) res.get(0)).rawValue().equals("Hello world"));
 		
-		res = interpreter.run("\"\"");
+		res = interpreter.run("''");
 		assertTrue(res.get(0) instanceof MobString);
 		assertTrue( ((MobString) res.get(0)).rawValue().equals(""));
 		

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import mob.ast.MobAstElement;
+import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
@@ -119,6 +120,10 @@ public class MobContext {
 
 	public MobString newString(String p) {
 		return this.parent.newString(p);
+	}
+
+	public MobCharacter newCharacter(Character p) {
+		return this.parent.newCharacter(p);
 	}
 
 	public MobSymbol newSymbol(String p) {

@@ -21,8 +21,10 @@ public class MobTopContext extends MobContext {
 		this.addVariable(new MobVariable("false", this.newFalse()));
 		this.addVariable(new MobVariable("nil", this.newNil()));
 		this.addVariable(new MobVariable("String", this.env.stringDef()));
+		this.addVariable(new MobVariable("Character", this.env.characterDef()));
 		this.addVariable(new MobVariable("Integer", this.env.integerDef()));
 		this.addVariable(new MobVariable("Float", this.env.floatDef()));
+		this.addVariable(new MobVariable("Unit", this.env.unitDef()));
 		this.interpreter = interpreter;
 		this.stk = new ArrayDeque<>();
 	}
@@ -73,6 +75,10 @@ public class MobTopContext extends MobContext {
 
 	public MobString newString(String p) {
 		return this.env.newString(p);
+	}
+
+	public MobCharacter newCharacter(Character p) {
+		return this.env.newCharacter(p);
 	}
 
 	public MobSymbol newSymbol(String p) {

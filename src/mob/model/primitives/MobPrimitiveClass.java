@@ -1,9 +1,9 @@
 package mob.model.primitives;
 
-public abstract class MobPrimitiveClass<T> extends MobObjectClass {
+public abstract class MobPrimitiveClass<T> extends MobClass {
 
 	
-	public MobPrimitiveClass(MobObjectClass def) {
+	public MobPrimitiveClass(MobClass def) {
 		super(def);
 	}
 

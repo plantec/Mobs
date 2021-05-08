@@ -1,5 +1,7 @@
 package mob.ast;
 
+import mob.model.primitives.MobCharacter;
+import mob.model.primitives.MobCharacterClass;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
@@ -58,6 +60,9 @@ public interface MobAstVisitor {
 	}
 
 	default void visitQuoted(MobQuoted mobQuoted) {
+	}
+
+	default  void visitCharacter(MobCharacter mobCharacter) {
 	}
 
 }

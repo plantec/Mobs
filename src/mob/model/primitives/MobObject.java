@@ -5,17 +5,17 @@ import mob.model.MobEntity;
 import mob.sinterpreter.MobContext;
 
 public class MobObject extends MobEntity implements MobAstElement {
-	private MobObjectClass definition;
+	private MobClass definition;
 
-	public MobObject(MobObjectClass definition) {
+	public MobObject(MobClass definition) {
 		this.definition = definition;
 	}
 
-	public MobObjectClass definition() {
+	public MobClass definition() {
 		return this.definition; 
 	}
 	
-	public void setDefinition(MobObjectClass definition) {
+	public void setDefinition(MobClass definition) {
 		this.definition = definition;
 	}
 

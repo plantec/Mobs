@@ -12,6 +12,7 @@ import mob.ast.MobQuoted;
 import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
+import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
@@ -130,6 +131,12 @@ public class MobInterpreter implements MobAstVisitor {
 	public void visitString(MobString mobString) {
 		MobAstVisitor.super.visitString(mobString);
 		this.push(mobString);
+	}
+
+	@Override
+	public void visitCharacter(MobCharacter mobCharacter) {
+		MobAstVisitor.super.visitCharacter(mobCharacter);
+		this.push(mobCharacter);
 	}
 
 	@Override

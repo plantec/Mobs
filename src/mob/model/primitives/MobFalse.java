@@ -4,7 +4,7 @@ import mob.ast.MobAstVisitor;
 
 public class MobFalse extends MobBoolean {
 
-	public MobFalse(MobObjectClass def) {
+	public MobFalse(MobClass def) {
 		super(def, false);
 	}
 

@@ -5,7 +5,7 @@ import mob.ast.MobAstVisitor;
 
 public class MobNil extends MobObject implements MobAstElement {
 
-	public MobNil(MobObjectClass def) {
+	public MobNil(MobClass def) {
 		super(def);
 	}
 

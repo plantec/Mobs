@@ -6,7 +6,7 @@ import mob.sinterpreter.MobMethod;
 
 public class MobTrueClass extends MobBooleanClass {
 
-	public MobTrueClass(MobObjectClass def) {
+	public MobTrueClass(MobClass def) {
 		super(def);
 		this.addMethod(new MobMethod("ifTrue:") {
 			public void run(MobContext ctx, MobAstElement receiver) {

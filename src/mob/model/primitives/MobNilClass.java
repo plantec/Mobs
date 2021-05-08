@@ -1,10 +1,10 @@
 package mob.model.primitives;
 
-public class MobNilClass extends MobObjectClass {
+public class MobNilClass extends MobClass {
 	private static MobNilClass nilDef = new MobNilClass(null);
 	private static MobNil nil = new MobNil(nilDef);
 	
-	public MobNilClass(MobObjectClass def) {
+	public MobNilClass(MobClass def) {
 		super(def);
 	}
 

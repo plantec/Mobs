@@ -11,7 +11,7 @@ public class MobUnit extends MobObject implements MobAstElement {
 	private List<String> parameters;
 	private List<MobAstElement> code;
 	
-	public MobUnit(MobObjectClass def) {
+	public MobUnit(MobClass def) {
 		super(def);
 		parameters = new ArrayList<>();
 		code = new ArrayList<>();

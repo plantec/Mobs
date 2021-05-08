@@ -4,7 +4,7 @@ import mob.ast.MobAstVisitor;
 
 public class MobFloat extends MobPrimitive<Float> {
 
-	public MobFloat(MobObjectClass def, Float mob) {
+	public MobFloat(MobClass def, Float mob) {
 		super(def, mob);
 	}
 

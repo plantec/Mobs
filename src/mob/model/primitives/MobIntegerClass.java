@@ -6,7 +6,7 @@ import mob.sinterpreter.MobMethod;
 
 public class MobIntegerClass extends MobPrimitiveClass<Integer> {
 
-	public MobIntegerClass(MobObjectClass def) {
+	public MobIntegerClass(MobClass def) {
 		super(def);
 		this.addMethod(new MobMethod("+") {
 			public void run(MobContext ctx, MobAstElement receiver) {

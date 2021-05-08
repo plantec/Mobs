@@ -51,11 +51,11 @@ class MobTreeBuilderTest {
 		trees = builder.run("1.40e-45f");
 		assertTrue(trees.get(0) instanceof MobFloat);
 
-		trees = builder.run("\"Hello world\"");
+		trees = builder.run("'Hello world'");
 		assertTrue(trees.get(0) instanceof MobString);
 		assertTrue(((MobString) trees.get(0)).rawValue().equals("Hello world"));
 
-		trees = builder.run("\"\"");
+		trees = builder.run("''");
 		assertTrue(trees.get(0) instanceof MobString);
 		assertTrue(((MobString) trees.get(0)).rawValue().equals(""));
 

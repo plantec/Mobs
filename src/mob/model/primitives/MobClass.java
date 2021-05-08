@@ -7,10 +7,10 @@ import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobMethod;
 import mob.sinterpreter.MobObjectMethod;
 
-public class MobObjectClass extends MobObject {
+public class MobClass extends MobObject {
 	private HashMap<String, MobMethod> methodDict;
 
-	public MobObjectClass(MobObjectClass def) {
+	public MobClass(MobClass def) {
 		super(def);
 		methodDict = new HashMap<String, MobMethod>();
 		this.addMethod(new MobMethod("println") {
@@ -19,20 +19,19 @@ public class MobObjectClass extends MobObject {
 				ctx.push(receiver);
 			}
 		});
-		this.addMethod(new MobMethod("method:named:") {
+		this.addMethod(new MobMethod("addMethod:named:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobString name = (MobString) ctx.pop();
 				MobUnit code = (MobUnit) ctx.pop();
-				MobObject self = (MobObject) receiver;
-				MobObjectClass selfDef = self.definition();
-				selfDef.addMethod(new MobObjectMethod(name.rawValue(), code));
+				MobClass self = (MobClass) receiver;
+				self.addMethod(new MobObjectMethod(name.rawValue(), code));
 				ctx.push(receiver);
 			}
 		});
 		this.addMethod(new MobMethod("definition") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject self = (MobObject) receiver;
-				MobObjectClass selfDef = self.definition();
+				MobClass selfDef = self.definition();
 				ctx.push(selfDef);
 			}
 		});

@@ -271,8 +271,11 @@ public class MobTreeBuilder implements SVisitor {
 		MobObject exp;
 
 		switch (contents.charAt(0)) {
-		case '"':
+		case '\'':
 			exp = this.env.newString(contents.substring(1, contents.length() - 1));
+			break;
+		case '$':
+			exp = this.env.newCharacter(contents.charAt(1));
 			break;
 		case '0':
 		case '1':

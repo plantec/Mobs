@@ -6,7 +6,7 @@ import mob.sinterpreter.MobMethod;
 
 public class MobFloatClass extends MobPrimitiveClass<Float> {
 
-	public MobFloatClass(MobObjectClass def) {
+	public MobFloatClass(MobClass def) {
 		super(def);
 		this.addMethod(new MobMethod("+") {
 			public void run(MobContext ctx, MobAstElement receiver) {

@@ -6,7 +6,7 @@ public abstract class MobPrimitive<T> extends MobObject implements MobAstElement
 
 	private T rawValue;
 	
-	public MobPrimitive(MobObjectClass def, T value) {
+	public MobPrimitive(MobClass def, T value) {
 		super(def);
 		this.rawValue = value;
 	}

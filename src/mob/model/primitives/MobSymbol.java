@@ -4,7 +4,7 @@ import mob.ast.MobAstVisitor;
 
 public class MobSymbol extends MobPrimitive<String> {
 
-	public MobSymbol(MobObjectClass def, String mob) {
+	public MobSymbol(MobClass def, String mob) {
 		super(def, mob);
 	}
 

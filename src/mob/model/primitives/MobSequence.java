@@ -9,7 +9,7 @@ import mob.ast.MobAstVisitor;
 public class MobSequence extends MobObject implements MobAstElement {
 	List<MobAstElement> children;
 	
-	public MobSequence(MobObjectClass def) {
+	public MobSequence(MobClass def) {
 		super(def);
 		this.children = new ArrayList<>();
 	}

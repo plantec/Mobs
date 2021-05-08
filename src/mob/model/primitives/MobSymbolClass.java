@@ -2,7 +2,7 @@ package mob.model.primitives;
 
 public class MobSymbolClass extends MobPrimitiveClass<String> {
 	
-	public MobSymbolClass(MobObjectClass def) {
+	public MobSymbolClass(MobClass def) {
 		super(def);
 	}
 

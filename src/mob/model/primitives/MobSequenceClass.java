@@ -4,8 +4,8 @@ import mob.ast.MobAstElement;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobMethod;
 
-public class MobSequenceClass extends MobObjectClass {
-	public MobSequenceClass(MobObjectClass def) {
+public class MobSequenceClass extends MobClass {
+	public MobSequenceClass(MobClass def) {
 		super(def);
 		this.addMethod(new MobMethod("add:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
