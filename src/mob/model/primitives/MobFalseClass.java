@@ -5,7 +5,7 @@ import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
-public class MobFalseClass extends MobBooleanClass {
+public class MobFalseClass extends MobMetaClass {
 
 	public MobFalseClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
 		super(name, superclass, environment, def);
@@ -13,8 +13,8 @@ public class MobFalseClass extends MobBooleanClass {
 
 	public void initializePrimitives() {
 		super.initializePrimitives();
-			
-	this.addMethod(new MobMethod("ifFalse:") {
+
+		this.addMethod(new MobMethod("ifFalse:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobUnit falseArg = (MobUnit) ctx.pop();
 				for (MobAstElement e : falseArg.code())

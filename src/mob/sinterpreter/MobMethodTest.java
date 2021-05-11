@@ -13,37 +13,35 @@ class MobMethodTest {
 	void test() {
 		MobMethod m = new MobMethod("+") {
 			@Override
-			public
-			void run(MobContext ctx, MobAstElement mobObject) {
-				// TODO Auto-generated method stub
-				
-			}};
+			public void run(MobContext ctx, MobAstElement mobObject) {
+			}
+		};
 		assertTrue(m.selector().toString().equals("+"));
-		
+
 		m = new MobMethod("xyz") {
 			@Override
-			public
-			void run(MobContext ctx, MobAstElement mobObject) {
+			public void run(MobContext ctx, MobAstElement mobObject) {
 				// TODO Auto-generated method stub
-				
-			}};
+
+			}
+		};
 		assertTrue(m.selector().toString().equals("xyz"));
-		
+
 		System.out.println(Arrays.toString("a b  c 	d			e".split("[ \t]+")));
 		System.out.println(Arrays.toString("a;b;c;d".split("(?<=;)")));
 		System.out.println(Arrays.toString("a;b;c;d".split("(?=;)")));
 		System.out.println(Arrays.toString("a;b;c;d".split("((?<=;)|(?=;))")));
-		
+
 		m = new MobMethod("x:y:z:") {
 			@Override
-			public
-			void run(MobContext ctx, MobAstElement mobObject) {
+			public void run(MobContext ctx, MobAstElement mobObject) {
 				// TODO Auto-generated method stub
-				
-			}};
+
+			}
+		};
 		System.out.println(m.selector());
 		assertTrue(m.selector().toString().equals("x:y:z:"));
-		
+
 	}
 
 }

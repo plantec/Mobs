@@ -11,7 +11,7 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 		super(name, superclass, environment, def);
 	}
 	
-	public void initializePrimitived() {
+	public void initializePrimitives() {
 		super.initializePrimitives();
 		this.addMethod(new MobMethod("+") {
 			public void run(MobContext ctx, MobAstElement receiver) {
