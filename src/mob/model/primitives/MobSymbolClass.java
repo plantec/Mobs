@@ -4,8 +4,8 @@ import mob.sinterpreter.MobEnvironment;
 
 public class MobSymbolClass extends MobPrimitiveClass<String> {
 	
-	public MobSymbolClass(MobEnvironment environment, MobClass def) {
-		super(environment, def);
+	public MobSymbolClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
+		super(name, superclass, environment, def);
 	}
 
 	@Override

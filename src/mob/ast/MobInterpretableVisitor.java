@@ -1,7 +1,6 @@
 package mob.ast;
 
 import mob.model.primitives.MobCharacter;
-import mob.model.primitives.MobCharacterClass;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
@@ -12,7 +11,7 @@ import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobTrue;
 import mob.model.primitives.MobUnit;
 
-public interface MobAstVisitor {
+public interface MobInterpretableVisitor {
 
 	default void visitTrue(MobTrue mobTrue) {
 	}

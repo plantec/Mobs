@@ -1,11 +1,12 @@
 package mob.sinterpreter;
 
 import java.io.IOException;
+
 import java.util.List;
 
 import mob.ast.MobAssign;
 import mob.ast.MobAstElement;
-import mob.ast.MobAstVisitor;
+import mob.ast.MobInterpretableVisitor;
 import mob.ast.MobBinaryMessage;
 import mob.ast.MobKeywordMessage;
 import mob.ast.MobQuoted;
@@ -26,7 +27,7 @@ import mob.model.primitives.MobUnit;
 import stree.parser.SNode;
 import stree.parser.SParser;
 
-public class MobInterpreter implements MobAstVisitor {	
+public class MobInterpreter implements MobInterpretableVisitor {	
 	private MobContext context;
 
 	public MobInterpreter(MobEnvironment env) {
@@ -40,7 +41,7 @@ public class MobInterpreter implements MobAstVisitor {
 	public List<MobAstElement> run(List<SNode> sexps) {
 		this.context = new MobTopContext(this.context.environment(), this);
 		List<MobAstElement> progs = new MobTreeBuilder(this.context.environment()).run(sexps);
-		progs.forEach(e->e.accept(this));
+		progs.forEach(e->this.accept(e));
 		return this.result();
 	}
 
@@ -59,14 +60,15 @@ public class MobInterpreter implements MobAstVisitor {
 		return this.context;
 	}
 
-	public void pushContext(MobUnit unit) {
-		this.context = new MobContext(this.context, unit);
+	public void pushContext(MobContext ctx) {
+		ctx.setParent(this.context);
+		this.context = ctx;
 	}
-	public void pushContext() {
-		this.context = new MobContext(this.context);
-	}
-	public void popContext() {
+	
+	public MobContext popContext() {
+		MobContext previous = this.context;
 		this.context = this.context.parent();
+		return previous;
 	}
 	
 	private void push(MobAstElement exp) {
@@ -77,33 +79,40 @@ public class MobInterpreter implements MobAstVisitor {
 		return this.context.pop();
 	}
 	
+	public void accept(final MobAstElement e) {
+		try {
+			e.accept(this);
+		} catch (MobReturnExecuted e1) {
+		}
+	}
+	
 	@Override
 	public void visitTrue(MobTrue mobTrue) {
-		MobAstVisitor.super.visitTrue(mobTrue);
+		MobInterpretableVisitor.super.visitTrue(mobTrue);
 		this.push(mobTrue);
 	}
 
 	@Override
 	public void visitFalse(MobFalse mobFalse) {
-		MobAstVisitor.super.visitFalse(mobFalse);
+		MobInterpretableVisitor.super.visitFalse(mobFalse);
 		this.push(mobFalse);
 	}
 
 	@Override
 	public void visitFloat(MobFloat mobFloat) {
-		MobAstVisitor.super.visitFloat(mobFloat);
+		MobInterpretableVisitor.super.visitFloat(mobFloat);
 		this.push(mobFloat);
 	}
 
 	@Override
 	public void visitInteger(MobInteger mobInteger) {
-		MobAstVisitor.super.visitInteger(mobInteger);
+		MobInterpretableVisitor.super.visitInteger(mobInteger);
 		this.push(mobInteger);
 	}
 
 	@Override
 	public void visitSymbol(MobSymbol mobSymbol) {
-		MobAstVisitor.super.visitSymbol(mobSymbol);
+		MobInterpretableVisitor.super.visitSymbol(mobSymbol);
 		MobVariable v = context.lookupVariableByName(mobSymbol.rawValue());
 		if (v == null) {
 			throw new Error("Undeclared variable '" + mobSymbol.rawValue() + "'");
@@ -113,8 +122,8 @@ public class MobInterpreter implements MobAstVisitor {
 
 	@Override
 	public void visitAssign(MobAssign mobAssign) {
-		MobAstVisitor.super.visitAssign(mobAssign);
-		mobAssign.right().accept(this);
+		MobInterpretableVisitor.super.visitAssign(mobAssign);
+		this.accept(mobAssign.right());
 		MobSymbol n = (MobSymbol) mobAssign.left();
 		MobVariable var = context.lookupVariableByName(n.rawValue());
 		var.setValue(this.pop());
@@ -123,81 +132,88 @@ public class MobInterpreter implements MobAstVisitor {
 	
 	@Override
 	public void visitNil(MobNil mobNil) {
-		MobAstVisitor.super.visitNil(mobNil);
+		MobInterpretableVisitor.super.visitNil(mobNil);
 		this.push(mobNil);
 	}
 
 	@Override
 	public void visitString(MobString mobString) {
-		MobAstVisitor.super.visitString(mobString);
+		MobInterpretableVisitor.super.visitString(mobString);
 		this.push(mobString);
 	}
 
 	@Override
 	public void visitCharacter(MobCharacter mobCharacter) {
-		MobAstVisitor.super.visitCharacter(mobCharacter);
+		MobInterpretableVisitor.super.visitCharacter(mobCharacter);
 		this.push(mobCharacter);
 	}
 
 	@Override
 	public void visitUnit(MobUnit mobUnit) {
-		MobAstVisitor.super.visitUnit(mobUnit);
+		MobInterpretableVisitor.super.visitUnit(mobUnit);
 		this.push(mobUnit);
 	}
 
 	@Override
 	public void visitUnaryMessage(MobUnaryMessage mobUnaryMessage) {
-		MobAstVisitor.super.visitUnaryMessage(mobUnaryMessage);
+		MobInterpretableVisitor.super.visitUnaryMessage(mobUnaryMessage);
 		String name = mobUnaryMessage.keyword();
 		MobAstElement receiver = mobUnaryMessage.receiver();
-		receiver.accept(this);
-		((MobObject)this.pop()).run(this.context, name);
+		this.accept(receiver);
+		MobAstElement actualReceiver = this.pop();
+		((MobObject) actualReceiver).run(this.context, name);
+		this.push(actualReceiver);
 	}
 
 	@Override
 	public void visitBinaryMessage(MobBinaryMessage mobBinaryMessage) {
-		MobAstVisitor.super.visitBinaryMessage(mobBinaryMessage);
+		MobInterpretableVisitor.super.visitBinaryMessage(mobBinaryMessage);
 		MobSymbol name = mobBinaryMessage.operator();
 		MobAstElement receiver = mobBinaryMessage.receiver();
 		MobAstElement arg = mobBinaryMessage.argument();
-		arg.accept(this);
-		receiver.accept(this);
-		MobAstElement e = this.pop();
-		((MobObject)e).run(this.context, name.rawValue());
+		this.accept(arg);
+		this.accept(receiver);
+		MobAstElement actualReceiver = this.pop();
+		((MobObject)actualReceiver).run(this.context, name.rawValue());
+		this.push(actualReceiver);		
 	}
 
 	@Override
 	public void visitKeywordMessage(MobKeywordMessage mobKeywordMessage) {
-		MobAstVisitor.super.visitKeywordMessage(mobKeywordMessage);
+		MobInterpretableVisitor.super.visitKeywordMessage(mobKeywordMessage);
 		for (MobAstElement e : mobKeywordMessage.arguments())
-			e.accept(this);
+			this.accept(e);
 		String selector = mobKeywordMessage.selector();
 		MobAstElement receiver = mobKeywordMessage.receiver();
-		receiver.accept(this);
-		((MobObject)this.pop()).run(this.context, selector);
+		this.accept(receiver);
+		MobAstElement actualReceiver = this.pop();
+		((MobObject)actualReceiver).run(this.context, selector);
+		this.push(actualReceiver);		
 	}
 
 	@Override
 	public void visitSequence(MobSequence mobSequence) {
-		MobAstVisitor.super.visitSequence(mobSequence);
+		MobInterpretableVisitor.super.visitSequence(mobSequence);
 		for (MobAstElement e : mobSequence.children()) {
-			e.accept(this);
+			this.accept(e);
 		}
 	}
 
 	@Override
 	public void visitReturn(MobReturn mobReturn) {
-		MobAstVisitor.super.visitReturn(mobReturn);
+		MobInterpretableVisitor.super.visitReturn(mobReturn);
+		mobReturn.returned().accept(this);
+		throw new MobReturnExecuted();
 	}
 
 	@Override
 	public void visitVarDecl(MobVarDecl mobVarDecl) {
-		MobAstVisitor.super.visitVarDecl(mobVarDecl);
+		MobInterpretableVisitor.super.visitVarDecl(mobVarDecl);
 		MobAstElement val;
 		if (mobVarDecl.initialValue() == null) {
 			val = context.newNil();
 		} else {
-			mobVarDecl.initialValue().accept(this);
+			this.accept(mobVarDecl.initialValue());
 			val = this.pop();
 		}
 		MobVariable var = new MobVariable(mobVarDecl.name(), val);
@@ -206,7 +222,7 @@ public class MobInterpreter implements MobAstVisitor {
 
 	@Override
 	public void visitQuoted(MobQuoted mobQuoted) {
-		MobAstVisitor.super.visitQuoted(mobQuoted);
+		MobInterpretableVisitor.super.visitQuoted(mobQuoted);
 		this.push(mobQuoted);
 	}
 }

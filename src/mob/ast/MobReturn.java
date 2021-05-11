@@ -14,7 +14,7 @@ public class MobReturn extends MobEntity implements MobAstElement {
 	}
 
 	@Override
-	public void accept(MobAstVisitor visitor) {
+	public void accept(MobInterpretableVisitor visitor) {
 		visitor.visitReturn(this);
 	}
 

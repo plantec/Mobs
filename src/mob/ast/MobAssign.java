@@ -21,7 +21,7 @@ public class MobAssign extends MobEntity implements MobAstElement {
 	}
 
 	@Override
-	public void accept(MobAstVisitor visitor) {
+	public void accept(MobInterpretableVisitor visitor) {
 		visitor.visitAssign(this);
 	}
 	

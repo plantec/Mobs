@@ -2,10 +2,10 @@ package mob.model.primitives;
 
 import mob.sinterpreter.MobEnvironment;
 
-public abstract class MobPrimitiveClass<T> extends MobClass {
+public abstract class MobPrimitiveClass<T> extends MobMetaClass {
 
-	public MobPrimitiveClass(MobEnvironment environment, MobClass def) {
-		super(environment, def);
+	public MobPrimitiveClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
+		super(name, superclass, environment, def);
 	}
 
 	@Override

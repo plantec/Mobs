@@ -18,7 +18,7 @@ public class MobQuoted extends MobEntity implements MobAstElement {
 	}
 
 	@Override
-	public void accept(MobAstVisitor visitor) {
+	public void accept(MobInterpretableVisitor visitor) {
 		visitor.visitQuoted(this);
 	}
 

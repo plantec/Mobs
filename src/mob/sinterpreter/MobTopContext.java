@@ -37,11 +37,6 @@ public class MobTopContext extends MobContext {
 		return  result;
 	}
 	
-	public void clear() {
-		super.clear();
-		this.stk.clear();
-	}
-	
 	public MobInterpreter interpreter() {
 		return this.interpreter;
 	}

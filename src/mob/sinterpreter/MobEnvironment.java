@@ -1,6 +1,8 @@
 package mob.sinterpreter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mob.ast.MobAstElement;
 import mob.model.primitives.MobCharacter;
@@ -37,29 +39,40 @@ public class MobEnvironment {
 	private MobNilClass nilClass;
 	private MobUnitClass unitClass;
 	private MobClass mobClass;
-	private MobMetaClass mobMetaClass;
+	
+	private Map<String, MobClass> classes;
 	
 	private MobNil nil_;
 	private MobFalse false_;
 	private MobTrue true_;
 	
 	public MobEnvironment() {
-		this.mobMetaClass = new MobMetaClass(this, null);
-		this.mobMetaClass.setDefinition(this.mobMetaClass);
-		this.mobClass = new MobClass(this, mobMetaClass);
-		this.floatClass = new MobFloatClass(this, this.mobMetaClass);
-		this.integerClass = new MobIntegerClass(this, this.mobMetaClass);
-		this.characterClass = new MobCharacterClass(this, this.mobMetaClass);
-		this.stringClass = new MobStringClass(this, this.mobMetaClass);
-		this.symbolClass = new MobSymbolClass(this, this.mobMetaClass);
-		this.unitClass = new MobUnitClass(this, this.mobMetaClass);
-		this.nilClass = new MobNilClass(this, this.mobClass);
-		this.falseClass = new MobFalseClass(this, this.mobClass);
-		this.trueClass = new MobTrueClass(this, this.mobClass);
+		classes = new HashMap<>();
+		MobMetaClass mobMetaClass = new MobMetaClass("MetaClass", null, this, null);
+		mobMetaClass.setDefinition(mobMetaClass);
+		this.recordClass(mobMetaClass);
+		
+		this.recordClass(new MobClass("Class", null, this, mobMetaClass));
+		this.recordClass(new MobFloatClass("Float", null, this, mobMetaClass));
+		this.recordClass(new MobIntegerClass("Integer", null, this, mobMetaClass));
+		this.recordClass(new MobCharacterClass("Character", null, this, mobMetaClass));
+		this.recordClass(new MobStringClass("String", null, this, mobMetaClass));
+		this.recordClass(new MobSymbolClass("Symbol", null, this, mobMetaClass));
+		this.recordClass(new MobUnitClass("Unit", null, this, mobMetaClass));
+		this.recordClass(new MobNilClass("Nil", null, this, mobMetaClass));
+		this.recordClass(new MobFalseClass("False", null, this, mobMetaClass));
+		this.recordClass(new MobTrueClass("True", null, this, mobMetaClass));
 
-		this.nil_ = this.nilClass.newInstance();
-		this.true_ = this.trueClass.newInstance();
-		this.false_ = this.falseClass.newInstance();
+		this.nil_ = (MobNil) this.getClassByName("Nil").newInstance();
+		this.true_ = (MobTrue) this.getClassByName("True").newInstance();
+		this.false_ = (MobFalse) this.getClassByName("False").newInstance();
+	}
+	
+	public void recordClass(MobClass clazz) {
+		this.classes.put(clazz.name(), clazz);
+	}
+	public MobClass getClassByName(String name) {
+		return this.classes.get(name);
 	}
 	
 	public MobClass mobMetaClass() { return this.mobMetaClass; }

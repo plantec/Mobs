@@ -35,7 +35,7 @@ public class MobKeywordMessage extends MobMessage {
 	}
 
 	@Override
-	public void accept(MobAstVisitor visitor) {
+	public void accept(MobInterpretableVisitor visitor) {
 		visitor.visitKeywordMessage(this);
 	}
 

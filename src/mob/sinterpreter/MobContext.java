@@ -10,6 +10,7 @@ import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobNil;
+import mob.model.primitives.MobObject;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobTrue;
@@ -19,6 +20,9 @@ public class MobContext {
 	private MobContext parent;
 	private HashMap<String, MobVariable> variables;
 	private List<MobVariable> parameters;
+	private List<MobVariable> slots;
+	MobUnit unit;
+	MobObject receiver;
 
 	public MobContext(MobContext parent) {
 		this.parent = parent;
@@ -26,12 +30,18 @@ public class MobContext {
 		this.parameters = new ArrayList<>();
 	}
 
-	public MobContext(MobContext parent, MobUnit unit) {
-		this(parent);
+	public void setUnit(MobUnit unit) {
+		this.unit = unit;
 		List<String> pl = unit.parameters();
 		for (int i = 0; i < pl.size(); i++) {
-			parameters.add(new MobVariable(pl.get(i)));
+			this.parameters.add(new MobVariable(pl.get(i)));
 		}
+	}
+
+	public void setReceiver(MobObject receiver) {
+		this.receiver = receiver;
+		this.addVariable(new MobVariable("self", this.receiver));
+		this.slots = receiver.slots();
 	}
 
 	public void setParameterValue(int idx, MobAstElement value) {
@@ -66,9 +76,13 @@ public class MobContext {
 		MobVariable v = this.variables.get(name);
 		if (v != null)
 			return v;
-		for (MobVariable p : this.parameters) {
+		for (MobVariable p : this.parameters)
 			if (p.name().equals(name))
 				return p;
+		if (this.slots != null) {
+			for (MobVariable p : this.slots)
+				if (p.name().equals(name))
+					return p;
 		}
 		return null;
 	}
@@ -92,6 +106,11 @@ public class MobContext {
 
 	public void push(MobAstElement exp) {
 		this.parent.push(exp);
+	}
+
+	public void returnElement(MobAstElement exp) {
+		this.push(exp);
+		throw new MobReturnExecuted();
 	}
 
 	public MobAstElement pop() {

@@ -1,6 +1,6 @@
 package mob.model.primitives;
 
-import mob.ast.MobAstVisitor;
+import mob.ast.MobInterpretableVisitor;
 
 public class MobInteger extends MobPrimitive<Integer> {
 
@@ -9,7 +9,7 @@ public class MobInteger extends MobPrimitive<Integer> {
 	}
 
 	@Override
-	public void accept(MobAstVisitor visitor) {
+	public void accept(MobInterpretableVisitor visitor) {
 		visitor.visitInteger(this);
 	}
 

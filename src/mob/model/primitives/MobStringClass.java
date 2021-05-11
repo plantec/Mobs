@@ -4,8 +4,9 @@ import mob.sinterpreter.MobEnvironment;
 
 public class MobStringClass extends MobPrimitiveClass<String> {
 
-	public MobStringClass(MobEnvironment environment, MobClass def) {
-		super(environment, def);
+
+	public MobStringClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
+		super(name, superclass, environment, def);
 	}
 
 	@Override

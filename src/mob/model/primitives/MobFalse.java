@@ -1,6 +1,6 @@
 package mob.model.primitives;
 
-import mob.ast.MobAstVisitor;
+import mob.ast.MobInterpretableVisitor;
 
 public class MobFalse extends MobBoolean {
 
@@ -9,7 +9,7 @@ public class MobFalse extends MobBoolean {
 	}
 
 	@Override
-	public void accept(MobAstVisitor visitor) {
+	public void accept(MobInterpretableVisitor visitor) {
 		visitor.visitFalse(this);	
 	}
 

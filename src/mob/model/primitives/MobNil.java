@@ -1,7 +1,7 @@
 package mob.model.primitives;
 
 import mob.ast.MobAstElement;
-import mob.ast.MobAstVisitor;
+import mob.ast.MobInterpretableVisitor;
 
 public class MobNil extends MobObject implements MobAstElement {
 
@@ -10,7 +10,7 @@ public class MobNil extends MobObject implements MobAstElement {
 	}
 
 	@Override
-	public void accept(MobAstVisitor visitor) {
+	public void accept(MobInterpretableVisitor visitor) {
 		visitor.visitNil(this);		
 	}
 

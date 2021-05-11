@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mob.ast.MobAstElement;
-import mob.ast.MobAstVisitor;
+import mob.ast.MobInterpretableVisitor;
 
 public class MobSequence extends MobObject implements MobAstElement {
 	List<MobAstElement> children;
@@ -45,7 +45,7 @@ public class MobSequence extends MobObject implements MobAstElement {
 	}
 	
 	@Override
-	public void accept(MobAstVisitor visitor) {
+	public void accept(MobInterpretableVisitor visitor) {
 		visitor.visitSequence(this);
 	}
 	

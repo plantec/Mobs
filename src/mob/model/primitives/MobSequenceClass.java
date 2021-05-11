@@ -5,16 +5,19 @@ import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
-public class MobSequenceClass extends MobClass {
+public class MobSequenceClass extends MobMetaClass {
 	
-	public MobSequenceClass(MobEnvironment environment, MobClass def) {
-		super(environment, def);
+	public MobSequenceClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
+		super(name, superclass, environment, def);
+	}
+
+	public void initializePrimitives() {
+		super.initializePrimitives();
 		this.addMethod(new MobMethod("add:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobSequence seq = (MobSequence) receiver;
 				MobAstElement obj = ctx.pop();
 				seq.add(obj);
-				ctx.push(seq);
 			}
 		});
 		this.addMethod(new MobMethod("at:put:") {
@@ -23,7 +26,6 @@ public class MobSequenceClass extends MobClass {
 				MobAstElement obj = ctx.pop();
 				MobInteger pos = (MobInteger) ctx.pop();
 				seq.set(pos.rawValue(), obj);
-				ctx.push(seq);
 			}
 		});
 		
@@ -31,7 +33,7 @@ public class MobSequenceClass extends MobClass {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobSequence seq = (MobSequence) receiver;
 				MobInteger arg = (MobInteger) ctx.pop();
-				ctx.push(seq.get(arg.rawValue()));
+				ctx.returnElement(seq.get(arg.rawValue()));
 			}
 		});
 	}

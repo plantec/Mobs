@@ -1,9 +1,12 @@
 package mob.model.primitives;
 
+import java.util.List;
+
 import mob.ast.MobAstElement;
 import mob.model.MobEntity;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
+import mob.sinterpreter.MobVariable;
 
 public class MobObject extends MobEntity implements MobAstElement {
 	private MobEnvironment environment;
@@ -26,6 +29,10 @@ public class MobObject extends MobEntity implements MobAstElement {
 		return this.environment;
 	}
 	
+	public List<MobVariable> slots() {
+		return null;
+	}
+
 	public void setDefinition(MobClass definition) {
 		this.definition = definition;
 	}

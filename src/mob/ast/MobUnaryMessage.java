@@ -13,7 +13,7 @@ public class MobUnaryMessage extends MobMessage {
 	}
 
 	@Override
-	public void accept(MobAstVisitor visitor) {
+	public void accept(MobInterpretableVisitor visitor) {
 		visitor.visitUnaryMessage(this);
 	}
 

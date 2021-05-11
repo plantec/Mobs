@@ -6,17 +6,24 @@ import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
-public class MobUnitClass extends MobClass {
+public class MobUnitClass extends MobMetaClass {
 
-	public MobUnitClass(MobEnvironment environment, MobClass def) {
-		super(environment, def);
+	public MobUnitClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
+		super(name, superclass, environment, def);
+	}
+
+	public void initializePrimitives() {
+		super.initializePrimitives();
 		this.addMethod(new MobMethod("value") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobUnit unit = (MobUnit) receiver;
-				ctx.interpreter().pushContext();
+				MobContext newCtx = new MobContext(ctx.interpreter().topContext());
+				newCtx.setUnit(unit);
+				ctx.interpreter().pushContext(newCtx);
 				for (MobAstElement e : unit.code())
 					e.accept(ctx.interpreter());
 				ctx.interpreter().popContext();
+				ctx.returnElement(ctx.pop());
 			}
 		});
 		
@@ -29,11 +36,14 @@ public class MobUnitClass extends MobClass {
 				if ((unit.parameters().size() != 1) ) {
 					throw new Error(unit.parameters().size() + " intended formal parameters but 1 arguments actually passed");
 				}
-				ctx.interpreter().pushContext(unit);
-				ctx.interpreter().topContext().setParameterValue(0, arg);
+				MobContext newCtx = new MobContext(ctx.interpreter().topContext());
+				newCtx.setUnit(unit);
+				newCtx.setParameterValue(0, arg);
+				ctx.interpreter().pushContext(newCtx);
 				for (MobAstElement e : unit.code())
 					e.accept(ctx.interpreter());
 				ctx.interpreter().popContext();
+				ctx.returnElement(ctx.pop());
 			}
 		});
 		
@@ -47,12 +57,15 @@ public class MobUnitClass extends MobClass {
 				if ((unit.parameters().size() != 2) ) {
 					throw new Error(unit.parameters().size() + " intended formal parameters but 2 arguments actually passed");
 				}
-				ctx.interpreter().pushContext(unit);
-				ctx.interpreter().topContext().setParameterValue(0, arg1);
-				ctx.interpreter().topContext().setParameterValue(1, arg2);
+				MobContext newCtx = new MobContext(ctx.interpreter().topContext());
+				newCtx.setUnit(unit);
+				newCtx.setParameterValue(0, arg1);
+				newCtx.setParameterValue(1, arg2);
+				ctx.interpreter().pushContext(newCtx);
 				for (MobAstElement e : unit.code())
 					e.accept(ctx.interpreter());
 				ctx.interpreter().popContext();
+				ctx.returnElement(ctx.pop());
 			}
 		});
 		this.addMethod(new MobMethod("values:") {
@@ -61,12 +74,15 @@ public class MobUnitClass extends MobClass {
 				MobAstElement arg = ctx.pop();
 				MobQuoted quo = (MobQuoted) arg;
 				MobSequence seq = (MobSequence) quo.entity();
-				ctx.interpreter().pushContext(unit);
+				MobContext newCtx = new MobContext(ctx.interpreter().topContext());
+				newCtx.setUnit(unit);
 				for (int i = 0; i < seq.size(); i++)
-					ctx.interpreter().topContext().setParameterValue(i, seq.get(i));
+					newCtx.setParameterValue(i, seq.get(i));
+				ctx.interpreter().pushContext(newCtx);
 				for (MobAstElement e : unit.code())
 					e.accept(ctx.interpreter());
 				ctx.interpreter().popContext();
+				ctx.returnElement(ctx.pop());
 			}
 		});
 		

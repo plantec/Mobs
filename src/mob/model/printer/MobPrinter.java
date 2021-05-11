@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 import mob.model.MobEntity;
 import mob.ast.MobAssign;
 import mob.ast.MobAstElement;
-import mob.ast.MobAstVisitor;
+import mob.ast.MobInterpretableVisitor;
 import mob.ast.MobBinaryMessage;
 import mob.ast.MobKeywordMessage;
 import mob.ast.MobQuoted;
@@ -25,12 +25,13 @@ import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobTrue;
 import mob.model.primitives.MobUnit;
+import mob.sinterpreter.MobReturnExecuted;
 
 interface Doer {
 	public void execute();
 }
 
-public class MobPrinter implements MobAstVisitor {
+public class MobPrinter implements MobInterpretableVisitor {
 
 	protected OutputStream stream;
 	Boolean withIndentation;
@@ -104,50 +105,50 @@ public class MobPrinter implements MobAstVisitor {
 
 	@Override
 	public void visitTrue(MobTrue mobTrue) {
-		MobAstVisitor.super.visitTrue(mobTrue);
+		MobInterpretableVisitor.super.visitTrue(mobTrue);
 		this.write("true");
 	}
 
 	@Override
 	public void visitFalse(MobFalse mobFalse) {
-		MobAstVisitor.super.visitFalse(mobFalse);
+		MobInterpretableVisitor.super.visitFalse(mobFalse);
 		this.write("false");
 	}
 
 	@Override
 	public void visitFloat(MobFloat mobFloat) {
-		MobAstVisitor.super.visitFloat(mobFloat);
+		MobInterpretableVisitor.super.visitFloat(mobFloat);
 		this.write(mobFloat.rawValue().toString());
 
 	}
 
 	@Override
 	public void visitInteger(MobInteger mobInteger) {
-		MobAstVisitor.super.visitInteger(mobInteger);
+		MobInterpretableVisitor.super.visitInteger(mobInteger);
 		this.write(mobInteger.rawValue().toString());
 	}
 
 	@Override
 	public void visitNil(MobNil mobNil) {
-		MobAstVisitor.super.visitNil(mobNil);
+		MobInterpretableVisitor.super.visitNil(mobNil);
 		this.write("nil");
 	}
 
 	@Override
 	public void visitString(MobString mobString) {
-		MobAstVisitor.super.visitString(mobString);
+		MobInterpretableVisitor.super.visitString(mobString);
 		this.write(mobString.rawValue());
 	}
 
 	@Override
 	public void visitSymbol(MobSymbol mobSymbol) {
-		MobAstVisitor.super.visitSymbol(mobSymbol);
+		MobInterpretableVisitor.super.visitSymbol(mobSymbol);
 		this.write(mobSymbol.rawValue());
 	}
 
 	@Override
 	public void visitAssign(MobAssign mobAssign) {
-		MobAstVisitor.super.visitAssign(mobAssign);
+		MobInterpretableVisitor.super.visitAssign(mobAssign);
 		this.write('(');
 		this.write(' ');
 		mobAssign.left().accept(this);
@@ -161,7 +162,7 @@ public class MobPrinter implements MobAstVisitor {
 
 	@Override
 	public void visitVarDecl(MobVarDecl mobVarDecl) {
-		MobAstVisitor.super.visitVarDecl(mobVarDecl);
+		MobInterpretableVisitor.super.visitVarDecl(mobVarDecl);
 		this.write('(');
 		this.write(' ');
 		this.write("decl");
@@ -179,7 +180,11 @@ public class MobPrinter implements MobAstVisitor {
 
 	@Override
 	public void visitReturn(MobReturn mobReturn) {
-		MobAstVisitor.super.visitReturn(mobReturn);
+		try {
+			MobInterpretableVisitor.super.visitReturn(mobReturn);
+		} catch (MobReturnExecuted e) {
+			e.printStackTrace();
+		}
 		this.write('(');
 		this.write(' ');
 		this.write("^");
@@ -193,7 +198,7 @@ public class MobPrinter implements MobAstVisitor {
 
 	@Override
 	public void visitUnaryMessage(MobUnaryMessage mobUnaryMessage) {
-		MobAstVisitor.super.visitUnaryMessage(mobUnaryMessage);
+		MobInterpretableVisitor.super.visitUnaryMessage(mobUnaryMessage);
 		MobAstElement receiver = mobUnaryMessage.receiver();
 		this.write('(');
 		this.write(' ');
@@ -206,7 +211,7 @@ public class MobPrinter implements MobAstVisitor {
 
 	@Override
 	public void visitBinaryMessage(MobBinaryMessage mobBinaryMessage) {
-		MobAstVisitor.super.visitBinaryMessage(mobBinaryMessage);
+		MobInterpretableVisitor.super.visitBinaryMessage(mobBinaryMessage);
 		MobAstElement receiver = mobBinaryMessage.receiver();
 		MobAstElement arg = mobBinaryMessage.argument();
 		this.write('(');
@@ -222,7 +227,7 @@ public class MobPrinter implements MobAstVisitor {
 
 	@Override
 	public void visitKeywordMessage(MobKeywordMessage mobKeywordMessage) {
-		MobAstVisitor.super.visitKeywordMessage(mobKeywordMessage);
+		MobInterpretableVisitor.super.visitKeywordMessage(mobKeywordMessage);
 		MobAstElement receiver = mobKeywordMessage.receiver();
 		this.write('(');
 		this.write(' ');
@@ -243,7 +248,7 @@ public class MobPrinter implements MobAstVisitor {
 
 	@Override
 	public void visitSequence(MobSequence mobSequence) {
-		MobAstVisitor.super.visitSequence(mobSequence);
+		MobInterpretableVisitor.super.visitSequence(mobSequence);
 		this.write('(');
 		this.write(' ');
 		for (MobAstElement e : mobSequence.children()) {
@@ -255,7 +260,7 @@ public class MobPrinter implements MobAstVisitor {
 
 	@Override
 	public void visitUnit(MobUnit mobUnit) {
-		MobAstVisitor.super.visitUnit(mobUnit);
+		MobInterpretableVisitor.super.visitUnit(mobUnit);
 		this.write('[');
 		if (mobUnit.hasParameters()) {
 			this.write(" ");
@@ -275,7 +280,7 @@ public class MobPrinter implements MobAstVisitor {
 
 	@Override
 	public void visitQuoted(MobQuoted mobQuoted) {
-		MobAstVisitor.super.visitQuoted(mobQuoted);
+		MobInterpretableVisitor.super.visitQuoted(mobQuoted);
 		this.write('`');
 		mobQuoted.entity().accept(this);
 	}

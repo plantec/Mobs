@@ -7,18 +7,22 @@ import mob.sinterpreter.MobMethod;
 
 public class MobFloatClass extends MobPrimitiveClass<Float> {
 
-	public MobFloatClass(MobEnvironment environment, MobClass def) {
-		super(environment, def);
+	public MobFloatClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
+		super(name, superclass, environment, def);
+	}
+	
+	public void initializePrimitived() {
+		super.initializePrimitives();
 		this.addMethod(new MobMethod("+") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobAstElement arg1 = ctx.pop();
 				MobFloat r = (MobFloat) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
-					ctx.push(ctx.newFloat(r.rawValue()+arg.rawValue()));
+					ctx.returnElement(ctx.newFloat(r.rawValue()+arg.rawValue()));
 				} else {
 					MobFloat arg = (MobFloat) arg1;
-					ctx.push(ctx.newFloat(r.rawValue()+arg.rawValue()));
+					ctx.returnElement(ctx.newFloat(r.rawValue()+arg.rawValue()));
 				}
 			}
 		});
@@ -28,10 +32,10 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 				MobFloat r = (MobFloat) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
-					ctx.push(ctx.newFloat(r.rawValue()-arg.rawValue()));
+					ctx.returnElement(ctx.newFloat(r.rawValue()-arg.rawValue()));
 				} else {
 					MobFloat arg = (MobFloat) arg1;
-					ctx.push(ctx.newFloat(r.rawValue()-arg.rawValue()));
+					ctx.returnElement(ctx.newFloat(r.rawValue()-arg.rawValue()));
 				}
 			}
 		});
@@ -41,10 +45,10 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 				MobFloat r = (MobFloat) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
-					ctx.push(ctx.newFloat(r.rawValue()*arg.rawValue()));
+					ctx.returnElement(ctx.newFloat(r.rawValue()*arg.rawValue()));
 				} else {
 					MobFloat arg = (MobFloat) arg1;
-					ctx.push(ctx.newFloat(r.rawValue()*arg.rawValue()));
+					ctx.returnElement(ctx.newFloat(r.rawValue()*arg.rawValue()));
 				}
 			}
 		});
@@ -54,10 +58,10 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 				MobFloat r = (MobFloat) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
-					ctx.push(ctx.newFloat(r.rawValue()/arg.rawValue()));
+					ctx.returnElement(ctx.newFloat(r.rawValue()/arg.rawValue()));
 				} else {
 					MobFloat arg = (MobFloat) arg1;
-					ctx.push(ctx.newFloat(r.rawValue()/arg.rawValue()));
+					ctx.returnElement(ctx.newFloat(r.rawValue()/arg.rawValue()));
 				}
 			}
 		});
@@ -65,7 +69,7 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 		this.addMethod(new MobMethod("negated") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobFloat r = (MobFloat) receiver;
-				ctx.push(ctx.newFloat(r.rawValue()*-1));
+				ctx.returnElement(ctx.newFloat(r.rawValue()*-1));
 			}
 		});
 		
@@ -75,10 +79,10 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 				MobFloat r = (MobFloat) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
-					ctx.push(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
 					MobFloat arg = (MobFloat) arg1;
-					ctx.push(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -88,10 +92,10 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 				MobFloat r = (MobFloat) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
-					ctx.push(r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
 					MobFloat arg = (MobFloat) arg1;
-					ctx.push(r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -101,10 +105,10 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 				MobFloat r = (MobFloat) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
-					ctx.push(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
 					MobFloat arg = (MobFloat) arg1;
-					ctx.push(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -114,10 +118,10 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 				MobFloat r = (MobFloat) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
-					ctx.push(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
 					MobFloat arg = (MobFloat) arg1;
-					ctx.push(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -127,10 +131,10 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 				MobFloat r = (MobFloat) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
-					ctx.push(r.rawValue() == (float)arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.rawValue() == (float)arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
 					MobFloat arg = (MobFloat) arg1;
-					ctx.push(r.rawValue() == (float)arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.rawValue() == (float)arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -140,10 +144,10 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 				MobFloat r = (MobFloat) receiver;
 				if (arg1 instanceof MobInteger) {
 					MobInteger arg = (MobInteger) arg1;
-					ctx.push(r.rawValue() == (float)arg.rawValue() ? ctx.newFalse():ctx.newTrue());
+					ctx.returnElement(r.rawValue() == (float)arg.rawValue() ? ctx.newFalse():ctx.newTrue());
 				} else {
 					MobFloat arg = (MobFloat) arg1;
-					ctx.push(r.rawValue() == (float)arg.rawValue() ? ctx.newFalse():ctx.newTrue());
+					ctx.returnElement(r.rawValue() == (float)arg.rawValue() ? ctx.newFalse():ctx.newTrue());
 				}
 			}
 		});
