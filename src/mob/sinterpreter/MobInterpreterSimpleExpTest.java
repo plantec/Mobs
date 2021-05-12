@@ -9,11 +9,11 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import mob.ast.MobAstElement;
+import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
-import mob.model.primitives.MobNil;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobTrue;
 
@@ -26,7 +26,7 @@ class MobInterpreterSimpleExpTest {
 		List<MobAstElement> res;
 
 		res = interpreter.run("nil");
-		assertTrue(res.get(0) instanceof MobNil);
+		assertTrue(res.get(0) instanceof MobObject);
 		
 		res = interpreter.run("10");
 		assertTrue(res.get(0) instanceof MobInteger);
@@ -76,6 +76,6 @@ class MobInterpreterSimpleExpTest {
 		assertFalse( ((MobFalse) res.get(0)).rawValue());
 		
 		res = interpreter.run("(decl monday) (monday)");
-		assertTrue(res.get(0) instanceof MobNil);
+		assertTrue(res.get(0) instanceof MobObject);
 	}
 }

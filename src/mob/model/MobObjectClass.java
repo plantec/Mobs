@@ -1,4 +1,4 @@
-package mob.model.primitives;
+package mob.model;
 
 import mob.sinterpreter.MobEnvironment;
 

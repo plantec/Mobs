@@ -5,6 +5,8 @@ import java.util.List;
 
 import mob.ast.MobAstElement;
 import mob.ast.MobInterpretableVisitor;
+import mob.model.MobClass;
+import mob.model.MobObject;
 
 public class MobSequence extends MobObject implements MobAstElement {
 	List<MobAstElement> children;

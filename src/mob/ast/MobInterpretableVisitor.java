@@ -4,7 +4,6 @@ import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
-import mob.model.primitives.MobNil;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
@@ -23,9 +22,6 @@ public interface MobInterpretableVisitor {
 	}
 
 	default void visitInteger(MobInteger mobInteger) {
-	}
-
-	default void visitNil(MobNil mobNil) {
 	}
 
 	default void visitString(MobString mobString) {

@@ -1,6 +1,7 @@
 package mob.model.primitives;
 
 import mob.ast.MobAstElement;
+import mob.model.MobClass;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
@@ -89,6 +90,7 @@ public class MobIntegerClass extends MobPrimitiveClass<Integer> {
 				MobAstElement arg1 = ctx.pop();
 				MobInteger r = (MobInteger) receiver;
 				if (arg1 instanceof MobInteger) {
+					ctx.newTrue();
 					MobInteger arg = (MobInteger) arg1;
 					ctx.returnElement(r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
 				} else {

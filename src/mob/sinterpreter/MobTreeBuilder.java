@@ -15,7 +15,7 @@ import mob.ast.MobQuoted;
 import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
-import mob.model.primitives.MobObject;
+import mob.model.MobObject;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobUnit;
@@ -87,6 +87,7 @@ public class MobTreeBuilder implements SVisitor {
 	}
 	
 	private Boolean foundUnit(SNode node, ArrayList<MobAstElement> children) {
+		List<MobAstElement> code = new ArrayList<>();
 		if (node.openTag() != '[')
 			return false;
 		MobUnit unit = env.newUnit();
@@ -108,14 +109,19 @@ public class MobTreeBuilder implements SVisitor {
 			subs.add(children.get(i));
 
 		if (foundReturn(subs, 0))
-			unit.addCode(stk.pop());
+			code.add(stk.pop());
 		else if (foundAssign(subs, 0))
-			unit.addCode(stk.pop());
+			code.add(stk.pop());
 		else if (foundMessageSend(subs, 0))
-			unit.addCode(stk.pop());
+			code.add(stk.pop());
 		else {
 			for (MobAstElement e : subs)
-				unit.addCode(e);
+				code.add(e);
+		}
+		if (code.size() > 1) {
+			unit.setCode(this.env.newSequence(code));
+		} else if (code.size() > 0){
+			unit.setCode(code.get(0));
 		}
 		stk.push(quoted(unit, node.quote()));
 		return true;

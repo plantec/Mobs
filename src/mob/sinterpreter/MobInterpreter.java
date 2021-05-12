@@ -13,12 +13,11 @@ import mob.ast.MobQuoted;
 import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
+import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
-import mob.model.primitives.MobNil;
-import mob.model.primitives.MobObject;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
@@ -63,6 +62,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 	public void pushContext(MobContext ctx) {
 		ctx.setParent(this.context);
 		this.context = ctx;
+		if (ctx.parent() == null) throw new Error("???");
 	}
 	
 	public MobContext popContext() {
@@ -80,9 +80,11 @@ public class MobInterpreter implements MobInterpretableVisitor {
 	}
 	
 	public void accept(final MobAstElement e) {
+		MobContext ctx = this.context;;
 		try {
 			e.accept(this);
 		} catch (MobReturnExecuted e1) {
+			this.context = ctx;
 		}
 	}
 	
@@ -130,12 +132,6 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		this.push(var.value());
 	}
 	
-	@Override
-	public void visitNil(MobNil mobNil) {
-		MobInterpretableVisitor.super.visitNil(mobNil);
-		this.push(mobNil);
-	}
-
 	@Override
 	public void visitString(MobString mobString) {
 		MobInterpretableVisitor.super.visitString(mobString);

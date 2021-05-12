@@ -1,6 +1,8 @@
 package mob.model.primitives;
 
 import mob.ast.MobAstElement;
+import mob.model.MobClass;
+import mob.model.MobObject;
 
 public abstract class MobPrimitive<T> extends MobObject implements MobAstElement {
 

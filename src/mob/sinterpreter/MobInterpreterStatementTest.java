@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import mob.ast.MobAstElement;
 import mob.ast.MobQuoted;
+import mob.model.MobObject;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
-import mob.model.primitives.MobNil;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobTrue;
@@ -185,7 +185,8 @@ class MobInterpreterStatementTest {
 
 		res = interpreter.run("( (decl X) (X := nil) )");
 		assertTrue(res.size() == 1);
-		assertTrue(res.get(0) instanceof MobNil);
+		assertTrue(res.get(0) instanceof MobObject);
+		assertTrue(((MobObject) res.get(0)).definition().name().equals("UndefinedObject"));
 		
 		res = interpreter.run("( (decl X) (X := 9) )");
 		assertTrue(res.size() == 1);

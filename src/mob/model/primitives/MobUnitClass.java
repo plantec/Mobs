@@ -2,6 +2,8 @@ package mob.model.primitives;
 
 import mob.ast.MobAstElement;
 import mob.ast.MobQuoted;
+import mob.model.MobClass;
+import mob.model.MobMetaClass;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
@@ -20,8 +22,8 @@ public class MobUnitClass extends MobMetaClass {
 				MobContext newCtx = new MobContext(ctx.interpreter().topContext());
 				newCtx.setUnit(unit);
 				ctx.interpreter().pushContext(newCtx);
-				for (MobAstElement e : unit.code())
-					e.accept(ctx.interpreter());
+				MobAstElement e = unit.code();
+				e.accept(ctx.interpreter());
 				ctx.interpreter().popContext();
 				ctx.returnElement(ctx.pop());
 			}
@@ -40,8 +42,8 @@ public class MobUnitClass extends MobMetaClass {
 				newCtx.setUnit(unit);
 				newCtx.setParameterValue(0, arg);
 				ctx.interpreter().pushContext(newCtx);
-				for (MobAstElement e : unit.code())
-					e.accept(ctx.interpreter());
+				MobAstElement e = unit.code();
+				e.accept(ctx.interpreter());
 				ctx.interpreter().popContext();
 				ctx.returnElement(ctx.pop());
 			}
@@ -62,8 +64,8 @@ public class MobUnitClass extends MobMetaClass {
 				newCtx.setParameterValue(0, arg1);
 				newCtx.setParameterValue(1, arg2);
 				ctx.interpreter().pushContext(newCtx);
-				for (MobAstElement e : unit.code())
-					e.accept(ctx.interpreter());
+				MobAstElement e = unit.code();
+				e.accept(ctx.interpreter());
 				ctx.interpreter().popContext();
 				ctx.returnElement(ctx.pop());
 			}
@@ -79,8 +81,8 @@ public class MobUnitClass extends MobMetaClass {
 				for (int i = 0; i < seq.size(); i++)
 					newCtx.setParameterValue(i, seq.get(i));
 				ctx.interpreter().pushContext(newCtx);
-				for (MobAstElement e : unit.code())
-					e.accept(ctx.interpreter());
+				MobAstElement e = unit.code();
+				e.accept(ctx.interpreter());
 				ctx.interpreter().popContext();
 				ctx.returnElement(ctx.pop());
 			}

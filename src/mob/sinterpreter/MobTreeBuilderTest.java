@@ -16,6 +16,7 @@ import mob.ast.MobVarDecl;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobPrimitive;
+import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobUnit;
@@ -179,7 +180,9 @@ class MobTreeBuilderTest {
 		assertTrue(trees.get(0) instanceof MobUnit);
 		MobUnit unit = (MobUnit) trees.get(0);
 		assertFalse(unit.hasParameters());
-		List<MobAstElement> seq = unit.code();
+		MobAstElement e = unit.code();
+		assertTrue(e instanceof MobSequence);
+		MobSequence seq = (MobSequence) e;
 		assertTrue(seq.get(0) instanceof MobVarDecl);
 		assertTrue(seq.get(1) instanceof MobAssign);
 		assertTrue(seq.get(2) instanceof MobReturn);
@@ -197,8 +200,8 @@ class MobTreeBuilderTest {
 		assertTrue(unit.parameters().size() == 2);
 		assertTrue(unit.parameters().get(0).equals("a"));
 		assertTrue(unit.parameters().get(1).equals("b"));
-		assertTrue(unit.code().get(0) instanceof MobBinaryMessage);
-		MobBinaryMessage bin0 = (MobBinaryMessage) unit.code().get(0);
+		assertTrue(unit.code() instanceof MobBinaryMessage);
+		MobBinaryMessage bin0 = (MobBinaryMessage) unit.code();
 		MobBinaryMessage bin1 = (MobBinaryMessage) bin0.receiver();
 		assertTrue(bin1 instanceof MobBinaryMessage);
 		
@@ -208,8 +211,8 @@ class MobTreeBuilderTest {
 		assertTrue(unit.parameters().size() == 2);
 		assertTrue(unit.parameters().get(0).equals("a"));
 		assertTrue(unit.parameters().get(1).equals("b"));
-		assertTrue(unit.code().get(0) instanceof MobBinaryMessage);
-		bin0 = (MobBinaryMessage) unit.code().get(0);
+		assertTrue(unit.code() instanceof MobBinaryMessage);
+		bin0 = (MobBinaryMessage) unit.code();
 		bin1 = (MobBinaryMessage) bin0.receiver();
 		assertTrue(bin1 instanceof MobBinaryMessage);
 

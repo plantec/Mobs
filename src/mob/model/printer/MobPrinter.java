@@ -19,7 +19,6 @@ import mob.ast.MobVarDecl;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
-import mob.model.primitives.MobNil;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
@@ -126,12 +125,6 @@ public class MobPrinter implements MobInterpretableVisitor {
 	public void visitInteger(MobInteger mobInteger) {
 		MobInterpretableVisitor.super.visitInteger(mobInteger);
 		this.write(mobInteger.rawValue().toString());
-	}
-
-	@Override
-	public void visitNil(MobNil mobNil) {
-		MobInterpretableVisitor.super.visitNil(mobNil);
-		this.write("nil");
 	}
 
 	@Override
@@ -270,10 +263,16 @@ public class MobPrinter implements MobInterpretableVisitor {
 			}
 			this.write('|');
 		}
-		if (!mobUnit.code().isEmpty()) {
+		MobAstElement code = mobUnit.code();
+		if (code != null) {
 			this.write(' ');
-			for (MobAstElement e : mobUnit.code())
-				e.accept(this);
+			if (code instanceof MobSequence ) {
+				MobSequence seq = (MobSequence) code;
+				for (MobAstElement e : seq.children())
+					e.accept(this);
+			} else {
+				code.accept(this);
+			}
 		}
 		this.write(" ]");
 	}

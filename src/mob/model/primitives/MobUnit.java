@@ -5,16 +5,17 @@ import java.util.List;
 
 import mob.ast.MobAstElement;
 import mob.ast.MobInterpretableVisitor;
+import mob.model.MobClass;
+import mob.model.MobObject;
 
 public class MobUnit extends MobObject implements MobAstElement {
 
 	private List<String> parameters;
-	private List<MobAstElement> code;
+	private MobAstElement code;
 	
 	public MobUnit(MobClass def) {
 		super(def);
 		parameters = new ArrayList<>();
-		code = new ArrayList<>();
 	}
 
 	public List<String> parameters() {
@@ -25,12 +26,12 @@ public class MobUnit extends MobObject implements MobAstElement {
 		this.parameters.add(name);
 	}
 	
-	public List<MobAstElement> code() {
+	public MobAstElement code() {
 		return this.code;
 	}
 	
-	public void addCode(MobAstElement code) {
-		this.code.add(code);
+	public void setCode(MobAstElement code) {
+		this.code = code;
 	}
 	
 	public Boolean hasParameters() {

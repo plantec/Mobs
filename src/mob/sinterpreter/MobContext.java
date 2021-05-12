@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import mob.ast.MobAstElement;
+import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
-import mob.model.primitives.MobNil;
-import mob.model.primitives.MobObject;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobTrue;
@@ -20,7 +19,6 @@ public class MobContext {
 	private MobContext parent;
 	private HashMap<String, MobVariable> variables;
 	private List<MobVariable> parameters;
-	private List<MobVariable> slots;
 	MobUnit unit;
 	MobObject receiver;
 
@@ -41,7 +39,6 @@ public class MobContext {
 	public void setReceiver(MobObject receiver) {
 		this.receiver = receiver;
 		this.addVariable(new MobVariable("self", this.receiver));
-		this.slots = receiver.slots();
 	}
 
 	public void setParameterValue(int idx, MobAstElement value) {
@@ -79,11 +76,6 @@ public class MobContext {
 		for (MobVariable p : this.parameters)
 			if (p.name().equals(name))
 				return p;
-		if (this.slots != null) {
-			for (MobVariable p : this.slots)
-				if (p.name().equals(name))
-					return p;
-		}
 		return null;
 	}
 
@@ -149,7 +141,7 @@ public class MobContext {
 		return this.parent.newSymbol(p);
 	}
 
-	public MobNil newNil() {
+	public MobObject newNil() {
 		return this.parent.newNil();
 	}
 

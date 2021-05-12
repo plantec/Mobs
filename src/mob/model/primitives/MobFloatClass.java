@@ -1,6 +1,7 @@
 package mob.model.primitives;
 
 import mob.ast.MobAstElement;
+import mob.model.MobClass;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;

@@ -1,6 +1,8 @@
 package mob.model.primitives;
 
 import mob.ast.MobAstElement;
+import mob.model.MobClass;
+import mob.model.MobMetaClass;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
@@ -17,8 +19,8 @@ public class MobFalseClass extends MobMetaClass {
 		this.addMethod(new MobMethod("ifFalse:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobUnit falseArg = (MobUnit) ctx.pop();
-				for (MobAstElement e : falseArg.code())
-					e.accept(ctx.interpreter());
+				MobAstElement e = falseArg.code();
+				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());
 			}
 		});
@@ -32,8 +34,8 @@ public class MobFalseClass extends MobMetaClass {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobUnit falseArg = (MobUnit) ctx.pop();
 				ctx.pop();
-				for (MobAstElement e : falseArg.code())
-					e.accept(ctx.interpreter());
+				MobAstElement e = falseArg.code();
+				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());
 			}
 		});
@@ -41,8 +43,8 @@ public class MobFalseClass extends MobMetaClass {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				ctx.pop();
 				MobUnit falseArg = (MobUnit) ctx.pop();
-				for (MobAstElement e : falseArg.code())
-					e.accept(ctx.interpreter());
+				MobAstElement e = falseArg.code();
+				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());
 			}
 		});

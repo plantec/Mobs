@@ -1,7 +1,7 @@
 package mob.sinterpreter;
 
 import mob.ast.MobAstElement;
-import mob.model.primitives.MobObject;
+import mob.model.MobObject;
 import mob.model.primitives.MobUnit;
 
 public class MobObjectMethod extends MobMethod {
@@ -20,8 +20,8 @@ public class MobObjectMethod extends MobMethod {
 		for (int i = code.parameters().size() - 1; i >= 0; i--)
 			newCtx.setParameterValue(i, ctx.pop());
 		ctx.interpreter().pushContext(newCtx);
-		for (MobAstElement e : this.code.code())
-			ctx.interpreter().accept(e);
+		MobAstElement e = this.code.code();
+		ctx.interpreter().accept(e);
 		ctx.interpreter().popContext();
 	}
 

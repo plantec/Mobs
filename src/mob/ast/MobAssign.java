@@ -1,7 +1,7 @@
 package mob.ast;
 
 import mob.model.MobEntity;
-import mob.model.primitives.MobObject;
+import mob.model.MobObject;
 
 public class MobAssign extends MobEntity implements MobAstElement {
 	MobAstElement left;

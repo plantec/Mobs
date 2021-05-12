@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 import mob.ast.MobAstElement;
+import mob.model.MobClass;
+import mob.model.MobObject;
 import mob.model.primitives.*;
 
 public class MobTopContext extends MobContext {
@@ -17,15 +19,9 @@ public class MobTopContext extends MobContext {
 	public MobTopContext(MobEnvironment env, MobInterpreter interpreter) {
 		super(null);
 		this.env = env;
-		this.addVariable(new MobVariable("true", this.newTrue()));
-		this.addVariable(new MobVariable("false", this.newFalse()));
-		this.addVariable(new MobVariable("nil", this.newNil()));
-		this.addVariable(new MobVariable("String", this.env.stringClass()));
-		this.addVariable(new MobVariable("Character", this.env.characterClass()));
-		this.addVariable(new MobVariable("Integer", this.env.integerClass()));
-		this.addVariable(new MobVariable("Float", this.env.floatClass()));
-		this.addVariable(new MobVariable("Unit", this.env.unitClass()));
-		this.addVariable(new MobVariable("Object", this.env.mobClass()));
+		this.addVariable(new MobVariable("true", env.getClassByName("True").newInstance()));
+		this.addVariable(new MobVariable("false", env.getClassByName("False").newInstance()));
+		this.addVariable(new MobVariable("nil", env.getClassByName("UndefinedObject").newInstance()));
 		this.interpreter = interpreter;
 		this.stk = new ArrayDeque<>();
 	}
@@ -37,6 +33,21 @@ public class MobTopContext extends MobContext {
 		return  result;
 	}
 	
+	@Override
+	public MobObject newNil() {
+		return (MobObject) this.getVariableByName("nil").value();
+	}
+
+	@Override
+	public MobFalse newFalse() {
+		return (MobFalse) this.getVariableByName("false").value();
+	}
+
+	@Override
+	public MobTrue newTrue() {
+		return (MobTrue) this.getVariableByName("true").value();
+	}
+
 	public MobInterpreter interpreter() {
 		return this.interpreter;
 	}
@@ -51,14 +62,6 @@ public class MobTopContext extends MobContext {
 
 	public MobEnvironment environment() {
 		return this.env;
-	}
-
-	public MobFalse newFalse() {
-		return this.env.newFalse();
-	}
-
-	public MobTrue newTrue() {
-		return this.env.newTrue();
 	}
 
 	public MobFloat newFloat(Float p) {
@@ -81,8 +84,11 @@ public class MobTopContext extends MobContext {
 		return this.env.newSymbol(p);
 	}
 
-	public MobNil newNil() {
-		return this.env.newNil();
+	public MobVariable lookupVariableByName(String name) {
+		MobClass v = this.environment().getClassByName(name);
+		if (v != null)
+			return new MobVariable(name, v);
+		return super.lookupVariableByName(name);
 	}
 
 

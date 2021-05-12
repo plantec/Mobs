@@ -1,5 +1,8 @@
 package mob.model.primitives;
 
+import mob.model.MobClass;
+import mob.model.MobMetaClass;
+import mob.model.MobObject;
 import mob.sinterpreter.MobEnvironment;
 
 public abstract class MobPrimitiveClass<T> extends MobMetaClass {
