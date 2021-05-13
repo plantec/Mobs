@@ -68,15 +68,14 @@ public class MobEnvironment {
 		return this.classes.get(name);
 	}
 
-	public MobClass mobClass() { return this.getClassByName("Class"); }
-	public MobFalseClass falseClass() { return (MobFalseClass) this.getClassByName("False"); }
-	public MobTrueClass trueClass() { return (MobTrueClass) this.getClassByName("True"); }
-	public MobFloatClass floatClass() { return (MobFloatClass) this.getClassByName("Float"); }
-	public MobIntegerClass integerClass() { return (MobIntegerClass) this.getClassByName("Integer"); }
-	public MobCharacterClass characterClass() { return (MobCharacterClass) this.getClassByName("Character"); }
-	public MobStringClass stringClass() { return (MobStringClass) this.getClassByName("String"); }
-	public MobSymbolClass symbolClass() { return (MobSymbolClass) this.getClassByName("Symbol"); }
-	public MobUnitClass unitClass() { return (MobUnitClass) this.getClassByName("Unit"); }
+
+	private MobClass mobClass() { return this.getClassByName("Class"); }
+	private MobFloatClass floatClass() { return (MobFloatClass) this.getClassByName("Float"); }
+	private MobIntegerClass integerClass() { return (MobIntegerClass) this.getClassByName("Integer"); }
+	private MobCharacterClass characterClass() { return (MobCharacterClass) this.getClassByName("Character"); }
+	private MobStringClass stringClass() { return (MobStringClass) this.getClassByName("String"); }
+	private MobSymbolClass symbolClass() { return (MobSymbolClass) this.getClassByName("Symbol"); }
+	private MobUnitClass unitClass() { return (MobUnitClass) this.getClassByName("Unit"); }
 
 	
 	public MobFloat newFloat(Float p) {
