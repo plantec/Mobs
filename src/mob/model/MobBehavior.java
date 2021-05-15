@@ -65,7 +65,7 @@ public class MobBehavior extends MobObject {
 				self.addMethod(new MobObjectMethod(name.rawValue(), code));
 			}
 		});
-		this.addMethod(new MobMethod("addSubclass:") {
+		this.addMethod(new MobMethod("addSubclassNamed:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobString name = (MobString) ctx.pop();
 				MobClass self = (MobClass) receiver;

@@ -27,7 +27,7 @@ class MobObjectTest {
 	void testSubclassCreation() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		interpreter.run("( Object addSubclass: 'MyObject' )");
+		interpreter.run("( Object addSubclassNamed: 'MyObject' )");
 		interpreter.run("( MyObject )");
 		assertTrue(interpreter.result().get(0) instanceof MobClass);
 		MobClass myObject = (MobClass) interpreter.result().get(0);
@@ -43,7 +43,7 @@ class MobObjectTest {
 		interpreter.run("( ( MyObject addMethod: [ i | 0 + i ] named: '+' ) )");
 		interpreter.run("( MyObject new )");
 		assertTrue(interpreter.result().get(0) instanceof MobObject);
-		interpreter.run("( MyObject addSubclass: 'MySubObject' )");
+		interpreter.run("( MyObject addSubclassNamed: 'MySubObject' )");
 		interpreter.run("( (MySubObject new ) + 5)");
 		assertTrue(interpreter.result().get(0) instanceof MobInteger);
 		MobInteger i = (MobInteger) interpreter.result().get(0);
