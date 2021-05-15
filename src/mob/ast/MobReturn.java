@@ -1,7 +1,5 @@
 package mob.ast;
 
-import mob.model.MobEntity;
-
 public class MobReturn extends MobEntity implements MobAstElement {
 	MobAstElement returned;
 		

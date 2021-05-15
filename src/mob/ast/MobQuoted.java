@@ -1,7 +1,5 @@
 package mob.ast;
 
-import mob.model.MobEntity;
-
 public class MobQuoted extends MobEntity implements MobAstElement {
 	MobAstElement entity;
 

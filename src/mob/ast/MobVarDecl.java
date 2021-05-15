@@ -1,7 +1,5 @@
 package mob.ast;
 
-import mob.model.MobEntity;
-
 public class MobVarDecl extends MobEntity implements MobAstElement {
 	String name;
 	MobAstElement initialValue;

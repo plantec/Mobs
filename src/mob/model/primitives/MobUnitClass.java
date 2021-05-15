@@ -3,12 +3,12 @@ package mob.model.primitives;
 import mob.ast.MobAstElement;
 import mob.ast.MobQuoted;
 import mob.model.MobClass;
-import mob.model.MobMetaClass;
+import mob.model.MobObjectClass;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
-public class MobUnitClass extends MobMetaClass {
+public class MobUnitClass extends MobObjectClass {
 
 	public MobUnitClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
 		super(name, superclass, environment, def);

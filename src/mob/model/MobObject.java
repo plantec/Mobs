@@ -1,6 +1,7 @@
 package mob.model;
 
 import mob.ast.MobAstElement;
+import mob.ast.MobEntity;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 
@@ -25,12 +26,12 @@ public class MobObject extends MobEntity implements MobAstElement {
 		return this.environment;
 	}
 	
-	public void setDefinition(MobClass definition) {
+	public void setClass(MobClass definition) {
 		this.definition = definition;
 	}
 
 	public void run(MobContext ctx, String signature) {
 		this.definition.run(ctx, this, signature);
 	}
-
+	
 }

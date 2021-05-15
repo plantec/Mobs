@@ -6,11 +6,11 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.function.Consumer;
 
-import mob.model.MobEntity;
 import mob.ast.MobAssign;
 import mob.ast.MobAstElement;
 import mob.ast.MobInterpretableVisitor;
 import mob.ast.MobBinaryMessage;
+import mob.ast.MobEntity;
 import mob.ast.MobKeywordMessage;
 import mob.ast.MobQuoted;
 import mob.ast.MobReturn;

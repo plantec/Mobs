@@ -2,12 +2,12 @@ package mob.model.primitives;
 
 import mob.ast.MobAstElement;
 import mob.model.MobClass;
-import mob.model.MobMetaClass;
+import mob.model.MobObject;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
-public class MobFalseClass extends MobMetaClass {
+public class MobFalseClass extends MobPrimitiveClass<Boolean> {
 
 	public MobFalseClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
 		super(name, superclass, environment, def);
@@ -54,6 +54,11 @@ public class MobFalseClass extends MobMetaClass {
 	@Override
 	public MobFalse newInstance() {
 		return new MobFalse(this);
+	}
+
+	@Override
+	public MobObject newInstance(Boolean mob) {
+		throw new Error("Should not be sent");
 	}
 
 }

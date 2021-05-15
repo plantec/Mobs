@@ -2,12 +2,12 @@ package mob.model.primitives;
 
 import mob.ast.MobAstElement;
 import mob.model.MobClass;
-import mob.model.MobMetaClass;
+import mob.model.MobObjectClass;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
-public class MobSequenceClass extends MobMetaClass {
+public class MobSequenceClass extends MobObjectClass {
 	
 	public MobSequenceClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
 		super(name, superclass, environment, def);
@@ -40,7 +40,7 @@ public class MobSequenceClass extends MobMetaClass {
 		});
 	}
 
-	public MobUnit newInstance() {
-		return new MobUnit(this);
+	public MobSequence newInstance() {
+		return new MobSequence(this);
 	}
 }

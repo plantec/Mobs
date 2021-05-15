@@ -11,8 +11,8 @@ class MobInterpreterMethodTest {
 		MobInterpreter interpreter = new MobInterpreter(env);
 		interpreter.run("( ( Integer addMethod: [ i | self + i ] named: 'plus:' ) )");
 		interpreter.run("((10 plus: 2 ) println) ");
-		interpreter.run("( (Integer definition) println )");
-		interpreter.run("( ((1 definition) ) println )");
+		interpreter.run("( (Integer class) println )");
+		interpreter.run("( ((1 class) ) println )");
 	}
 	@Test
 	void testWhileTrue() throws IOException {

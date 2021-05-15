@@ -2,6 +2,7 @@ package mob.model.primitives;
 
 import mob.ast.MobAstElement;
 import mob.model.MobClass;
+import mob.model.MobObject;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
@@ -52,5 +53,10 @@ public class MobTrueClass extends MobBooleanClass {
 	@Override
 	public MobTrue newInstance() {
 		return new MobTrue(this);
+	}
+
+	@Override
+	public MobObject newInstance(Boolean mob) {
+		throw new Error("Should not be sent");
 	}
 }

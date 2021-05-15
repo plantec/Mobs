@@ -1,7 +1,5 @@
 package mob.ast;
 
-import mob.model.MobEntity;
-
 public abstract class MobMessage extends MobEntity implements MobAstElement {
 	MobAstElement receiver;
 
