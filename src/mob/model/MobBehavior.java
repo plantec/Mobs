@@ -1,9 +1,7 @@
 package mob.model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import mob.ast.MobAstElement;
 import mob.model.primitives.MobInteger;

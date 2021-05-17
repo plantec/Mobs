@@ -99,6 +99,7 @@ public class MobEnvironment {
 		this.recordClass(new MobSequenceClass("Sequence", object, this, null));
 		MobMetaClass sequenceClassClass = new MobMetaClass(this.getClassByName("Sequence"), objectClass, this, mobMetaClass);
 		this.getClassByName("Sequence").setClass(sequenceClassClass);
+		
 	}
 	
 	public void recordClass(MobClass clazz) {

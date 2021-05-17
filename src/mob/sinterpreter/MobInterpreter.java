@@ -13,7 +13,6 @@ import mob.ast.MobQuoted;
 import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
-import mob.model.MobClass;
 import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
@@ -63,7 +62,6 @@ public class MobInterpreter implements MobInterpretableVisitor {
 	public void pushContext(MobContext ctx) {
 		ctx.setParent(this.context);
 		this.context = ctx;
-		if (ctx.parent() == null) throw new Error("???");
 	}
 	
 	public MobContext popContext() {

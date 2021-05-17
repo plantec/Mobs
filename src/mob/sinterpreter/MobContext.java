@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import mob.ast.MobAstElement;
-import mob.model.MobClass;
 import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
