@@ -33,10 +33,12 @@ public class MobEnvironment {
 		
 	public MobEnvironment() {
 		classes = new HashMap<>();
-		MobMetaClass mobMetaClassClass = new MobMetaClass(null, null, this, null);
-		MobMetaClass mobMetaClass = new MobMetaClass("MetaClass", null, this, mobMetaClassClass);
-		this.recordClass(mobMetaClass);
+		MobMetaClass mobMetaClass = new MobMetaClass(null, null, this, null);
+		mobMetaClass.setName("MetaClass");
+		MobMetaClass mobMetaClassClass = new MobMetaClass(mobMetaClass, null, this, null);
 		mobMetaClassClass.setClass(mobMetaClass);
+		mobMetaClass.setClass(mobMetaClassClass);
+		this.recordClass(mobMetaClass);
 		
 		MobClass objectClass = new MobObjectClass(null, null, this, mobMetaClass);
 		MobClass object = new MobClass("Object", null, this, objectClass);
@@ -58,17 +60,45 @@ public class MobEnvironment {
 		this.recordClass(mobClass);
 		
 		objectClass.setSuperclass(mobClass);
+		this.recordClass(new MobFloatClass("Float", object, this, null));
+		MobMetaClass floatClassClass = new MobMetaClass(this.getClassByName("Float"), objectClass, this, mobMetaClass);
+		this.getClassByName("Float").setClass(floatClassClass);
 		
-		this.recordClass(new MobFloatClass("Float", object, this, mobClass));
-		this.recordClass(new MobIntegerClass("Integer", object, this, mobClass));
-		this.recordClass(new MobCharacterClass("Character", object, this, mobClass));
-		this.recordClass(new MobStringClass("String", object, this, mobClass));
-		this.recordClass(new MobSymbolClass("Symbol", object, this, mobClass));
-		this.recordClass(new MobUnitClass("Unit", object, this, mobClass));
-		this.recordClass(new MobFalseClass("False", object, this, mobClass));
-		this.recordClass(new MobTrueClass("True", object, this, mobClass));
-		this.recordClass(new MobClass("UndefinedObject", object, this, mobClass));
-		this.recordClass(new MobSequenceClass("Sequence", object, this, mobClass));
+		this.recordClass(new MobIntegerClass("Integer", object, this, null));
+		MobMetaClass integerClassClass = new MobMetaClass(this.getClassByName("Integer"), objectClass, this, mobMetaClass);
+		this.getClassByName("Integer").setClass(integerClassClass);
+		
+		this.recordClass(new MobCharacterClass("Character", object, this, null));
+		MobMetaClass characterClassClass = new MobMetaClass(this.getClassByName("Character"), objectClass, this, mobMetaClass);
+		this.getClassByName("Character").setClass(characterClassClass);
+		
+		this.recordClass(new MobStringClass("String", object, this, null));
+		MobMetaClass stringClassClass = new MobMetaClass(this.getClassByName("String"), objectClass, this, mobMetaClass);
+		this.getClassByName("String").setClass(stringClassClass);
+		
+		this.recordClass(new MobSymbolClass("Symbol", object, this, null));
+		MobMetaClass symbolClassClass = new MobMetaClass(this.getClassByName("Symbol"), objectClass, this, mobMetaClass);
+		this.getClassByName("Symbol").setClass(symbolClassClass);		
+		
+		this.recordClass(new MobUnitClass("Unit", object, this, null));
+		MobMetaClass unitClassClass = new MobMetaClass(this.getClassByName("Unit"), objectClass, this, mobMetaClass);
+		this.getClassByName("Unit").setClass(unitClassClass);
+		
+		this.recordClass(new MobFalseClass("False", object, this, null));
+		MobMetaClass falseClassClass = new MobMetaClass(this.getClassByName("False"), objectClass, this, mobMetaClass);
+		this.getClassByName("False").setClass(falseClassClass);
+		
+		this.recordClass(new MobTrueClass("True", object, this, null));
+		MobMetaClass trueClassClass = new MobMetaClass(this.getClassByName("True"), objectClass, this, mobMetaClass);
+		this.getClassByName("True").setClass(trueClassClass);
+		
+		this.recordClass(new MobClass("UndefinedObject", object, this, null));
+		MobMetaClass undefinedObjectClassClass = new MobMetaClass(this.getClassByName("UndefinedObject"), objectClass, this, mobMetaClass);
+		this.getClassByName("UndefinedObject").setClass(undefinedObjectClassClass);
+		
+		this.recordClass(new MobSequenceClass("Sequence", object, this, null));
+		MobMetaClass sequenceClassClass = new MobMetaClass(this.getClassByName("Sequence"), objectClass, this, mobMetaClass);
+		this.getClassByName("Sequence").setClass(sequenceClassClass);
 	}
 	
 	public void recordClass(MobClass clazz) {

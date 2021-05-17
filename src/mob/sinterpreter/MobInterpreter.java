@@ -13,6 +13,7 @@ import mob.ast.MobQuoted;
 import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
+import mob.model.MobClass;
 import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
@@ -110,7 +111,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 	@Override
 	public void visitSymbol(MobSymbol mobSymbol) {
 		MobInterpretableVisitor.super.visitSymbol(mobSymbol);
-		MobVariable v = context.lookupVariableByName(mobSymbol.rawValue());
+		MobDataAccess v = context.lookupNamedData(mobSymbol.rawValue());
 		if (v == null) {
 			throw new Error("Undeclared variable '" + mobSymbol.rawValue() + "'");
 		}
@@ -122,7 +123,10 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		MobInterpretableVisitor.super.visitAssign(mobAssign);
 		this.accept(mobAssign.right());
 		MobSymbol n = (MobSymbol) mobAssign.left();
-		MobVariable var = context.lookupVariableByName(n.rawValue());
+		MobDataAccess var = context.lookupNamedData(n.rawValue());
+		if (var == null) {
+			context.lookupNamedData(n.rawValue());
+		}
 		var.setValue(this.pop());
 		this.push(var.value());
 	}

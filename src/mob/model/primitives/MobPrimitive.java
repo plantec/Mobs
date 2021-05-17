@@ -6,19 +6,22 @@ import mob.model.MobObject;
 
 public abstract class MobPrimitive<T> extends MobObject implements MobAstElement {
 
-	private T rawValue;
-	
 	public MobPrimitive(MobClass def, T value) {
 		super(def);
-		this.rawValue = value;
+		this.setRawValue(value);
 	}
 			
+	public void setRawValue(T value) {
+		this.instVarAtPut(0, value);
+	}
+	
+	@SuppressWarnings("unchecked")
 	public T rawValue() {
-		return this.rawValue;
+		return (T) this.instVarAt(0);
 	}
 	
 	public Boolean is (Object o) {
-		return o.equals(rawValue);
+		return o.equals(this.rawValue());
 	}
 	
 	public String toString() {

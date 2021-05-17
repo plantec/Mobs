@@ -1,4 +1,4 @@
-package mob.tests;
+package mob.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import mob.model.MobClass;
+import mob.model.MobMetaClass;
 import mob.model.MobObject;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobString;
@@ -43,8 +44,12 @@ class MobObjectTest {
 		MobObject myObjInstance = (MobObject) interpreter.result().get(0);
 		assertTrue(myObjInstance.definition() instanceof MobClass);
 		assertTrue(myObjInstance.definition().name().equals("MyObject"));
-		assertTrue(myObjInstance.definition().definition() instanceof MobClass);
-		assertTrue(myObjInstance.definition().definition().definition() instanceof MobClass);
+		assertTrue(myObjInstance.definition().definition() instanceof MobMetaClass);
+		System.out.println("myObjInstance.definition(): " + myObjInstance.definition().name());
+		System.out.println("myObjInstance.definition().definition(): " + myObjInstance.definition().definition().name());
+		System.out.println("myObjInstance.definition().definition().definition(): " + myObjInstance.definition().definition().definition().name());
+		System.out.println("myObjInstance.definition().definition().definition().definition(): " + myObjInstance.definition().definition().definition().definition().name());
+		assertTrue(myObjInstance.definition().definition().definition() instanceof MobMetaClass);
 		interpreter.run("( ( MyObject addMethod: [ i | 0 + i ] named: '+' ) )");
 		interpreter.run("( MyObject new )");
 		System.out.println(interpreter.result().size());

@@ -1,4 +1,4 @@
-package mob.tests;
+package mob.test;
 
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;

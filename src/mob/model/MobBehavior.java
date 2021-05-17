@@ -31,14 +31,18 @@ import mob.sinterpreter.MobObjectMethod;
 public class MobBehavior extends MobObject {
 	private HashMap<String, MobMethod> methodDict;
 	private MobClass superclass;
-	private String [] slots;
+	protected String [] slots;
 
 
 	public MobBehavior(MobEnvironment environment, MobClass superclass, MobClass definition) {
 		super(environment, definition);
 		this.methodDict = new HashMap<>();
-		this.slots = new String[0];
 		this.superclass = superclass;
+		this.initializeSlots();
+	}
+	
+	protected void initializeSlots() {
+		this.slots = new String[0];
 	}
 	
 	protected void initializePrimitives() {
@@ -70,13 +74,11 @@ public class MobBehavior extends MobObject {
 		this.addMethod(new MobMethod("addSubclassNamed:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobString name = (MobString) ctx.pop();
-				MobClass self = (MobClass) receiver;
-				MobClass definition = self.definition(); 
-				if (self.definition() != self) {
-					definition = new MobClass(null, self, ctx.environment(), ctx.environment().getClassByName("MetaClass"));
-					self.definition().addSubclass(definition);
-				}
-				self.addSubclass(new MobClass(name.rawValue(), self, ctx.environment(), definition));
+				MobClass self = (MobClass) receiver;			
+				MobClass newClass = new MobClass(name.rawValue(), self, ctx.environment(), null);
+				MobMetaClass definition = new MobMetaClass(newClass, self, ctx.environment(), ctx.environment().getClassByName("MetaClass"));
+				newClass.setDefinition(definition);
+				self.addSubclass(newClass);
 			}
 		});
 		this.addMethod(new MobMethod("addSlotNamed:") {
@@ -139,6 +141,7 @@ public class MobBehavior extends MobObject {
 	}
 
 	public void addSubclass(MobClass cls) {
+		if (cls.name() == null) return;
 		this.environment().recordClass(cls);
 	}
 

@@ -10,6 +10,15 @@ public abstract class MobPrimitiveClass<T> extends MobObjectClass {
 	public MobPrimitiveClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
 		super(name, superclass, environment, def);
 	}
+	
+	protected void initializePrimitives() {
+		super.initializePrimitives();
+	}
+	
+	protected void initializeSlots() {
+		this.slots = new String[1];
+		this.slots[0] = "";
+	}
 
 	@Override
 	public MobObject newInstance() {

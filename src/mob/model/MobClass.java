@@ -19,5 +19,5 @@ public class MobClass extends MobClassDescription {
 	public MobObject newInstance() {
 		return new MobObject(this);
 	}
-
+	
 }

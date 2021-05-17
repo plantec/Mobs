@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import mob.ast.MobAstElement;
+import mob.model.MobClass;
 import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
@@ -83,13 +84,25 @@ public class MobContext {
 		return null;
 	}
 
-	public MobVariable lookupVariableByName(String name) {
+	public MobDataAccess lookupNamedData(String name) {
 		MobVariable v = this.getVariableByName(name);
 		if (v != null)
 			return v;
+		if (this.receiver != null) {
+			
+			int pos = this.positionOfSlot(name);
+			if (pos > -1 ) {
+				return new MobSlotData(this.receiver, pos);
+			}
+		}
 		if (this.parent == null)
 			return null;
-		return this.parent.lookupVariableByName(name);
+		return this.parent.lookupNamedData(name);
+	}
+
+	public int positionOfSlot(String name) {
+		if (this.receiver == null) return -1;
+		return this.receiver.definition().positionOfSlot(name);
 	}
 
 	public void clear() {

@@ -1,4 +1,4 @@
-package mob.tests;
+package mob.test;
 
 import java.io.IOException;
 import org.junit.jupiter.api.Test;

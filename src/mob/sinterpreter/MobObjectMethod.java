@@ -1,6 +1,7 @@
 package mob.sinterpreter;
 
 import mob.ast.MobAstElement;
+import mob.model.MobClass;
 import mob.model.MobObject;
 import mob.model.primitives.MobUnit;
 

@@ -88,11 +88,11 @@ public class MobTopContext extends MobContext {
 		return this.env.newSymbol(p);
 	}
 
-	public MobVariable lookupVariableByName(String name) {
+	public MobDataAccess lookupNamedData(String name) {
 		MobClass v = this.environment().getClassByName(name);
 		if (v != null)
 			return new MobVariable(name, v);
-		return super.lookupVariableByName(name);
+		return super.lookupNamedData(name);
 	}
 
 

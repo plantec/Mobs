@@ -2,7 +2,7 @@ package mob.sinterpreter;
 
 import mob.ast.MobAstElement;
 
-public class MobVariable {
+public class MobVariable implements MobDataAccess {
 	private String name;
 	private MobAstElement value;
 

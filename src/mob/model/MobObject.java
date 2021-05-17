@@ -1,5 +1,7 @@
 package mob.model;
 
+import java.util.Arrays;
+
 import mob.ast.MobAstElement;
 import mob.ast.MobEntity;
 import mob.sinterpreter.MobContext;
@@ -13,10 +15,11 @@ public class MobObject extends MobEntity implements MobAstElement {
 	public MobObject(MobEnvironment environment, MobClass definition) {
 		this.environment = environment;
 		this.definition = definition;
-		if (this.definition != null)
-			this.values = new Object [this.definition.numberOfSlots()];
-		else 
-			this.values = new Object [0];
+		this.values = new Object [0];
+	}
+	
+	protected void setDefinition(MobClass definition) {
+		this.definition = definition;
 	}
 
 	public MobObject(MobClass definition) {
@@ -36,10 +39,21 @@ public class MobObject extends MobEntity implements MobAstElement {
 	}
 
 	public void instVarAtPut(Integer pos, Object val) {
+		this.checkCapacity(pos+1);
 		this.values[pos] = val;
 	}
 	public Object instVarAt(Integer pos) {
+		this.checkCapacity(pos+1);
 		return this.values[pos];
+	}
+	
+	public int valuesCapacity() {
+		return this.values.length;
+	}
+	
+	public void checkCapacity(int capacity) {
+		if (this.valuesCapacity() < capacity)
+			this.values = Arrays.copyOf(this.values, capacity);
 	}
 	
 	public void run(MobContext ctx, String signature) {

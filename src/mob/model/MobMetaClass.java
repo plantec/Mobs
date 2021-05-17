@@ -1,7 +1,5 @@
 package mob.model;
 
-import java.lang.reflect.InvocationTargetException;
-
 import mob.sinterpreter.MobEnvironment;
 
 /*
@@ -13,40 +11,32 @@ import mob.sinterpreter.MobEnvironment;
  * instance variables, etc.).
  */
 public class MobMetaClass extends MobClass {
-	private MobObject thisClass;
+	private MobClass thisclass;
 
-	public MobMetaClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
-		super(name, superclass, environment, def);
-		//this.newInstance();
+	public MobMetaClass(MobClass thisclass, MobClass superclass, MobEnvironment environment, MobClass def) {
+		super(null, superclass, environment, def);
+		this.thisclass = thisclass;
 	}
-
+	
 	protected void initializePrimitives() {
 		super.initializePrimitives();
 	}
 	
 	public MobObject newInstance() {
-		if (thisClass != this) {
-			try {
-				thisClass = this.getClass().getDeclaredConstructor().newInstance();
-			} catch (InstantiationException | IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			}
-			return thisClass;
-		}
 		throw new Error("A Metaclass should only have one instance!");
 	}
 	
 	public MobClass soleInstance() {
-		return (MobClass) thisClass;
+		return (MobClass) thisclass;
 	}
-
+	
+	public String name() {
+		if (thisclass == null) return super.name();
+		return this.thisclass.name() + " class";
+	}
+	public void setName(String name) {
+		if (thisclass != null) throw new Error("Can't set a MetaClass name");
+		super.setName(name);
+	}
 
 }
