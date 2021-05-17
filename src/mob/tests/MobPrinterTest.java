@@ -1,4 +1,4 @@
-package mob.model.printer;
+package mob.tests;
 
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import mob.ast.MobAstElement;
 import mob.model.primitives.MobUnit;
+import mob.model.printer.MobPrinter;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobTreeBuilder;
 

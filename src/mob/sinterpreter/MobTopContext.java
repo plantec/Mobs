@@ -33,6 +33,10 @@ public class MobTopContext extends MobContext {
 		return  result;
 	}
 	
+	public void resetStack() {
+		this.stk.clear();
+	}
+
 	@Override
 	public MobObject newNil() {
 		return (MobObject) this.getVariableByName("nil").value();

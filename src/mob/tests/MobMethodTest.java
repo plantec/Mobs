@@ -1,4 +1,4 @@
-package mob.sinterpreter;
+package mob.tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,6 +6,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import mob.ast.MobAstElement;
+import mob.sinterpreter.MobContext;
+import mob.sinterpreter.MobMethod;
 
 class MobMethodTest {
 

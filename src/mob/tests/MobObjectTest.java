@@ -1,4 +1,4 @@
-package mob.sinterpreter;
+package mob.tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,6 +10,8 @@ import mob.model.MobClass;
 import mob.model.MobObject;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobString;
+import mob.sinterpreter.MobEnvironment;
+import mob.sinterpreter.MobInterpreter;
 
 class MobObjectTest {
 	
@@ -28,13 +30,16 @@ class MobObjectTest {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
 		interpreter.run("( Object addSubclassNamed: 'MyObject' )");
+		System.out.println(interpreter.result().size());
 		interpreter.run("( MyObject )");
+		System.out.println(interpreter.result().size());
 		assertTrue(interpreter.result().get(0) instanceof MobClass);
 		MobClass myObject = (MobClass) interpreter.result().get(0);
 		assertTrue(myObject.name().equals("MyObject"));
 		assertTrue(myObject.definition() instanceof MobClass);
 		interpreter.run("( MyObject new )");
 		assertTrue(interpreter.result().get(0) instanceof MobObject);
+		System.out.println(interpreter.result().size());
 		MobObject myObjInstance = (MobObject) interpreter.result().get(0);
 		assertTrue(myObjInstance.definition() instanceof MobClass);
 		assertTrue(myObjInstance.definition().name().equals("MyObject"));
@@ -42,14 +47,17 @@ class MobObjectTest {
 		assertTrue(myObjInstance.definition().definition().definition() instanceof MobClass);
 		interpreter.run("( ( MyObject addMethod: [ i | 0 + i ] named: '+' ) )");
 		interpreter.run("( MyObject new )");
+		System.out.println(interpreter.result().size());
 		assertTrue(interpreter.result().get(0) instanceof MobObject);
 		interpreter.run("( MyObject addSubclassNamed: 'MySubObject' )");
 		interpreter.run("( (MySubObject new ) + 5)");
+		System.out.println(interpreter.result().size());
 		assertTrue(interpreter.result().get(0) instanceof MobInteger);
 		MobInteger i = (MobInteger) interpreter.result().get(0);
 		assertTrue(i.rawValue() == 5);
 		interpreter.run("( ( (MySubObject class) addMethod: [ ^ 'stuff returned'  ] named: 'stuff' ) )");
 		interpreter.run("( MySubObject stuff )");
+		System.out.println(interpreter.result().size());
 		assertTrue(interpreter.result().get(0) instanceof MobString);
 		MobString s = (MobString) interpreter.result().get(0);
 		assertTrue(s.rawValue().equals("stuff returned"));

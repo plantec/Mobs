@@ -1,10 +1,12 @@
 package mob.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import mob.ast.MobAstElement;
+import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobContext;
@@ -29,13 +31,13 @@ import mob.sinterpreter.MobObjectMethod;
 public class MobBehavior extends MobObject {
 	private HashMap<String, MobMethod> methodDict;
 	private MobClass superclass;
-	private List<String> slots;
+	private String [] slots;
 
 
 	public MobBehavior(MobEnvironment environment, MobClass superclass, MobClass definition) {
 		super(environment, definition);
 		this.methodDict = new HashMap<>();
-		this.slots = new ArrayList<>();
+		this.slots = new String[0];
 		this.superclass = superclass;
 	}
 	
@@ -91,7 +93,22 @@ public class MobBehavior extends MobObject {
 				ctx.returnElement(self.newInstance());
 			}
 		});
-
+		
+		this.addMethod(new MobMethod("instVarAt:put:") {
+			public void run(MobContext ctx, MobAstElement receiver) {
+				MobObject v = (MobObject) ctx.pop();
+				MobInteger pos = (MobInteger) ctx.pop();
+				MobObject self = (MobObject) receiver;
+				self.instVarAtPut(pos.rawValue(), v);
+			}
+		});
+		this.addMethod(new MobMethod("instVarAt:") {
+			public void run(MobContext ctx, MobAstElement receiver) {
+				MobInteger pos = (MobInteger) ctx.pop();
+				MobObject self = (MobObject) receiver;
+				ctx.returnElement((MobAstElement) self.instVarAt(pos.rawValue()));
+			}
+		});
 	}
 	
 	public void addMethod(MobMethod definition) {
@@ -125,26 +142,49 @@ public class MobBehavior extends MobObject {
 		this.environment().recordClass(cls);
 	}
 
-	public List<String> slots() {
-		return this.slots;
-	}
-	public List<String> inheritedSlots() {
-		List<String> s = new ArrayList<>();
-		if (this.superclass != null) {
-			s.addAll(this.superclass.inheritedSlots());
-		}
-		s.addAll(this.slots());
-		return s;
-	}
-	
 	String name() {
 		return null;
 	}
 
+	public String [] slots() {
+		return this.slots;
+	}
+	
+	public String[] inheritedSlots() {
+		String [] is = this.superclass().inheritedSlots();
+		String [] r = new String [is.length + this.slots.length];
+		int idx = 0;
+		for (String s : is) {
+			r[idx++] = s;
+		}
+		for (String s : this.slots) {
+			r[idx++] = s;
+		}
+		return r;
+	}
+	
+	public Integer positionOfSlot(String name) {		
+		Integer pos = -1;
+		if (this.superclass() != null) {
+			pos = this.superclass().positionOfSlot(name);
+			if (pos > -1) return pos;
+		}
+		for (String s : this.slots) {
+			pos++;
+			if (s.equals(name)) return pos;
+		}
+		return -1;
+	}
+		
 	public void addSlot(String slotName) {
-		if (this.slots.contains(slotName))
+		if (this.positionOfSlot(slotName) > -1)
 			throw new Error("A slot name '" + slotName + "' already exists in class " + this.name());
-		this.slots.add(slotName);
+		this.slots = Arrays.copyOf(this.slots, this.slots.length+1);
+		this.slots[this.slots.length-1] = slotName;
+	}
+	
+	public int numberOfSlots() {
+		return this.slots.length;
 	}
 	
 	public void run(MobContext ctx, MobObject receiver, String signature) {

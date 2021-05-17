@@ -1,7 +1,18 @@
-package mob.model.primitives;
+package mob.tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+
+import mob.model.primitives.MobFalse;
+import mob.model.primitives.MobFalseClass;
+import mob.model.primitives.MobInteger;
+import mob.model.primitives.MobIntegerClass;
+import mob.model.primitives.MobString;
+import mob.model.primitives.MobStringClass;
+import mob.model.primitives.MobSymbol;
+import mob.model.primitives.MobSymbolClass;
+import mob.model.primitives.MobTrue;
+import mob.model.primitives.MobTrueClass;
 
 class MobPrimitiveTest {
 

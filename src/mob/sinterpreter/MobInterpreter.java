@@ -38,7 +38,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 	}
 
 	public List<MobAstElement> run(List<SNode> sexps) {
-		this.context = new MobTopContext(this.context.environment(), this);
+		this.context.resetStack();
 		List<MobAstElement> progs = new MobTreeBuilder(this.context.environment()).run(sexps);
 		progs.forEach(e->this.accept(e));
 		return this.result();
@@ -80,12 +80,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 	}
 	
 	public void accept(final MobAstElement e) {
-		MobContext ctx = this.context;;
-		try {
-			e.accept(this);
-		} catch (MobReturnExecuted e1) {
-			this.context = ctx;
-		}
+		e.accept(this);
 	}
 	
 	@Override
@@ -157,8 +152,12 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		MobAstElement receiver = mobUnaryMessage.receiver();
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		((MobObject) actualReceiver).run(this.context, name);
-		this.push(actualReceiver);
+		try {
+			((MobObject) actualReceiver).run(this.context, name);
+			this.push(actualReceiver);
+		} catch (MobReturnExecuted e1) {
+			// nothing to do : the returned value is already on top of the stack
+		}		
 	}
 
 	@Override
@@ -170,8 +169,12 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		this.accept(arg);
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		((MobObject)actualReceiver).run(this.context, name.rawValue());
-		this.push(actualReceiver);		
+		try {
+			((MobObject)actualReceiver).run(this.context, name.rawValue());
+			this.push(actualReceiver);
+		} catch (MobReturnExecuted e1) {
+			// nothing to do : the returned value is already on top of the stack
+		}		
 	}
 
 	@Override
@@ -183,8 +186,12 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		MobAstElement receiver = mobKeywordMessage.receiver();
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		((MobObject)actualReceiver).run(this.context, selector);
-		this.push(actualReceiver);		
+		try {
+			((MobObject)actualReceiver).run(this.context, selector);
+			this.push(actualReceiver);
+		} catch (MobReturnExecuted e1) {
+			// nothing to do : the returned value is already on top of the stack
+		}		
 	}
 
 	@Override

@@ -49,6 +49,10 @@ public class MobContext {
 		return this.parent;
 	}
 
+	public void resetStack() {
+		this.parent.resetStack();
+	}
+	
 	public MobInterpreter interpreter() {
 		return this.parent().interpreter();
 	}

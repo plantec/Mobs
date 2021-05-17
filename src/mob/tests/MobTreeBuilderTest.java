@@ -1,4 +1,4 @@
-package mob.sinterpreter;
+package mob.tests;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,6 +20,8 @@ import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobUnit;
+import mob.sinterpreter.MobEnvironment;
+import mob.sinterpreter.MobTreeBuilder;
 
 class MobTreeBuilderTest {
 

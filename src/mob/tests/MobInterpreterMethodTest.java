@@ -1,7 +1,10 @@
-package mob.sinterpreter;
+package mob.tests;
 
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
+
+import mob.sinterpreter.MobEnvironment;
+import mob.sinterpreter.MobInterpreter;
 
 class MobInterpreterMethodTest {
 

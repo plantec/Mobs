@@ -1,4 +1,4 @@
-package mob.sinterpreter;
+package mob.tests;
 
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
@@ -15,6 +15,8 @@ import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobTrue;
 import mob.model.primitives.MobUnit;
+import mob.sinterpreter.MobEnvironment;
+import mob.sinterpreter.MobInterpreter;
 
 class MobInterpreterStatementTest {
 
@@ -134,7 +136,11 @@ class MobInterpreterStatementTest {
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(11));
 		
-		result = interpreter.run("( (decl p := [ 9 + 1 ] ) ( [ v | (decl X := 1) (((v value) + X) println)  ] value: p ) )");
+		result = interpreter.run("( [ 9 + 1 ] ) ");
+		assertTrue(result.size() == 1);
+		assertTrue(result.get(0) instanceof MobUnit);
+		
+		result = interpreter.run("( (decl p2 := [ 9 + 1 ] ) ( [ v | (decl X := 1) (((v value) + X) println)  ] value: p2 ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(11));
@@ -188,17 +194,17 @@ class MobInterpreterStatementTest {
 		assertTrue(res.get(0) instanceof MobObject);
 		assertTrue(((MobObject) res.get(0)).definition().name().equals("UndefinedObject"));
 		
-		res = interpreter.run("( (decl X) (X := 9) )");
+		res = interpreter.run("( X := 9 )");
 		assertTrue(res.size() == 1);
 		assertTrue(res.get(0) instanceof MobInteger);
 		assertTrue(res.get(0).is(9));
 		
-		res = interpreter.run("( (decl X := 1) (X := 9 + X) )");
+		res = interpreter.run("( (decl Y := 1) (Y := 9 + (X + Y ) ) )");
 		assertTrue(res.size() == 1);
 		assertTrue(res.get(0) instanceof MobInteger);
-		assertTrue(res.get(0).is(10));
+		assertTrue(res.get(0).is(19));
 		
-		res = interpreter.run("( (decl X := 1) ([ (decl y := 2) (X := X + y) ] value) )");
+		res = interpreter.run("( (decl Z := 1) ([ (decl y := 2) (Z := Z + y) ] value) )");
 		assertTrue(res.size() == 1);
 		assertTrue(res.get(0) instanceof MobInteger);
 		assertTrue(res.get(0).is(3));

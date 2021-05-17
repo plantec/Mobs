@@ -1,4 +1,4 @@
-package mob.sinterpreter;
+package mob.tests;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -16,6 +16,8 @@ import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobTrue;
+import mob.sinterpreter.MobEnvironment;
+import mob.sinterpreter.MobInterpreter;
 
 class MobInterpreterSimpleExpTest {
 
