@@ -12,7 +12,7 @@ class MobInterpreterMethodTest {
 	void testBinaryMessageSend1() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		interpreter.run("( ( Integer addMethod: [ i | self + i ] named: 'plus:' ) )");
+		interpreter.run("( ( Integer addMethod: [ i | ^ self + i ] named: 'plus:' ) )");
 		interpreter.run("((10 plus: 2 ) println) ");
 		interpreter.run("( (Integer class) println )");
 		interpreter.run("( ((1 class) ) println )");
