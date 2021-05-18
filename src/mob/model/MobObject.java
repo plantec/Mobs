@@ -6,6 +6,7 @@ import mob.ast.MobAstElement;
 import mob.ast.MobEntity;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
+import mob.sinterpreter.MobReturnExecuted;
 
 public class MobObject extends MobEntity implements MobAstElement {
 	private MobEnvironment environment;
@@ -57,7 +58,12 @@ public class MobObject extends MobEntity implements MobAstElement {
 	}
 	
 	public void run(MobContext ctx, String signature) {
-		this.definition.run(ctx, this, signature);
+		try {
+			this.definition.run(ctx, this, signature);
+			ctx.push(this);
+		} catch (MobReturnExecuted e1) {
+			// nothing to do : the returned value is already on top of the stack
+		}				
 	}
 	
 }

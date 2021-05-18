@@ -154,12 +154,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		MobAstElement receiver = mobUnaryMessage.receiver();
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		try {
-			((MobObject) actualReceiver).run(this.context, name);
-			this.push(actualReceiver);
-		} catch (MobReturnExecuted e1) {
-			// nothing to do : the returned value is already on top of the stack
-		}		
+		((MobObject) actualReceiver).run(this.context, name);
 	}
 
 	@Override
@@ -171,12 +166,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		this.accept(arg);
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		try {
-			((MobObject)actualReceiver).run(this.context, name.rawValue());
-			this.push(actualReceiver);
-		} catch (MobReturnExecuted e1) {
-			// nothing to do : the returned value is already on top of the stack
-		}		
+		((MobObject)actualReceiver).run(this.context, name.rawValue());
 	}
 
 	@Override
@@ -188,12 +178,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		MobAstElement receiver = mobKeywordMessage.receiver();
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		try {
-			((MobObject)actualReceiver).run(this.context, selector);
-			this.push(actualReceiver);
-		} catch (MobReturnExecuted e1) {
-			// nothing to do : the returned value is already on top of the stack
-		}		
+		((MobObject)actualReceiver).run(this.context, selector);
 	}
 
 	@Override

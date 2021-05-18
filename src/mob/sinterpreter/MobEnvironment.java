@@ -10,6 +10,7 @@ import mob.model.MobClass;
 import mob.model.MobClassClass;
 import mob.model.MobClassDescriptionClass;
 import mob.model.MobMetaClass;
+import mob.model.MobObject;
 import mob.model.MobObjectClass;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobCharacterClass;
@@ -64,6 +65,13 @@ public class MobEnvironment {
 		MobMetaClass floatClassClass = new MobMetaClass(this.getClassByName("Float"), objectClass, this, mobMetaClass);
 		this.getClassByName("Float").setClass(floatClassClass);
 		
+		
+		MobClass intClass = new MobObjectClass("Int", object, this, null);
+		MobMetaClass intClassClass = new MobMetaClass(intClass, object.definition(), this, mobMetaClass);
+		intClass.setClass(intClassClass);
+		this.recordClass(intClass);	
+		this.initInteger();
+		
 		this.recordClass(new MobIntegerClass("Integer", object, this, null));
 		MobMetaClass integerClassClass = new MobMetaClass(this.getClassByName("Integer"), objectClass, this, mobMetaClass);
 		this.getClassByName("Integer").setClass(integerClassClass);
@@ -100,6 +108,149 @@ public class MobEnvironment {
 		MobMetaClass sequenceClassClass = new MobMetaClass(this.getClassByName("Sequence"), objectClass, this, mobMetaClass);
 		this.getClassByName("Sequence").setClass(sequenceClassClass);
 		
+	}
+	
+	private void initInteger() {
+		MobClass intCls = (MobClass) this.getClassByName("Int");
+		intCls.addMethod(new MobMethod("+") {
+			public void run(MobContext ctx, MobAstElement receiver) {
+				Object arg1 = ((MobObject) ctx.pop()).instVarAt(0);
+				Object r = ((MobObject) receiver).instVarAt(0);
+				MobObject result = intCls.newInstance();
+				if (arg1 instanceof Integer) {
+					result.instVarAtPut(0, ((Integer) r) + ((Integer) arg1));
+				} else {
+					throw new Error("incompatible argument");
+				}
+				ctx.push(result);
+			}
+		});
+		/*
+		intCls.addMethod(new MobMethod("-") {
+				public void run(MobContext ctx, MobAstElement receiver) {
+					MobAstElement arg1 = ctx.pop();
+					MobInteger r = (MobInteger) receiver;
+					if (arg1 instanceof MobInteger) {
+						MobInteger arg = (MobInteger) arg1;
+						ctx.returnElement(ctx.newInteger(r.rawValue()-arg.rawValue()));
+					} else {
+						MobFloat arg = (MobFloat) arg1;
+						ctx.returnElement(ctx.newFloat(r.rawValue()-arg.rawValue()));
+					}
+				}
+			});
+		intCls.addMethod(new MobMethod("*") {
+				public void run(MobContext ctx, MobAstElement receiver) {
+					MobAstElement arg1 = ctx.pop();
+					MobInteger r = (MobInteger) receiver;
+					if (arg1 instanceof MobInteger) {
+						MobInteger arg = (MobInteger) arg1;
+						ctx.returnElement(ctx.newInteger(r.rawValue()*arg.rawValue()));
+					} else {
+						MobFloat arg = (MobFloat) arg1;
+						ctx.returnElement(ctx.newFloat(r.rawValue()*arg.rawValue()));
+					}
+				}
+			});
+		intCls.addMethod(new MobMethod("/") {
+				public void run(MobContext ctx, MobAstElement receiver) {
+					MobAstElement arg1 = ctx.pop();
+					MobInteger r = (MobInteger) receiver;
+					if (arg1 instanceof MobInteger) {
+						MobInteger arg = (MobInteger) arg1;
+						ctx.returnElement(ctx.newInteger(r.rawValue()/arg.rawValue()));
+					} else {
+						MobFloat arg = (MobFloat) arg1;
+						ctx.returnElement(ctx.newFloat(r.rawValue()/arg.rawValue()));
+					}
+				}
+			});
+		intCls.addMethod(new MobMethod("negated") {
+				public void run(MobContext ctx, MobAstElement receiver) {
+					MobAstElement r = (MobInteger) receiver;
+					ctx.returnElement(ctx.newInteger(((MobInteger)r).rawValue()*-1));
+				}
+			});
+		intCls.addMethod(new MobMethod("<") {
+				public void run(MobContext ctx, MobAstElement receiver) {
+					MobAstElement arg1 = ctx.pop();
+					MobInteger r = (MobInteger) receiver;
+					if (arg1 instanceof MobInteger) {
+						MobInteger arg = (MobInteger) arg1;
+						ctx.returnElement(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					} else {
+						MobFloat arg = (MobFloat) arg1;
+						ctx.returnElement(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					}
+				}
+			});
+		intCls.addMethod(new MobMethod(">") {
+				public void run(MobContext ctx, MobAstElement receiver) {
+					MobAstElement arg1 = ctx.pop();
+					MobInteger r = (MobInteger) receiver;
+					if (arg1 instanceof MobInteger) {
+						ctx.newTrue();
+						MobInteger arg = (MobInteger) arg1;
+						ctx.returnElement(r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					} else {
+						MobFloat arg = (MobFloat) arg1;
+						ctx.returnElement(r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					}
+				}
+			});
+		intCls.addMethod(new MobMethod(">=") {
+				public void run(MobContext ctx, MobAstElement receiver) {
+					MobAstElement arg1 = ctx.pop();
+					MobInteger r = (MobInteger) receiver;
+					if (arg1 instanceof MobInteger) {
+						MobInteger arg = (MobInteger) arg1;
+						ctx.returnElement(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					} else {
+						MobFloat arg = (MobFloat) arg1;
+						ctx.returnElement(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					}
+				}
+			});
+		intCls.addMethod(new MobMethod("<=") {
+				public void run(MobContext ctx, MobAstElement receiver) {
+					MobAstElement arg1 = ctx.pop();
+					MobInteger r = (MobInteger) receiver;
+					if (arg1 instanceof MobInteger) {
+						MobInteger arg = (MobInteger) arg1;
+						ctx.returnElement(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					} else {
+						MobFloat arg = (MobFloat) arg1;
+						ctx.returnElement(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					}
+				}
+			});
+		intCls.addMethod(new MobMethod("=") {
+				public void run(MobContext ctx, MobAstElement receiver) {
+					MobAstElement arg1 = ctx.pop();
+					MobInteger r = (MobInteger) receiver;
+					if (arg1 instanceof MobInteger) {
+						MobInteger arg = (MobInteger) arg1;
+						ctx.returnElement(r.rawValue() == arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					} else {
+						MobFloat arg = (MobFloat) arg1;
+						ctx.returnElement((float)r.rawValue() == (float)arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					}
+				}
+			});
+		intCls.addMethod(new MobMethod("~=") {
+				public void run(MobContext ctx, MobAstElement receiver) {
+					MobAstElement arg1 = ctx.pop();
+					MobInteger r = (MobInteger) receiver;
+					if (arg1 instanceof MobInteger) {
+						MobInteger arg = (MobInteger) arg1;
+						ctx.returnElement(r.rawValue().equals(arg.rawValue()) ? ctx.newFalse():ctx.newTrue());
+					} else {
+						MobFloat arg = (MobFloat) arg1;
+						ctx.returnElement((float)r.rawValue() == (float)arg.rawValue() ? ctx.newFalse():ctx.newTrue());
+					}
+				}
+			});
+*/
 	}
 	
 	public void recordClass(MobClass clazz) {
