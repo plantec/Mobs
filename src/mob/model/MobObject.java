@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import mob.ast.MobAstElement;
 import mob.ast.MobEntity;
+import mob.ast.MobInterpretableVisitor;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobReturnExecuted;
@@ -75,6 +76,10 @@ public class MobObject extends MobEntity implements MobAstElement, MobMethodRunn
 	
 	public void lookupAndRun(MobContext ctx, String signature) {
 		this.runFromObject(ctx, signature, false);
+	}
+	
+	public void accept(MobInterpretableVisitor visitor) {
+		visitor.visitObject(this);
 	}
 	
 }

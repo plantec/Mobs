@@ -1,9 +1,9 @@
 package mob.ast;
 
+import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
-import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
@@ -19,9 +19,6 @@ public interface MobInterpretableVisitor {
 	}
 
 	default void visitFloat(MobFloat mobFloat) {
-	}
-
-	default void visitInteger(MobInteger mobInteger) {
 	}
 
 	default void visitString(MobString mobString) {
@@ -58,6 +55,9 @@ public interface MobInterpretableVisitor {
 	}
 
 	default  void visitCharacter(MobCharacter mobCharacter) {
+	}
+
+	default  void visitObject(MobObject mob) {
 	}
 
 }

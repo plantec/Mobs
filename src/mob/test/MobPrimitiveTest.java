@@ -3,9 +3,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import mob.model.MobObject;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFalseClass;
-import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobIntegerClass;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobStringClass;
@@ -19,9 +19,9 @@ class MobPrimitiveTest {
 	@Test
 	void testPrimitiveTypes() {
 		MobIntegerClass n = new MobIntegerClass(null,null, null, null);
-		MobInteger ii = n.newInstance(1);
+		MobObject ii = n.newInstance(1);
 		assertTrue(ii.rawValue() instanceof Integer);
-		assertTrue(ii.rawValue() == 1);
+		assertTrue((Integer)ii.rawValue() == 1);
 		MobTrueClass td = new MobTrueClass(null,null, null, null);
 		MobTrue t = td.newInstance();
 		assertTrue(t.rawValue() instanceof Boolean);

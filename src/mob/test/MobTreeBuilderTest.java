@@ -13,9 +13,8 @@ import mob.ast.MobBinaryMessage;
 import mob.ast.MobKeywordMessage;
 import mob.ast.MobReturn;
 import mob.ast.MobVarDecl;
+import mob.model.MobObject;
 import mob.model.primitives.MobFloat;
-import mob.model.primitives.MobInteger;
-import mob.model.primitives.MobPrimitive;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
@@ -32,16 +31,16 @@ class MobTreeBuilderTest {
 		List<MobAstElement> trees;
 
 		trees = builder.run("10");
-		assertTrue(trees.get(0) instanceof MobInteger);
-		assertTrue(((MobInteger) trees.get(0)).rawValue() == 10);
+		assertTrue(trees.get(0) instanceof MobObject);
+		assertTrue(((MobObject) trees.get(0)).rawValue().equals(10));
 
 		trees = builder.run("-10");
-		assertTrue(trees.get(0) instanceof MobInteger);
-		assertTrue(((MobInteger) trees.get(0)).rawValue() == -10);
+		assertTrue(trees.get(0) instanceof MobObject);
+		assertTrue(((MobObject) trees.get(0)).rawValue().equals(-10));
 
 		trees = builder.run("+10");
-		assertTrue(trees.get(0) instanceof MobInteger);
-		assertTrue(((MobInteger) trees.get(0)).rawValue() == 10);
+		assertTrue(trees.get(0) instanceof MobObject);
+		assertTrue(((MobObject) trees.get(0)).rawValue().equals(10));
 
 		trees = builder.run("10.0");
 		assertTrue(trees.get(0) instanceof MobFloat);
@@ -101,8 +100,8 @@ class MobTreeBuilderTest {
 		trees = builder.run("( X := 1 )");
 		assertTrue(trees.get(0) instanceof MobAssign);
 		assign = (MobAssign) trees.get(0);
-		assertTrue(assign.right() instanceof MobInteger);
-		assertTrue(((MobInteger) assign.right()).is(1));
+		assertTrue(assign.right() instanceof MobObject);
+		assertTrue(((MobObject) assign.right()).rawValue().equals(1));
 
 		trees = builder.run("( X := (1 < z) )");
 		assertTrue(trees.get(0) instanceof MobAssign);
@@ -112,7 +111,7 @@ class MobTreeBuilderTest {
 		assertTrue(assign.right() instanceof MobBinaryMessage);
 		MobBinaryMessage right = (MobBinaryMessage) assign.right();
 		assertTrue(right.operator().toString().equals("<"));
-		assertTrue(right.receiver() instanceof MobInteger);
+		assertTrue(right.receiver() instanceof MobObject);
 		assertTrue(right.argument() instanceof MobSymbol);
 
 	}
@@ -134,7 +133,7 @@ class MobTreeBuilderTest {
 		assertTrue(kwms.arguments()[0] instanceof MobBinaryMessage);
 		MobBinaryMessage right = (MobBinaryMessage) kwms.arguments()[0];
 		assertTrue(right.operator().toString().equals("<"));
-		assertTrue(right.receiver() instanceof MobInteger);
+		assertTrue(right.receiver() instanceof MobObject);
 		assertTrue(right.argument() instanceof MobSymbol);
 	}
 
@@ -156,10 +155,9 @@ class MobTreeBuilderTest {
 		assertTrue(trees.get(0) instanceof MobVarDecl);
 		decl = (MobVarDecl) trees.get(0);
 		assertTrue(decl.name().equals("X"));
-		assertTrue(decl.initialValue() instanceof MobPrimitive);
-		@SuppressWarnings("rawtypes")
-		MobPrimitive init = (MobPrimitive) decl.initialValue();
-		assertTrue(init.is(99));
+		assertTrue(decl.initialValue() instanceof MobObject);
+		MobObject init = (MobObject) decl.initialValue();
+		assertTrue(init.rawValue().equals(99));
 	}
 
 	@Test

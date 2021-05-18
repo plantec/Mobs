@@ -16,9 +16,9 @@ import mob.ast.MobQuoted;
 import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
+import mob.model.MobObject;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
-import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
@@ -122,9 +122,9 @@ public class MobPrinter implements MobInterpretableVisitor {
 	}
 
 	@Override
-	public void visitInteger(MobInteger mobInteger) {
-		MobInterpretableVisitor.super.visitInteger(mobInteger);
-		this.write(mobInteger.rawValue().toString());
+	public void visitObject(MobObject mob) {
+		MobInterpretableVisitor.super.visitObject(mob);
+		this.write(mob.rawValue().toString());
 	}
 
 	@Override

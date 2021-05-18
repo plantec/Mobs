@@ -2,6 +2,7 @@ package mob.model.primitives;
 
 import mob.ast.MobAstElement;
 import mob.model.MobClass;
+import mob.model.MobObject;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
@@ -128,11 +129,10 @@ public class MobFloatClass extends MobPrimitiveClass<Float> {
 		});
 		this.addMethod(new MobMethod("=") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobAstElement arg1 = ctx.pop();
+				MobObject arg1 = (MobObject) ctx.pop();
 				MobFloat r = (MobFloat) receiver;
-				if (arg1 instanceof MobInteger) {
-					MobInteger arg = (MobInteger) arg1;
-					ctx.returnElement(r.rawValue() == (float)arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				if (arg1.definition() instanceof MobIntegerClass) {
+					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newTrue():ctx.newFalse());
 				} else {
 					MobFloat arg = (MobFloat) arg1;
 					ctx.returnElement(r.rawValue() == (float)arg.rawValue() ? ctx.newTrue():ctx.newFalse());

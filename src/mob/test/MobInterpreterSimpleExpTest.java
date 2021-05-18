@@ -13,7 +13,6 @@ import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
-import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobTrue;
 import mob.sinterpreter.MobEnvironment;
@@ -31,16 +30,16 @@ class MobInterpreterSimpleExpTest {
 		assertTrue(res.get(0) instanceof MobObject);
 		
 		res = interpreter.run("10");
-		assertTrue(res.get(0) instanceof MobInteger);
-		assertTrue(((MobInteger) res.get(0)).rawValue() == 10);
+		assertTrue(res.get(0) instanceof MobObject);
+		assertTrue((Integer)((MobObject) res.get(0)).rawValue() == 10);
 		
 		res = interpreter.run("-10");
-		assertTrue(res.get(0) instanceof MobInteger);
-		assertTrue(((MobInteger) res.get(0)).rawValue() == -10);
+		assertTrue(res.get(0) instanceof MobObject);
+		assertTrue((Integer)((MobObject) res.get(0)).rawValue() == -10);
 		
 		res = interpreter.run("+10");
-		assertTrue(res.get(0) instanceof MobInteger);
-		assertTrue(((MobInteger) res.get(0)).rawValue() == 10);
+		assertTrue(res.get(0) instanceof MobObject);
+		assertTrue((Integer)((MobObject) res.get(0)).rawValue() == 10);
 		
 		res = interpreter.run("10.0");
 		assertTrue(res.get(0) instanceof MobFloat);

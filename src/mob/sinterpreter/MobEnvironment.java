@@ -17,7 +17,6 @@ import mob.model.primitives.MobCharacterClass;
 import mob.model.primitives.MobFalseClass;
 import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobFloatClass;
-import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobIntegerClass;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobSequenceClass;
@@ -274,7 +273,7 @@ public class MobEnvironment {
 		return this.floatClass().newInstance(p);
 	}
 
-	public MobInteger newInteger(Integer p) {
+	public MobObject newInteger(Integer p) {
 		return this.integerClass().newInstance(p);
 	}
 

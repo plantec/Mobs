@@ -18,7 +18,6 @@ import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
-import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
@@ -102,8 +101,8 @@ public class MobInterpreter implements MobInterpretableVisitor {
 	}
 
 	@Override
-	public void visitInteger(MobInteger mobInteger) {
-		MobInterpretableVisitor.super.visitInteger(mobInteger);
+	public void visitObject(MobObject mobInteger) {
+		MobInterpretableVisitor.super.visitObject(mobInteger);
 		this.push(mobInteger);
 	}
 

@@ -9,7 +9,6 @@ import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
-import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobTrue;
@@ -143,7 +142,7 @@ public class MobContext {
 		return this.parent.newFloat(p);
 	}
 
-	public MobInteger newInteger(Integer p) {
+	public MobObject newInteger(Integer p) {
 		return this.parent.newInteger(p);
 	}
 

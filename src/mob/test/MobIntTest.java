@@ -10,7 +10,6 @@ import mob.model.MobClass;
 import mob.model.MobMetaClass;
 import mob.model.MobObject;
 import mob.model.MobObjectClass;
-import mob.model.primitives.MobInteger;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobInterpreter;
@@ -58,9 +57,9 @@ class MobIntTest {
 		 */
 		intCls.addMethod(new MobMethod("be:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobAstElement arg1 = ctx.pop();
+				MobObject arg1 = (MobObject) ctx.pop();
 				MobObject self = (MobObject) receiver;
-				self.instVarAtPut(0,((MobInteger) arg1).rawValue());
+				self.instVarAtPut(0,arg1.rawValue());
 			}
 		});		
 		interpreter.run("( (MyInt new) be: 5 )");

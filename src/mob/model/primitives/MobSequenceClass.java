@@ -2,6 +2,7 @@ package mob.model.primitives;
 
 import mob.ast.MobAstElement;
 import mob.model.MobClass;
+import mob.model.MobObject;
 import mob.model.MobObjectClass;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
@@ -26,16 +27,16 @@ public class MobSequenceClass extends MobObjectClass {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobSequence seq = (MobSequence) receiver;
 				MobAstElement obj = ctx.pop();
-				MobInteger pos = (MobInteger) ctx.pop();
-				seq.set(pos.rawValue(), obj);
+				MobObject pos = (MobObject) ctx.pop();
+				seq.set((Integer)pos.rawValue(), obj);
 			}
 		});
 		
 		this.addMethod(new MobMethod("at:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobSequence seq = (MobSequence) receiver;
-				MobInteger arg = (MobInteger) ctx.pop();
-				ctx.returnElement(seq.get(arg.rawValue()));
+				MobObject pos = (MobObject) ctx.pop();
+				ctx.returnElement(seq.get((Integer)pos.rawValue()));
 			}
 		});
 	}

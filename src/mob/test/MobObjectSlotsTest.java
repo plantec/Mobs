@@ -6,7 +6,8 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import mob.model.primitives.MobInteger;
+import mob.model.MobObject;
+import mob.model.primitives.MobIntegerClass;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobInterpreter;
 
@@ -22,9 +23,9 @@ class MobObjectSlotsTest {
 		interpreter.run("( (o := MyObject new) )");
 		interpreter.run("( (o instVarAt: 0 put: 9) )");
 		interpreter.run("( (o instVarAt: 0) )");
-		assertTrue(interpreter.result().get(0) instanceof MobInteger);
-		MobInteger i = (MobInteger) interpreter.result().get(0);
-		assertTrue(i.rawValue() == 9);
+		assertTrue(interpreter.result().get(0) instanceof MobObject);
+		MobObject i = (MobObject) interpreter.result().get(0);
+		assertTrue(i.rawValue().equals(9));
 	}
 	
 	@Test
@@ -39,14 +40,14 @@ class MobObjectSlotsTest {
 		interpreter.run("( var o := MyObject new ) ");
 		interpreter.run("( o initialize )");
 		interpreter.run("( o x )");
-		assertTrue(interpreter.result().get(0) instanceof MobInteger);
-		MobInteger x = (MobInteger) interpreter.result().get(0);
-		assertTrue(x.rawValue() == 0);
+		assertTrue(interpreter.result().get(0) instanceof MobObject);
+		MobObject x = (MobObject) interpreter.result().get(0);
+		assertTrue(x.rawValue().equals(0));
 		interpreter.run("( o x: 9)");
 		interpreter.run("( o x )");
-		assertTrue(interpreter.result().get(0) instanceof MobInteger);
-		x = (MobInteger) interpreter.result().get(0);
-		assertTrue(x.rawValue() == 9);
+		assertTrue(interpreter.result().get(0) instanceof MobObject);
+		x = (MobObject) interpreter.result().get(0);
+		assertTrue(x.rawValue().equals(9));
 	}
 	
 	@Test
@@ -77,23 +78,23 @@ class MobObjectSlotsTest {
 		interpreter.run("( var o := MySubObject new ) ");
 		interpreter.run("( o initialize )");
 		interpreter.run("( o x )");
-		assertTrue(interpreter.result().get(0) instanceof MobInteger);
-		MobInteger x = (MobInteger) interpreter.result().get(0);
-		assertTrue(x.rawValue() == 1);
+		assertTrue(((MobObject)interpreter.result().get(0)).definition() instanceof MobIntegerClass);
+		MobObject x = (MobObject) interpreter.result().get(0);
+		assertTrue(x.rawValue().equals(1));
 		interpreter.run("( o y )");
-		assertTrue(interpreter.result().get(0) instanceof MobInteger);
-		MobInteger y = (MobInteger) interpreter.result().get(0);
-		assertTrue(y.rawValue() == 2);
+		assertTrue(((MobObject)interpreter.result().get(0)).definition() instanceof MobIntegerClass);
+		MobObject y = (MobObject) interpreter.result().get(0);
+		assertTrue(y.rawValue().equals(2));
 		interpreter.run("( o x: 9)");
 		interpreter.run("( o x )");
-		assertTrue(interpreter.result().get(0) instanceof MobInteger);
-		x = (MobInteger) interpreter.result().get(0);
-		assertTrue(x.rawValue() == 9);
+		assertTrue(((MobObject)interpreter.result().get(0)).definition() instanceof MobIntegerClass);
+		x = (MobObject) interpreter.result().get(0);
+		assertTrue(x.rawValue().equals(9));
 		interpreter.run("( o y: 10)");
 		interpreter.run("( o y )");
-		assertTrue(interpreter.result().get(0) instanceof MobInteger);
-		x = (MobInteger) interpreter.result().get(0);
-		assertTrue(x.rawValue() == 10);
+		assertTrue(((MobObject)interpreter.result().get(0)).definition() instanceof MobIntegerClass);
+		x = (MobObject) interpreter.result().get(0);
+		assertTrue(x.rawValue().equals(10));
 	}
 	
 	@Test
@@ -107,14 +108,14 @@ class MobObjectSlotsTest {
 		interpreter.run("( (MyObject class) addMethod: [ v | X := v ] named: 'X:' )");
 		interpreter.run("( MyObject initialize )");
 		interpreter.run("( MyObject X )");
-		assertTrue(interpreter.result().get(0) instanceof MobInteger);
-		MobInteger x = (MobInteger) interpreter.result().get(0);
-		assertTrue(x.rawValue() == 0);
+		assertTrue(((MobObject)interpreter.result().get(0)).definition() instanceof MobIntegerClass);
+		MobObject x = (MobObject) interpreter.result().get(0);
+		assertTrue(x.rawValue().equals(0));
 		interpreter.run("( MyObject X: 9 )");
 		interpreter.run("( MyObject X )");
-		assertTrue(interpreter.result().get(0) instanceof MobInteger);
-		x = (MobInteger) interpreter.result().get(0);
-		assertTrue(x.rawValue() == 9);
+		assertTrue(((MobObject)interpreter.result().get(0)).definition() instanceof MobIntegerClass);
+		x = (MobObject) interpreter.result().get(0);
+		assertTrue(x.rawValue().equals(9));
 	}
 
 }

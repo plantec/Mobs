@@ -72,7 +72,7 @@ public class MobTopContext extends MobContext {
 		return this.env.newFloat(p);
 	}
 
-	public MobInteger newInteger(Integer p) {
+	public MobObject newInteger(Integer p) {
 		return this.env.newInteger(p);
 	}
 

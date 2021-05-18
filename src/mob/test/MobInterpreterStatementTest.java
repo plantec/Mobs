@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import mob.ast.MobAstElement;
 import mob.ast.MobQuoted;
 import mob.model.MobObject;
+import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
-import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobTrue;
@@ -27,27 +27,23 @@ class MobInterpreterStatementTest {
 		MobInterpreter interpreter = new MobInterpreter(env);
 		List<MobAstElement> result = interpreter.run("(1 + 1)");
 		assertTrue(result.size()==1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		MobInteger r = (MobInteger) result.get(0);
-		assertTrue (r.rawValue() == 2);
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(2)));
 		
 		result = interpreter.run("(1 + (1))");
 		assertTrue(result.size()==1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		r = (MobInteger) result.get(0);
-		assertTrue (r.rawValue() == 2);
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(2)));
 		
 		result = interpreter.run("((1) + ((1)))");
 		assertTrue(result.size()==1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		r = (MobInteger) result.get(0);
-		assertTrue (r.rawValue() == 2);
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(2)));
 		
 		result = interpreter.run("(1 + (1 + 1))");
 		assertTrue(result.size()==1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		r = (MobInteger) result.get(0);
-		assertTrue (r.rawValue() == 3);
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(3)));
 		
 		result = interpreter.run("(1 + (1 + 1.5))");
 		assertTrue(result.size()==1);
@@ -57,20 +53,19 @@ class MobInterpreterStatementTest {
 		
 		result = interpreter.run("( (2 * (10 - (4 / 2))) negated )");
 		assertTrue(result.size()==1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		r = (MobInteger) result.get(0);
-		assertTrue (r.rawValue() == -16);
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(-16)));
 		
 		result = interpreter.run("( (10 > 0) )");
 		assertTrue(result.get(0) instanceof MobTrue);
 		result = interpreter.run("( (10 = 10) )");
 		assertTrue(result.get(0) instanceof MobTrue);
 		result = interpreter.run("( (10 = 10.0) )");
-		assertTrue(result.get(0) instanceof MobTrue);
+		assertTrue(result.get(0) instanceof MobFalse);
 		result = interpreter.run("( (10.0 = 10.0) )");
 		assertTrue(result.get(0) instanceof MobTrue);
 		result = interpreter.run("( (10.0 = 10) )");
-		assertTrue(result.get(0) instanceof MobTrue);
+		assertTrue(result.get(0) instanceof MobFalse);
 	}
 	
 	@Test
@@ -100,12 +95,12 @@ class MobInterpreterStatementTest {
 		MobInterpreter interpreter = new MobInterpreter(env);
 		List<MobAstElement> result = interpreter.run("(10 println)");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		assertTrue(result.get(0).is(10));
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(10)));
 		result = interpreter.run("( [ 10 println ] value )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		assertTrue(result.get(0).is(10));
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(10)));
 		result = interpreter.run("( [ 10 println ] )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobUnit);
@@ -118,23 +113,23 @@ class MobInterpreterStatementTest {
 		List<MobAstElement> result;
 		result = interpreter.run("( [ v |  v println  ] value: 10 )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		assertTrue(result.get(0).is(10));
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(10)));
 		
 		result = interpreter.run("( [ v | (var X := 1) ((v + X) println)  ] value: 10 )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		assertTrue(result.get(0).is(11));
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(11)));
 		
 		result = interpreter.run("( [ v | (var X := 1) ((v + X) println)  ] value: (9 + 1) )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		assertTrue(result.get(0).is(11));
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(11)));
 		
 		result = interpreter.run("( (var p := 9 + 1) ( [ v | (var X := 1) ((v + X) println)  ] value: p ) )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		assertTrue(result.get(0).is(11));
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(11)));
 		
 		result = interpreter.run("( [ 9 + 1 ] ) ");
 		assertTrue(result.size() == 1);
@@ -142,23 +137,23 @@ class MobInterpreterStatementTest {
 		
 		result = interpreter.run("( (var p2 := [ 9 + 1 ] ) ( [ v | (var X := 1) (((v value) + X) println)  ] value: p2 ) )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		assertTrue(result.get(0).is(11));
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(11)));
 		
 		result = interpreter.run("( [ u v | (var X := 1) (((v + X) + u) println)  ] value: 10 value: 5)");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		assertTrue(result.get(0).is(16));
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(16)));
 		
 		result = interpreter.run("( [ u v | (var X := 1) (((v + X) + u) println)  ] values: `( 10 5 ) )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		assertTrue(result.get(0).is(16));
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(16)));
 		
 		result = interpreter.run("( [ u v | (var X := 1) (((v + X) + (u value)) println)  ] values: `( [9 + 1] 5 ) )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobInteger);
-		assertTrue(result.get(0).is(16));
+		assertTrue(result.get(0) instanceof MobObject);
+		assertTrue((((MobObject)result.get(0)).rawValue().equals(16)));
 	}
 
 	@Test
@@ -171,8 +166,8 @@ class MobInterpreterStatementTest {
 		assertTrue(result.get(0) instanceof MobQuoted);
 		assertTrue(((MobQuoted) result.get(0)).entity() instanceof MobSequence);
 		MobSequence seq = (MobSequence) ((MobQuoted) result.get(0)).entity();
-		assertTrue(seq.get(0).is(10));
-		assertTrue(seq.get(1).is(5));
+		assertTrue(((MobObject)seq.get(0)).rawValue().equals(10));
+		assertTrue(((MobObject)seq.get(1)).rawValue().equals(5));
 		
 		result = interpreter.run("( `( [9 + 1] 5 ) )");
 		assertTrue(result.size() == 1);
@@ -180,7 +175,7 @@ class MobInterpreterStatementTest {
 		assertTrue(((MobQuoted) result.get(0)).entity() instanceof MobSequence);
 		seq = (MobSequence) ((MobQuoted) result.get(0)).entity();
 		assertTrue(seq.get(0) instanceof MobUnit);
-		assertTrue(seq.get(1).is(5));
+		assertTrue(((MobObject)seq.get(1)).rawValue().equals(5));
 	}
 	
 	@Test
@@ -196,18 +191,18 @@ class MobInterpreterStatementTest {
 		
 		res = interpreter.run("( X := 9 )");
 		assertTrue(res.size() == 1);
-		assertTrue(res.get(0) instanceof MobInteger);
-		assertTrue(res.get(0).is(9));
+		assertTrue(res.get(0) instanceof MobObject);
+		assertTrue((((MobObject)res.get(0)).rawValue().equals(9)));
 		
 		res = interpreter.run("( (var Y := 1) (Y := 9 + (X + Y ) ) )");
 		assertTrue(res.size() == 1);
-		assertTrue(res.get(0) instanceof MobInteger);
-		assertTrue(res.get(0).is(19));
+		assertTrue(res.get(0) instanceof MobObject);
+		assertTrue((((MobObject)res.get(0)).rawValue().equals(19)));
 		
 		res = interpreter.run("( (var Z := 1) ([ (var y := 2) (Z := Z + y) ] value) )");
 		assertTrue(res.size() == 1);
-		assertTrue(res.get(0) instanceof MobInteger);
-		assertTrue(res.get(0).is(3));
+		assertTrue(res.get(0) instanceof MobObject);
+		assertTrue((((MobObject)res.get(0)).rawValue().equals(3)));
 	}
 
 	@Test
@@ -217,9 +212,8 @@ class MobInterpreterStatementTest {
 
 		interpreter.run("( (var X) (var Y := 1) (X := Y + Y) ) ");
 		assertTrue(interpreter.result().size() == 1);
-		assertTrue(interpreter.result().get(0) instanceof MobInteger);
-		MobInteger i = (MobInteger) interpreter.result().get(0);
-		assertTrue(i.is(2));
+		assertTrue(interpreter.result().get(0) instanceof MobObject);
+		assertTrue((((MobObject)interpreter.result().get(0)).rawValue().equals(2)));
 	}
 
 }

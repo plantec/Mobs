@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import mob.ast.MobAstElement;
-import mob.model.primitives.MobInteger;
 import mob.model.primitives.MobString;
 import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobContext;
@@ -103,24 +102,24 @@ public class MobBehavior extends MobObject {
 		this.addMethod(new MobMethod("instVarAt:put:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject v = (MobObject) ctx.pop();
-				MobInteger pos = (MobInteger) ctx.pop();
+				MobObject pos = (MobObject) ctx.pop();
 				MobObject self = (MobObject) receiver;
-				self.instVarAtPut(pos.rawValue(), v);
+				self.instVarAtPut((Integer)pos.rawValue(), v);
 			}
 		});
 		this.addMethod(new MobMethod("prim_instVarAt:put:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject v = (MobObject) ctx.pop();
-				MobInteger pos = (MobInteger) ctx.pop();
+				MobObject pos = (MobObject) ctx.pop();
 				MobObject self = (MobObject) receiver;
-				self.instVarAtPut(pos.rawValue(), v.rawValue());
+				self.instVarAtPut((Integer)pos.rawValue(), v.rawValue());
 			}
 		});
 		this.addMethod(new MobMethod("instVarAt:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobInteger pos = (MobInteger) ctx.pop();
+				MobObject pos = (MobObject) ctx.pop();
 				MobObject self = (MobObject) receiver;
-				ctx.returnElement((MobAstElement) self.instVarAt(pos.rawValue()));
+				ctx.returnElement((MobAstElement) self.instVarAt((Integer)pos.rawValue()));
 			}
 		});
 	}
