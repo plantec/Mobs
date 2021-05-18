@@ -52,8 +52,7 @@ class MobIntTest {
 		MobClass intCls = env.getClassByName("MyInt");
 		/*
 		 * (method (MyInt be:)
-		 *  (| arg |)
-		 * 	(arg := thiscontext pop)
+		 * 	(var arg := thiscontext pop)
 		 * 	(self primInstVarAt: 0 put: arg)
 		 * 	(thiscontext push: self)))  
 		 */
@@ -75,8 +74,7 @@ class MobIntTest {
 		MobClass intCls = env.getClassByName("MyInt");
 		/*
 		 * (method ((MyInt class) new)
-		 *  (| res |)
-		 * 	(res := super new)
+		 * 	(var res := super new)
 		 * 	(res primInstVarAt: 0 put: 0)
 		 * 	(thiscontext return: res)))  
 		 */
@@ -88,6 +86,16 @@ class MobIntTest {
 				ctx.returnElement(res);
 			}
 		});		
+		interpreter.run("(MyInt new)");
+		assertTrue(interpreter.result().get(0) instanceof Object);
+		MobObject obj = (MobObject) interpreter.result().get(0);
+		assertTrue(obj.definition().name().equals("MyInt"));
+		assertTrue((int)obj.instVarAt(0) == 0);
+	}
+	
+	@Test
+	void testMyIntNew2()  {
+		interpreter.run("( (MyInt class) addMethod: [ (var res := super new) (res prim_instVarAt: 0 put: 0) (^ res) ] named: 'new' )");
 		interpreter.run("(MyInt new)");
 		assertTrue(interpreter.result().get(0) instanceof Object);
 		MobObject obj = (MobObject) interpreter.result().get(0);

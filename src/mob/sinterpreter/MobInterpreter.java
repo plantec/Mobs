@@ -13,6 +13,7 @@ import mob.ast.MobQuoted;
 import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
+import mob.model.MobMethodRunner;
 import mob.model.MobObject;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
@@ -113,7 +114,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		if (v == null) {
 			throw new Error("Undeclared variable '" + mobSymbol.rawValue() + "'");
 		}
-		this.push(v.value());
+		v.pushInto(this.context);
 	}
 
 	@Override
@@ -154,7 +155,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		MobAstElement receiver = mobUnaryMessage.receiver();
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		((MobObject) actualReceiver).run(this.context, name);
+		((MobMethodRunner) actualReceiver).lookupAndRun(this.context, name);
 	}
 
 	@Override
@@ -166,7 +167,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		this.accept(arg);
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		((MobObject)actualReceiver).run(this.context, name.rawValue());
+		((MobMethodRunner)actualReceiver).lookupAndRun(this.context, name.rawValue());
 	}
 
 	@Override
@@ -178,7 +179,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		MobAstElement receiver = mobKeywordMessage.receiver();
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		((MobObject)actualReceiver).run(this.context, selector);
+		((MobMethodRunner)actualReceiver).lookupAndRun(this.context, selector);
 	}
 
 	@Override

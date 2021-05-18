@@ -8,7 +8,7 @@ import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobReturnExecuted;
 
-public class MobObject extends MobEntity implements MobAstElement {
+public class MobObject extends MobEntity implements MobAstElement, MobMethodRunner {
 	private MobEnvironment environment;
 	private MobClass definition;
 	private Object [] values;
@@ -48,6 +48,13 @@ public class MobObject extends MobEntity implements MobAstElement {
 		return this.values[pos];
 	}
 	
+	public Object rawValue() {
+		return this.instVarAt(0);
+	}
+	public Object rawValueAt(int pos) {
+		return this.instVarAt(pos);
+	}
+	
 	public int valuesCapacity() {
 		return this.values.length;
 	}
@@ -57,13 +64,17 @@ public class MobObject extends MobEntity implements MobAstElement {
 			this.values = Arrays.copyOf(this.values, capacity);
 	}
 	
-	public void run(MobContext ctx, String signature) {
+	public void run(MobContext ctx, String signature, Boolean superflag) {
 		try {
-			this.definition.run(ctx, this, signature);
+			this.definition.run(ctx, this, signature, superflag);
 			ctx.push(this);
 		} catch (MobReturnExecuted e1) {
 			// nothing to do : the returned value is already on top of the stack
 		}				
+	}
+	
+	public void lookupAndRun(MobContext ctx, String signature) {
+		this.run(ctx, signature, false);
 	}
 	
 }

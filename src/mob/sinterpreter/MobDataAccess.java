@@ -4,6 +4,6 @@ import mob.ast.MobAstElement;
 
 public interface MobDataAccess {
 	MobAstElement value();
-	public void setValue(MobAstElement mobExp);
-
+	void setValue(MobAstElement mobExp);
+	void pushInto(MobContext context);
 }

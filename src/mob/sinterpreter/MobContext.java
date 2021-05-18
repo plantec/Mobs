@@ -38,7 +38,6 @@ public class MobContext {
 
 	public void setReceiver(MobObject receiver) {
 		this.receiver = receiver;
-		this.addVariable(new MobVariable("self", this.receiver));
 	}
 
 	public void setParameterValue(int idx, MobAstElement value) {
@@ -88,7 +87,9 @@ public class MobContext {
 		if (v != null)
 			return v;
 		if (this.receiver != null) {
-			
+			if (name.equals("self") || name.equals("super")) {
+				return new MobPseudoVariable(name, this.receiver);
+			}
 			int pos = this.positionOfSlot(name);
 			if (pos > -1 ) {
 				return new MobSlotData(this.receiver, pos);

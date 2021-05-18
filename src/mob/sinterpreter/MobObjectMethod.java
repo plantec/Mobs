@@ -15,8 +15,7 @@ public class MobObjectMethod extends MobMethod {
 	public void run(MobContext ctx, MobAstElement receiver) {
 		MobContext newCtx = new MobContext(ctx.interpreter().topContext());
 		newCtx.setReceiver((MobObject) receiver);
-		newCtx.setUnit(this.code);
-		
+		newCtx.setUnit(this.code);		
 		for (int i = code.parameters().size() - 1; i >= 0; i--)
 			newCtx.setParameterValue(i, ctx.pop());
 		ctx.interpreter().pushContext(newCtx);

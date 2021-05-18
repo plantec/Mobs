@@ -31,4 +31,9 @@ public class MobVariable implements MobDataAccess {
 		this.value = mobExp;
 	}
 
+	@Override
+	public void pushInto(MobContext context) {
+		context.push(this.value);
+	}
+
 }

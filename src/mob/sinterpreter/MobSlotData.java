@@ -22,4 +22,9 @@ public class MobSlotData implements MobDataAccess {
 		this.receiver.instVarAtPut(this.pos, mobExp);
 	}
 
+	@Override
+	public void pushInto(MobContext context) {
+		context.push(this.value());
+	}
+
 }

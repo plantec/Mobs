@@ -29,8 +29,7 @@ import mob.sinterpreter.MobObjectMethod;
 public class MobBehavior extends MobObject {
 	private HashMap<String, MobMethod> methodDict;
 	private MobClass superclass;
-	protected String [] slots;
-
+	protected String[] slots;
 
 	public MobBehavior(MobEnvironment environment, MobClass superclass, MobClass definition) {
 		super(environment, definition);
@@ -38,11 +37,11 @@ public class MobBehavior extends MobObject {
 		this.superclass = superclass;
 		this.initializeSlots();
 	}
-	
+
 	protected void initializeSlots() {
 		this.slots = new String[0];
 	}
-	
+
 	protected void initializePrimitives() {
 		this.addMethod(new MobMethod("println") {
 			public void run(MobContext ctx, MobAstElement receiver) {
@@ -72,9 +71,10 @@ public class MobBehavior extends MobObject {
 		this.addMethod(new MobMethod("addSubclassNamed:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobString name = (MobString) ctx.pop();
-				MobClass self = (MobClass) receiver;			
+				MobClass self = (MobClass) receiver;
 				MobClass newClass = new MobClass(name.rawValue(), self, ctx.environment(), null);
-				MobMetaClass definition = new MobMetaClass(newClass, self, ctx.environment(), ctx.environment().getClassByName("MetaClass"));
+				MobMetaClass definition = new MobMetaClass(newClass, self, ctx.environment(),
+						ctx.environment().getClassByName("MetaClass"));
 				newClass.setDefinition(definition);
 				self.addSubclass(newClass);
 			}
@@ -86,20 +86,34 @@ public class MobBehavior extends MobObject {
 				self.addSlot(name.rawValue());
 			}
 		});
-		
+
 		this.addMethod(new MobMethod("new") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobClass self = (MobClass) receiver;
 				ctx.returnElement(self.newInstance());
 			}
 		});
-		
+		this.addMethod(new MobMethod("basicNew") {
+			public void run(MobContext ctx, MobAstElement receiver) {
+				MobClass self = (MobClass) receiver;
+				ctx.returnElement(self.newInstance());
+			}
+		});
+
 		this.addMethod(new MobMethod("instVarAt:put:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject v = (MobObject) ctx.pop();
 				MobInteger pos = (MobInteger) ctx.pop();
 				MobObject self = (MobObject) receiver;
 				self.instVarAtPut(pos.rawValue(), v);
+			}
+		});
+		this.addMethod(new MobMethod("prim_instVarAt:put:") {
+			public void run(MobContext ctx, MobAstElement receiver) {
+				MobObject v = (MobObject) ctx.pop();
+				MobInteger pos = (MobInteger) ctx.pop();
+				MobObject self = (MobObject) receiver;
+				self.instVarAtPut(pos.rawValue(), v.rawValue());
 			}
 		});
 		this.addMethod(new MobMethod("instVarAt:") {
@@ -110,7 +124,7 @@ public class MobBehavior extends MobObject {
 			}
 		});
 	}
-	
+
 	public void addMethod(MobMethod definition) {
 		this.methodDict.put(definition.selector(), definition);
 	}
@@ -118,7 +132,7 @@ public class MobBehavior extends MobObject {
 	public MobMethod methodNamed(String signature) {
 		return this.methodDict.get(signature);
 	}
-	
+
 	public MobMethod lookupMethodNamed(String signature) {
 		MobMethod found = methodDict.get(signature);
 		if (found != null) {
@@ -129,17 +143,18 @@ public class MobBehavior extends MobObject {
 		}
 		return null;
 	}
-	
+
 	public MobClass superclass() {
 		return this.superclass;
 	}
-	
+
 	public void setSuperclass(MobClass cls) {
 		this.superclass = cls;
 	}
 
 	public void addSubclass(MobClass cls) {
-		if (cls.name() == null) return;
+		if (cls.name() == null)
+			return;
 		this.environment().recordClass(cls);
 	}
 
@@ -147,13 +162,13 @@ public class MobBehavior extends MobObject {
 		return null;
 	}
 
-	public String [] slots() {
+	public String[] slots() {
 		return this.slots;
 	}
-	
+
 	public String[] inheritedSlots() {
-		String [] is = this.superclass().inheritedSlots();
-		String [] r = new String [is.length + this.slots.length];
+		String[] is = this.superclass().inheritedSlots();
+		String[] r = new String[is.length + this.slots.length];
 		int idx = 0;
 		for (String s : is) {
 			r[idx++] = s;
@@ -163,33 +178,35 @@ public class MobBehavior extends MobObject {
 		}
 		return r;
 	}
-	
-	public Integer positionOfSlot(String name) {		
+
+	public Integer positionOfSlot(String name) {
 		Integer pos = -1;
 		if (this.superclass() != null) {
 			pos = this.superclass().positionOfSlot(name);
-			if (pos > -1) return pos;
+			if (pos > -1)
+				return pos;
 		}
 		for (String s : this.slots) {
 			pos++;
-			if (s.equals(name)) return pos;
+			if (s.equals(name))
+				return pos;
 		}
 		return -1;
 	}
-		
+
 	public void addSlot(String slotName) {
 		if (this.positionOfSlot(slotName) > -1)
 			throw new Error("A slot name '" + slotName + "' already exists in class " + this.name());
-		this.slots = Arrays.copyOf(this.slots, this.slots.length+1);
-		this.slots[this.slots.length-1] = slotName;
+		this.slots = Arrays.copyOf(this.slots, this.slots.length + 1);
+		this.slots[this.slots.length - 1] = slotName;
 	}
-	
+
 	public int numberOfSlots() {
 		return this.slots.length;
 	}
-	
-	public void run(MobContext ctx, MobObject receiver, String signature) {
-		MobMethod m = this.lookupMethodNamed(signature);
+
+	public void run(MobContext ctx, MobObject receiver, String signature, Boolean superflag) {
+		MobMethod m = superflag ? this.superclass != null ? this.superclass.lookupMethodNamed(signature) : null :  this.lookupMethodNamed(signature);
 		if (m == null)
 			throw new Error(this + " does not understand '" + signature + "'");
 		m.run(ctx, receiver);

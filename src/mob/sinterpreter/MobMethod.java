@@ -13,6 +13,7 @@ public abstract class MobMethod {
 	public String selector () {
 		return this.selector;
 	}
+	
 	abstract public void run(MobContext ctx, MobAstElement mobObject);
 
 }
