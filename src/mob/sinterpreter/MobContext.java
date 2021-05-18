@@ -23,6 +23,7 @@ public class MobContext {
 	MobObject receiver;
 
 	public MobContext(MobContext parent) {
+		if (parent != null && parent == this.parent) throw new Error("Circular context");
 		this.parent = parent;
 		this.variables = new HashMap<>();
 		this.parameters = new ArrayList<>();

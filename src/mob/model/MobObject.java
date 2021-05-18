@@ -64,7 +64,7 @@ public class MobObject extends MobEntity implements MobAstElement, MobMethodRunn
 			this.values = Arrays.copyOf(this.values, capacity);
 	}
 	
-	public void run(MobContext ctx, String signature, Boolean superflag) {
+	public void runFromObject(MobContext ctx, String signature, Boolean superflag) {
 		try {
 			this.definition.run(ctx, this, signature, superflag);
 			ctx.push(this);
@@ -74,7 +74,7 @@ public class MobObject extends MobEntity implements MobAstElement, MobMethodRunn
 	}
 	
 	public void lookupAndRun(MobContext ctx, String signature) {
-		this.run(ctx, signature, false);
+		this.runFromObject(ctx, signature, false);
 	}
 	
 }

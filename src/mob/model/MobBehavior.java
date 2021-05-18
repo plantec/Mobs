@@ -167,7 +167,7 @@ public class MobBehavior extends MobObject {
 	}
 
 	public String[] inheritedSlots() {
-		String[] is = this.superclass().inheritedSlots();
+		String[] is = this.superclass == null ? new String[0] : this.superclass().inheritedSlots();
 		String[] r = new String[is.length + this.slots.length];
 		int idx = 0;
 		for (String s : is) {
@@ -180,13 +180,9 @@ public class MobBehavior extends MobObject {
 	}
 
 	public Integer positionOfSlot(String name) {
+		String[] allSlots = this.inheritedSlots();
 		Integer pos = -1;
-		if (this.superclass() != null) {
-			pos = this.superclass().positionOfSlot(name);
-			if (pos > -1)
-				return pos;
-		}
-		for (String s : this.slots) {
+		for (String s : allSlots) {
 			pos++;
 			if (s.equals(name))
 				return pos;
@@ -204,11 +200,18 @@ public class MobBehavior extends MobObject {
 	public int numberOfSlots() {
 		return this.slots.length;
 	}
+	public int numberOfInheritedSlots() {
+		int nb = this.numberOfSlots();
+		if (this.superclass != null)
+			nb+= this.superclass.numberOfInheritedSlots();
+		return nb;
+	}
 
 	public void run(MobContext ctx, MobObject receiver, String signature, Boolean superflag) {
 		MobMethod m = superflag ? this.superclass != null ? this.superclass.lookupMethodNamed(signature) : null :  this.lookupMethodNamed(signature);
 		if (m == null)
 			throw new Error(this + " does not understand '" + signature + "'");
+		//System.out.println(receiver.definition().name() + " . "+ signature);
 		m.run(ctx, receiver);
 	}
 }

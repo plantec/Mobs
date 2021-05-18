@@ -20,7 +20,8 @@ public class MobObjectMethod extends MobMethod {
 			newCtx.setParameterValue(i, ctx.pop());
 		ctx.interpreter().pushContext(newCtx);
 		MobAstElement e = this.code.code();
-		ctx.interpreter().accept(e);
+		if (e != null)
+			ctx.interpreter().accept(e);
 		ctx.interpreter().popContext();
 	}
 

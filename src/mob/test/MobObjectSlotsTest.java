@@ -17,7 +17,6 @@ class MobObjectSlotsTest {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
 		interpreter.run("( (Object addSubclassNamed: 'MyObject') )");
-		interpreter.run("( (MyObject addSubclassNamed: 'MyObject2') )");
 		interpreter.run("( (MyObject addSlotNamed: 'x') )");
 		interpreter.run("( (var o ) )");
 		interpreter.run("( (o := MyObject new) )");
@@ -48,6 +47,53 @@ class MobObjectSlotsTest {
 		assertTrue(interpreter.result().get(0) instanceof MobInteger);
 		x = (MobInteger) interpreter.result().get(0);
 		assertTrue(x.rawValue() == 9);
+	}
+	
+	@Test
+	void testInheritance() throws IOException {
+		MobEnvironment env = new MobEnvironment();
+		MobInterpreter interpreter = new MobInterpreter(env);
+		interpreter.run("( Object addSubclassNamed: 'MyObject' )");
+		interpreter.run("( MyObject addMethod: [ ] named: 'initialize' )");
+		interpreter.run("( (MyObject addSubclassNamed: 'MySubObject') )");
+		interpreter.run("( MySubObject addMethod: [ super initialize ] named: 'initialize' )");
+		interpreter.run("( (MySubObject new) initialize )");
+	}
+	
+	@Test
+	void testInheritanceWithSlots() throws IOException {
+		MobEnvironment env = new MobEnvironment();
+		MobInterpreter interpreter = new MobInterpreter(env);
+		interpreter.run("( Object addSubclassNamed: 'MyObject' )");
+		interpreter.run("( MyObject addSlotNamed: 'x' )");
+		interpreter.run("( MyObject addMethod: [ x := 1 ] named: 'initialize' )");
+		interpreter.run("( MyObject addMethod: [ ^ x ] named: 'x' )");
+		interpreter.run("( MyObject addMethod: [ v | x := v ] named: 'x:' )");
+		interpreter.run("( (MyObject addSubclassNamed: 'MySubObject') )");
+		interpreter.run("( MySubObject addSlotNamed: 'y' )");
+		interpreter.run("( MySubObject addMethod: [ (super initialize) (y := 2) ] named: 'initialize' )");
+		interpreter.run("( MySubObject addMethod: [ ^ y ] named: 'y' )");
+		interpreter.run("( MySubObject addMethod: [ v | y := v ] named: 'y:' )");
+		interpreter.run("( var o := MySubObject new ) ");
+		interpreter.run("( o initialize )");
+		interpreter.run("( o x )");
+		assertTrue(interpreter.result().get(0) instanceof MobInteger);
+		MobInteger x = (MobInteger) interpreter.result().get(0);
+		assertTrue(x.rawValue() == 1);
+		interpreter.run("( o y )");
+		assertTrue(interpreter.result().get(0) instanceof MobInteger);
+		MobInteger y = (MobInteger) interpreter.result().get(0);
+		assertTrue(y.rawValue() == 2);
+		interpreter.run("( o x: 9)");
+		interpreter.run("( o x )");
+		assertTrue(interpreter.result().get(0) instanceof MobInteger);
+		x = (MobInteger) interpreter.result().get(0);
+		assertTrue(x.rawValue() == 9);
+		interpreter.run("( o y: 10)");
+		interpreter.run("( o y )");
+		assertTrue(interpreter.result().get(0) instanceof MobInteger);
+		x = (MobInteger) interpreter.result().get(0);
+		assertTrue(x.rawValue() == 10);
 	}
 	
 	@Test

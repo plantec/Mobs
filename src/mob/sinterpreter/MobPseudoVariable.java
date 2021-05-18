@@ -13,7 +13,7 @@ public class MobPseudoVariable extends MobVariable implements MobDataAccess, Mob
 	@Override
 	public void lookupAndRun(MobContext ctx, String signature) {
 		Boolean superflag = this.name().equals("super");
-		((MobObject) this.value()).run(ctx, signature, superflag);
+		((MobObject) this.value()).runFromObject(ctx, signature, superflag);
 	}
 	
 	@Override
