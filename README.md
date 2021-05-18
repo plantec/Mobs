@@ -1,3 +1,3 @@
 # Mobs
 
-A minimal object engine
+A minimal object and message passing engine in Java
