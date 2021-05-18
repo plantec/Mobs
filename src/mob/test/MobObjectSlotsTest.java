@@ -19,7 +19,7 @@ class MobObjectSlotsTest {
 		interpreter.run("( (Object addSubclassNamed: 'MyObject') )");
 		interpreter.run("( (MyObject addSubclassNamed: 'MyObject2') )");
 		interpreter.run("( (MyObject addSlotNamed: 'x') )");
-		interpreter.run("( (decl o ) )");
+		interpreter.run("( (var o ) )");
 		interpreter.run("( (o := MyObject new) )");
 		interpreter.run("( (o instVarAt: 0 put: 9) )");
 		interpreter.run("( (o instVarAt: 0) )");
@@ -37,7 +37,7 @@ class MobObjectSlotsTest {
 		interpreter.run("( MyObject addMethod: [ x := 0 ] named: 'initialize' )");
 		interpreter.run("( MyObject addMethod: [ ^ x ] named: 'x' )");
 		interpreter.run("( MyObject addMethod: [ v | x := v ] named: 'x:' )");
-		interpreter.run("( decl o := MyObject new ) ");
+		interpreter.run("( var o := MyObject new ) ");
 		interpreter.run("( o initialize )");
 		interpreter.run("( o x )");
 		assertTrue(interpreter.result().get(0) instanceof MobInteger);

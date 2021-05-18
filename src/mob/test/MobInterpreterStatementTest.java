@@ -121,17 +121,17 @@ class MobInterpreterStatementTest {
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(10));
 		
-		result = interpreter.run("( [ v | (decl X := 1) ((v + X) println)  ] value: 10 )");
+		result = interpreter.run("( [ v | (var X := 1) ((v + X) println)  ] value: 10 )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(11));
 		
-		result = interpreter.run("( [ v | (decl X := 1) ((v + X) println)  ] value: (9 + 1) )");
+		result = interpreter.run("( [ v | (var X := 1) ((v + X) println)  ] value: (9 + 1) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(11));
 		
-		result = interpreter.run("( (decl p := 9 + 1) ( [ v | (decl X := 1) ((v + X) println)  ] value: p ) )");
+		result = interpreter.run("( (var p := 9 + 1) ( [ v | (var X := 1) ((v + X) println)  ] value: p ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(11));
@@ -140,22 +140,22 @@ class MobInterpreterStatementTest {
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobUnit);
 		
-		result = interpreter.run("( (decl p2 := [ 9 + 1 ] ) ( [ v | (decl X := 1) (((v value) + X) println)  ] value: p2 ) )");
+		result = interpreter.run("( (var p2 := [ 9 + 1 ] ) ( [ v | (var X := 1) (((v value) + X) println)  ] value: p2 ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(11));
 		
-		result = interpreter.run("( [ u v | (decl X := 1) (((v + X) + u) println)  ] value: 10 value: 5)");
+		result = interpreter.run("( [ u v | (var X := 1) (((v + X) + u) println)  ] value: 10 value: 5)");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(16));
 		
-		result = interpreter.run("( [ u v | (decl X := 1) (((v + X) + u) println)  ] values: `( 10 5 ) )");
+		result = interpreter.run("( [ u v | (var X := 1) (((v + X) + u) println)  ] values: `( 10 5 ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(16));
 		
-		result = interpreter.run("( [ u v | (decl X := 1) (((v + X) + (u value)) println)  ] values: `( [9 + 1] 5 ) )");
+		result = interpreter.run("( [ u v | (var X := 1) (((v + X) + (u value)) println)  ] values: `( [9 + 1] 5 ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobInteger);
 		assertTrue(result.get(0).is(16));
@@ -189,7 +189,7 @@ class MobInterpreterStatementTest {
 		MobInterpreter interpreter = new MobInterpreter(env);
 		List<MobAstElement> res;
 
-		res = interpreter.run("( (decl X) (X := nil) )");
+		res = interpreter.run("( (var X) (X := nil) )");
 		assertTrue(res.size() == 1);
 		assertTrue(res.get(0) instanceof MobObject);
 		assertTrue(((MobObject) res.get(0)).definition().name().equals("UndefinedObject"));
@@ -199,12 +199,12 @@ class MobInterpreterStatementTest {
 		assertTrue(res.get(0) instanceof MobInteger);
 		assertTrue(res.get(0).is(9));
 		
-		res = interpreter.run("( (decl Y := 1) (Y := 9 + (X + Y ) ) )");
+		res = interpreter.run("( (var Y := 1) (Y := 9 + (X + Y ) ) )");
 		assertTrue(res.size() == 1);
 		assertTrue(res.get(0) instanceof MobInteger);
 		assertTrue(res.get(0).is(19));
 		
-		res = interpreter.run("( (decl Z := 1) ([ (decl y := 2) (Z := Z + y) ] value) )");
+		res = interpreter.run("( (var Z := 1) ([ (var y := 2) (Z := Z + y) ] value) )");
 		assertTrue(res.size() == 1);
 		assertTrue(res.get(0) instanceof MobInteger);
 		assertTrue(res.get(0).is(3));
@@ -215,7 +215,7 @@ class MobInterpreterStatementTest {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
 
-		interpreter.run("( (decl X) (decl Y := 1) (X := Y + Y) ) ");
+		interpreter.run("( (var X) (var Y := 1) (X := Y + Y) ) ");
 		assertTrue(interpreter.result().size() == 1);
 		assertTrue(interpreter.result().get(0) instanceof MobInteger);
 		MobInteger i = (MobInteger) interpreter.result().get(0);

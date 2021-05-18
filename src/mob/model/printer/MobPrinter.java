@@ -158,7 +158,7 @@ public class MobPrinter implements MobInterpretableVisitor {
 		MobInterpretableVisitor.super.visitVarDecl(mobVarDecl);
 		this.write('(');
 		this.write(' ');
-		this.write("decl");
+		this.write("var");
 		this.write(' ');
 		this.write(mobVarDecl.name());
 		this.write(' ');

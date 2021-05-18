@@ -107,7 +107,6 @@ public class MobTreeBuilder implements SVisitor {
 		ArrayList<MobAstElement> subs = new ArrayList<>();
 		for (int i = start; i < children.size(); i++)
 			subs.add(children.get(i));
-
 		if (foundReturn(subs, 0))
 			code.add(stk.pop());
 		else if (foundAssign(subs, 0))
@@ -180,7 +179,7 @@ public class MobTreeBuilder implements SVisitor {
 			return false;
 		MobSymbol symb0 = (MobSymbol) children.get(0);
 		MobSymbol symb1 = (MobSymbol) children.get(1);
-		if (!symb0.is("decl"))
+		if (!symb0.is("var"))
 			return false;
 		MobVarDecl decl = new MobVarDecl();
 		decl.setName(symb1.rawValue());
@@ -200,6 +199,43 @@ public class MobTreeBuilder implements SVisitor {
 		}
 		stk.push(quoted(decl, quote));
 		return true;
+	}
+	
+	private int enclosedDeclEnd(ArrayList<MobAstElement> children) {
+		for (int pos = 1; pos < children.size(); pos++) {
+			MobAstElement c = children.get(pos);
+			if (!(c instanceof MobSymbol)) {
+				return -1;
+			}
+			if (c.is("|")) {
+				return pos;
+			}
+		}
+		return -1;
+	}
+
+	private int foundEnclosedDecl(ArrayList<MobAstElement> children, int quote) {
+		if (children.size() < 2)
+			return -1;
+		if (!(children.get(0) instanceof MobSymbol))
+			return -1;
+		MobSymbol symb0 = (MobSymbol) children.get(0);
+		if (!symb0.is("|"))
+			return -1;		
+		int end = this.enclosedDeclEnd(children);
+		if (end == -1)
+			return -1;
+		int pos = 1;
+		ArrayList<MobAstElement> subs = new ArrayList<>();
+		while (pos < end) {
+			MobSymbol v = (MobSymbol) children.get(pos);
+			MobVarDecl decl = new MobVarDecl();
+			decl.setName(v.rawValue());
+			subs.add(decl);
+		}
+		MobSequence sequence = this.env.newSequence(subs);
+		stk.push(quoted(sequence, quote));
+		return end;
 	}
 
 	private Boolean foundMessageSend(ArrayList<MobAstElement> children, int quote) {

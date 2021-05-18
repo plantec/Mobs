@@ -77,7 +77,7 @@ class MobInterpreterSimpleExpTest {
 		assertTrue(res.get(0) instanceof MobFalse);
 		assertFalse( ((MobFalse) res.get(0)).rawValue());
 		
-		res = interpreter.run("(decl monday) (monday)");
+		res = interpreter.run("(var monday) (monday)");
 		assertTrue(res.get(0) instanceof MobObject);
 	}
 }

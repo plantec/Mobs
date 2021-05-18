@@ -82,34 +82,34 @@ class MobPrinterTest {
 		List<MobAstElement> res;
 
 		MobPrinter printer = new MobPrinter();
-		res = builder.run("(decl X)");
+		res = builder.run("(var X)");
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
-		assertTrue(printer.result().toString().equals("( decl X )"));
+		assertTrue(printer.result().toString().equals("( var X )"));
 		
-		res = builder.run("(decl X := 99)");
+		res = builder.run("(var X := 99)");
 		printer = new MobPrinter();
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
-		assertTrue(printer.result().toString().equals("( decl X := 99 )"));
+		assertTrue(printer.result().toString().equals("( var X := 99 )"));
 
-		res = builder.run("(decl X := ())");
+		res = builder.run("(var X := ())");
 		printer = new MobPrinter();
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
-		assertTrue(printer.result().toString().equals("( decl X := ( ) )"));
+		assertTrue(printer.result().toString().equals("( var X := ( ) )"));
 
-		res = builder.run("(decl X := (99 + 10) )");
+		res = builder.run("(var X := (99 + 10) )");
 		printer = new MobPrinter();
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
-		assertTrue(printer.result().toString().equals("( decl X := ( 99 + 10 ) )"));
+		assertTrue(printer.result().toString().equals("( var X := ( 99 + 10 ) )"));
 
-		res = builder.run("(decl X := 99 + +10 )");
+		res = builder.run("(var X := 99 + +10 )");
 		printer = new MobPrinter();
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
-		assertTrue(printer.result().toString().equals("( decl X := ( 99 + 10 ) )"));
+		assertTrue(printer.result().toString().equals("( var X := ( 99 + 10 ) )"));
 
 	}
 
@@ -132,10 +132,10 @@ class MobPrinterTest {
 		assertTrue(printer.result().toString().equals("( ( ( 1 + 1 ) + 3 ) negated )"));
 		
 		printer = new MobPrinter();
-		res = builder.run("( (decl l := ()) (l add: 4 add: 6 add: (s size) ) (^ l) ) ");
+		res = builder.run("( (var l := ()) (l add: 4 add: 6 add: (s size) ) (^ l) ) ");
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
-		assertTrue(printer.result().toString().equals("( ( decl l := ( ) ) ( l add: 4 add: 6 add: ( s size ) ) ( ^ l ) )"));
+		assertTrue(printer.result().toString().equals("( ( var l := ( ) ) ( l add: 4 add: 6 add: ( s size ) ) ( ^ l ) )"));
 		printer = new MobPrinter();
 		
 		res = builder.run("( X := true ifTrue: [ 1 ] ifFalse: [ 2 ] ) ");
@@ -159,12 +159,12 @@ class MobPrinterTest {
 		assertTrue(printer.result().toString().equals("[ a b c | ( ( a + b ) + c ) ]"));
 		
 		printer = new MobPrinter();
-		res = builder.run("[ a b c | (decl X) (X := (a + b) + c) (^ X) ]");
+		res = builder.run("[ a b c | (var X) (X := (a + b) + c) (^ X) ]");
 		assertTrue(res.size() == 1);
 		assertTrue(res.get(0) instanceof MobUnit);
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
-		assertTrue(printer.result().toString().equals("[ a b c | ( decl X )( X := ( ( a + b ) + c ) )( ^ X ) ]"));
+		assertTrue(printer.result().toString().equals("[ a b c | ( var X )( X := ( ( a + b ) + c ) )( ^ X ) ]"));
 		
 		printer = new MobPrinter();
 		res = builder.run("[ a b c | ^ (a + b) + c ]");

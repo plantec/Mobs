@@ -51,9 +51,10 @@ class MobIntTest {
 	void testMyIntMethod()  {
 		MobClass intCls = env.getClassByName("MyInt");
 		/*
-		 * (method (Int be:)
-		 * 	(var arg := thiscontext pop)
-		 * 	(self primInstVarAt: 0 Put: arg)
+		 * (method (MyInt be:)
+		 *  (| arg |)
+		 * 	(arg := thiscontext pop)
+		 * 	(self primInstVarAt: 0 put: arg)
 		 * 	(thiscontext push: self)))  
 		 */
 		intCls.addMethod(new MobMethod("be:") {
@@ -74,9 +75,10 @@ class MobIntTest {
 		MobClass intCls = env.getClassByName("MyInt");
 		/*
 		 * (method ((MyInt class) new)
-		 * 	(var res := super new)
-		 * 	(res primInstVarAt: 0 Put: 0)
-		 * 	(thiscontext push: res)))  
+		 *  (| res |)
+		 * 	(res := super new)
+		 * 	(res primInstVarAt: 0 put: 0)
+		 * 	(thiscontext return: res)))  
 		 */
 		intCls.definition().addMethod(new MobMethod("new") {
 			public void run(MobContext ctx, MobAstElement receiver) {

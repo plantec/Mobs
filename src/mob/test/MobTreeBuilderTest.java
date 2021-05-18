@@ -144,14 +144,14 @@ class MobTreeBuilderTest {
 		MobTreeBuilder builder = new MobTreeBuilder(env);
 		List<MobAstElement> trees;
 
-		trees = builder.run("(decl X)");
+		trees = builder.run("(var X)");
 		assertTrue(trees.size() == 1);
 		assertTrue(trees.get(0) instanceof MobVarDecl);
 		MobVarDecl decl = (MobVarDecl) trees.get(0);
 		assertTrue(decl.name().equals("X"));
 		assertTrue(decl.initialValue() == null);
 
-		trees = builder.run("(decl X := 99)");
+		trees = builder.run("(var X := 99)");
 		assertTrue(trees.size() == 1);
 		assertTrue(trees.get(0) instanceof MobVarDecl);
 		decl = (MobVarDecl) trees.get(0);
@@ -178,7 +178,7 @@ class MobTreeBuilderTest {
 		MobEnvironment env = new MobEnvironment();
 		MobTreeBuilder builder = new MobTreeBuilder(env);
 		List<MobAstElement> trees;
-		trees = builder.run("[ (decl X := 0) (X := (X + 1)) (^ X) ]");
+		trees = builder.run("[ (var X := 0) (X := (X + 1)) (^ X) ]");
 		assertTrue(trees.get(0) instanceof MobUnit);
 		MobUnit unit = (MobUnit) trees.get(0);
 		assertFalse(unit.hasParameters());

@@ -22,7 +22,7 @@ class MobInterpreterMethodTest {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
 		interpreter.run("( ( Unit addMethod: [ u | (self value) ifTrue: [(u value) (self whileTrue: u) ] ] named: 'whileTrue:'))");
-		interpreter.run("( (decl x := 4) ([ x > 0 ] whileTrue: [ (x println) (x := x - 1) ]  ) )");
+		interpreter.run("( (var x := 4) ([ x > 0 ] whileTrue: [ (x println) (x := x - 1) ]  ) )");
 	}
 
 }
