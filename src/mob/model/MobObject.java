@@ -48,6 +48,7 @@ public class MobObject extends MobEntity implements MobAstElement, MobMethodRunn
 		this.checkCapacity(pos+1);
 		this.values[pos] = val;
 	}
+	
 	public Object instVarAt(Integer pos) {
 		this.checkCapacity(pos+1);
 		return this.values[pos];
@@ -56,6 +57,11 @@ public class MobObject extends MobEntity implements MobAstElement, MobMethodRunn
 	public Object rawValue() {
 		return this.instVarAt(0);
 	}
+	
+	public Object [] values() {
+		return this.values;
+	}
+	
 	public Object rawValueAt(int pos) {
 		return this.instVarAt(pos);
 	}

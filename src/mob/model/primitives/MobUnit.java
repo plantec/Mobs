@@ -8,7 +8,7 @@ import mob.ast.MobInterpretableVisitor;
 import mob.model.MobClass;
 import mob.model.MobObject;
 
-public class MobUnit extends MobObject implements MobAstElement {
+public class MobUnit extends MobObject  {
 
 	private List<String> parameters;
 	private MobAstElement code;

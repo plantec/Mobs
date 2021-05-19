@@ -9,8 +9,8 @@ import mob.sinterpreter.MobMethod;
 
 public class MobTrueClass extends MobBooleanClass {
 
-	public MobTrueClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
-		super(name, superclass, environment, def);
+	public MobTrueClass(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
+		super(name, environment, superclass, def);
 	}
 
 	public void initializePrimitives() {
@@ -55,10 +55,5 @@ public class MobTrueClass extends MobBooleanClass {
 		MobObject i = new MobObject(this);
 		i.instVarAtPut(0, true);
 		return i;
-	}
-	
-	@Override
-	public MobObject newInstance(Boolean mob) {
-		throw new Error("Should not be sent");
 	}
 }

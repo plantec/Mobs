@@ -8,7 +8,6 @@ import java.util.List;
 import mob.ast.MobAstElement;
 import mob.model.MobClass;
 import mob.model.MobObject;
-import mob.model.primitives.*;
 
 public class MobTopContext extends MobContext {
 	MobEnvironment env;

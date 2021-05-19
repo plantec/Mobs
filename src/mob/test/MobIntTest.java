@@ -22,8 +22,8 @@ class MobIntTest {
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		MobClass object = env.getClassByName("Object");
-		MobClass intClass = new MobObjectClass("MyInt", object, env, null);
-		MobMetaClass intClassClass = new MobMetaClass(intClass, object.definition(), env, object.definition().definition());
+		MobClass intClass = new MobObjectClass("MyInt", env, object, null);
+		MobMetaClass intClassClass = new MobMetaClass(intClass, env, object.definition(), object.definition().definition());
 		intClass.setClass(intClassClass);
 		env.recordClass(intClass);	
 	}

@@ -70,9 +70,8 @@ public class MobBehavior extends MobObject {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject name = (MobObject) ctx.pop();
 				MobClass self = (MobClass) receiver;
-				MobClass newClass = new MobClass((String)name.rawValue(), self, ctx.environment(), null);
-				MobMetaClass definition = new MobMetaClass(newClass, self, ctx.environment(),
-						ctx.environment().getClassByName("MetaClass"));
+				MobClass newClass = new MobClass((String)name.rawValue(), ctx.environment(), self, null);
+				MobMetaClass definition = new MobMetaClass(newClass, ctx.environment(), self, ctx.environment().getClassByName("MetaClass"));
 				newClass.setDefinition(definition);
 				self.addSubclass(newClass);
 			}
@@ -104,6 +103,12 @@ public class MobBehavior extends MobObject {
 				MobObject pos = (MobObject) ctx.pop();
 				MobObject self = (MobObject) receiver;
 				self.instVarAtPut((Integer)pos.rawValue(), v);
+			}
+		});
+		this.addMethod(new MobMethod("size") {
+			public void run(MobContext ctx, MobAstElement receiver) {
+				MobObject self = (MobObject) receiver;
+				ctx.returnElement(ctx.environment().newInteger(self.valuesCapacity()));
 			}
 		});
 		this.addMethod(new MobMethod("prim_instVarAt:put:") {

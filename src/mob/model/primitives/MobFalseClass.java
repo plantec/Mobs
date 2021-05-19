@@ -7,10 +7,10 @@ import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
-public class MobFalseClass extends MobPrimitiveClass<Boolean> {
+public class MobFalseClass extends MobBooleanClass {
 
-	public MobFalseClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
-		super(name, superclass, environment, def);
+	public MobFalseClass(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
+		super(name, environment, superclass, def);
 	}
 
 	public void initializePrimitives() {
@@ -58,9 +58,4 @@ public class MobFalseClass extends MobPrimitiveClass<Boolean> {
 		return i;
 	}
 	
-	@Override
-	public MobObject newInstance(Boolean mob) {
-		throw new Error("Should not be sent");
-	}
-
 }

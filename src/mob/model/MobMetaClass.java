@@ -13,8 +13,8 @@ import mob.sinterpreter.MobEnvironment;
 public class MobMetaClass extends MobClass {
 	private MobClass thisclass;
 
-	public MobMetaClass(MobClass thisclass, MobClass superclass, MobEnvironment environment, MobClass def) {
-		super(null, superclass, environment, def);
+	public MobMetaClass(MobClass thisclass, MobEnvironment environment, MobClass superclass, MobClass def) {
+		super(null, environment, superclass, def);
 		this.thisclass = thisclass;
 	}
 	

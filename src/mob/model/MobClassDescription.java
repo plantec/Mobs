@@ -13,7 +13,7 @@ import mob.sinterpreter.MobEnvironment;
 public class MobClassDescription extends MobBehavior {
 	private String name;
 
-	public MobClassDescription(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
+	public MobClassDescription(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
 		super(environment, superclass, def);
 		this.name = name;
 		this.initializePrimitives();

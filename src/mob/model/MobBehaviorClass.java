@@ -4,8 +4,8 @@ import mob.sinterpreter.MobEnvironment;
 
 public class MobBehaviorClass extends MobObjectClass {
 
-	public MobBehaviorClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
-		super(name, superclass, environment, def);
+	public MobBehaviorClass(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
+		super(name, environment, superclass, def);
 	}
 
 }

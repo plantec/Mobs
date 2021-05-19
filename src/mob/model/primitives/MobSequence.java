@@ -1,6 +1,5 @@
 package mob.model.primitives;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mob.ast.MobAstElement;
@@ -8,16 +7,14 @@ import mob.ast.MobInterpretableVisitor;
 import mob.model.MobClass;
 import mob.model.MobObject;
 
-public class MobSequence extends MobObject implements MobAstElement {
-	List<MobAstElement> children;
+public class MobSequence extends MobObject {
 	
 	public MobSequence(MobClass def) {
 		super(def);
-		this.children = new ArrayList<>();
 	}
 	
 	public void add(MobAstElement mobExp) {
-		this.children.add(mobExp);
+		this.instVarAtPut(this.valuesCapacity(), mobExp);
 	}
 	
 	public void addAll(List<MobAstElement> mobExpList) {
@@ -27,25 +24,29 @@ public class MobSequence extends MobObject implements MobAstElement {
 	}
 
 	public int size() {
-		return this.children.size();
+		return this.valuesCapacity();
 	}
 
 	public MobAstElement get(int pos) {
-		return this.children.get(pos);
+		return (MobAstElement) this.instVarAt(pos);
 	}
 	
 	public void set(int pos, MobAstElement child) {
-		children.set(pos, child);
+		this.instVarAtPut(pos, child);
 	}
 
 	public boolean hasChildren() {
 		return this.size() > 0;
 	}
-
-	public List<MobAstElement> children() {
-		return this.children;
-	}
 	
+	public MobAstElement[] children() {
+		MobAstElement[] children = new MobAstElement[this.size()];
+		for (int i = 0; i < this.size(); i++) {
+			children[i] = (MobAstElement) this.instVarAt(i);
+		}
+		return children;
+	}
+
 	@Override
 	public void accept(MobInterpretableVisitor visitor) {
 		visitor.visitSequence(this);

@@ -10,8 +10,8 @@ import mob.sinterpreter.MobMethod;
 
 public class MobSequenceClass extends MobObjectClass {
 	
-	public MobSequenceClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
-		super(name, superclass, environment, def);
+	public MobSequenceClass(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
+		super(name, environment, superclass, def);
 	}
 
 	public void initializePrimitives() {

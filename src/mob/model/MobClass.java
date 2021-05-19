@@ -12,8 +12,8 @@ import mob.sinterpreter.MobEnvironment;
  */
 public class MobClass extends MobClassDescription {
 
-	public MobClass(String name, MobClass superclass, MobEnvironment environment, MobClass def) {
-		super(name, superclass, environment, def);
+	public MobClass(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
+		super(name, environment, superclass, def);
 	}
 	
 	public MobObject newInstance() {
