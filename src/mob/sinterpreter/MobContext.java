@@ -6,12 +6,6 @@ import java.util.List;
 
 import mob.ast.MobAstElement;
 import mob.model.MobObject;
-import mob.model.primitives.MobCharacter;
-import mob.model.primitives.MobFalse;
-import mob.model.primitives.MobFloat;
-import mob.model.primitives.MobString;
-import mob.model.primitives.MobSymbol;
-import mob.model.primitives.MobTrue;
 import mob.model.primitives.MobUnit;
 
 public class MobContext {
@@ -130,15 +124,15 @@ public class MobContext {
 		return this.parent.environment();
 	}
 
-	public MobFalse newFalse() {
+	public MobObject newFalse() {
 		return this.parent.newFalse();
 	}
 
-	public MobTrue newTrue() {
+	public MobObject newTrue() {
 		return this.parent.newTrue();
 	}
 
-	public MobFloat newFloat(Float p) {
+	public MobObject newFloat(Float p) {
 		return this.parent.newFloat(p);
 	}
 
@@ -146,15 +140,15 @@ public class MobContext {
 		return this.parent.newInteger(p);
 	}
 
-	public MobString newString(String p) {
+	public MobObject newString(String p) {
 		return this.parent.newString(p);
 	}
 
-	public MobCharacter newCharacter(Character p) {
+	public MobObject newCharacter(Character p) {
 		return this.parent.newCharacter(p);
 	}
 
-	public MobSymbol newSymbol(String p) {
+	public MobObject newSymbol(String p) {
 		return this.parent.newSymbol(p);
 	}
 

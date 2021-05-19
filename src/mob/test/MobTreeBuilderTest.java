@@ -14,10 +14,7 @@ import mob.ast.MobKeywordMessage;
 import mob.ast.MobReturn;
 import mob.ast.MobVarDecl;
 import mob.model.MobObject;
-import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobSequence;
-import mob.model.primitives.MobString;
-import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobTreeBuilder;
@@ -43,39 +40,39 @@ class MobTreeBuilderTest {
 		assertTrue(((MobObject) trees.get(0)).rawValue().equals(10));
 
 		trees = builder.run("10.0");
-		assertTrue(trees.get(0) instanceof MobFloat);
-		assertTrue(((MobFloat) trees.get(0)).rawValue() == 10.0);
+		assertTrue(((MobObject)trees.get(0)).isKindOf(env.getClassByName("Float")));
+		assertTrue(((MobObject) trees.get(0)).rawValue().equals((float)10.0));
 
 		trees = builder.run("-10.5");
-		assertTrue(trees.get(0) instanceof MobFloat);
-		assertTrue(((MobFloat) trees.get(0)).rawValue() == -10.5);
+		assertTrue(((MobObject)trees.get(0)).isKindOf(env.getClassByName("Float")));
+		assertTrue(((MobObject) trees.get(0)).rawValue().equals((float)-10.5));
 
 		trees = builder.run("1.40e-45f");
-		assertTrue(trees.get(0) instanceof MobFloat);
+		assertTrue(((MobObject)trees.get(0)).isKindOf(env.getClassByName("Float")));
 
 		trees = builder.run("'Hello world'");
-		assertTrue(trees.get(0) instanceof MobString);
-		assertTrue(((MobString) trees.get(0)).rawValue().equals("Hello world"));
+		assertTrue(((MobObject)trees.get(0)).isKindOf(env.getClassByName("String")));
+		assertTrue(((MobObject) trees.get(0)).rawValue().equals("Hello world"));
 
 		trees = builder.run("''");
-		assertTrue(trees.get(0) instanceof MobString);
-		assertTrue(((MobString) trees.get(0)).rawValue().equals(""));
+		assertTrue(((MobObject)trees.get(0)).isKindOf(env.getClassByName("String")));
+		assertTrue(((MobObject) trees.get(0)).rawValue().equals(""));
 
 		trees = builder.run("true");
-		assertTrue(trees.get(0) instanceof MobSymbol);
-		assertTrue(((MobSymbol) trees.get(0)).is("true"));
+		assertTrue(((MobObject)trees.get(0)).isKindOf(env.getClassByName("Symbol")));
+		assertTrue(((MobObject) trees.get(0)).rawValue().equals("true"));
 
 		trees = builder.run("false");
-		assertTrue(trees.get(0) instanceof MobSymbol);
-		assertTrue(((MobSymbol) trees.get(0)).is("false"));
+		assertTrue(((MobObject)trees.get(0)).isKindOf(env.getClassByName("Symbol")));
+		assertTrue(((MobObject) trees.get(0)).rawValue().equals("false"));
 
 		trees = builder.run("do:");
-		assertTrue(trees.get(0) instanceof MobSymbol);
-		assertTrue(((MobSymbol) trees.get(0)).is("do:"));
+		assertTrue(((MobObject)trees.get(0)).isKindOf(env.getClassByName("Symbol")));
+		assertTrue(((MobObject) trees.get(0)).rawValue().equals("do:"));
 
 		trees = builder.run("counter");
-		assertTrue(trees.get(0) instanceof MobSymbol);
-		assertTrue(((MobSymbol) trees.get(0)).is("counter"));
+		assertTrue(((MobObject)trees.get(0)).isKindOf(env.getClassByName("Symbol")));
+		assertTrue(((MobObject) trees.get(0)).rawValue().equals("counter"));
 	}
 
 	@Test
@@ -87,15 +84,15 @@ class MobTreeBuilderTest {
 
 		trees = builder.run("X := nil");
 		assertTrue(trees.size() == 3);
-		assertTrue(trees.get(0) instanceof MobSymbol);
-		assertTrue(trees.get(1) instanceof MobSymbol);
-		assertTrue(trees.get(2) instanceof MobSymbol);
+		assertTrue(((MobObject)trees.get(0)).isKindOf(env.getClassByName("Symbol")));
+		assertTrue(((MobObject)trees.get(1)).isKindOf(env.getClassByName("Symbol")));
+		assertTrue(((MobObject)trees.get(2)).isKindOf(env.getClassByName("Symbol")));
 
 		trees = builder.run("( X := nil )");
 		assertTrue(trees.get(0) instanceof MobAssign);
 		assign = (MobAssign) trees.get(0);
-		assertTrue(assign.left() instanceof MobSymbol);
-		assertTrue(assign.right() instanceof MobSymbol);
+		assertTrue(((MobObject) assign.left()).isKindOf(env.getClassByName("Symbol")));
+		assertTrue(((MobObject) assign.right()).isKindOf(env.getClassByName("Symbol")));
 
 		trees = builder.run("( X := 1 )");
 		assertTrue(trees.get(0) instanceof MobAssign);
@@ -106,13 +103,13 @@ class MobTreeBuilderTest {
 		trees = builder.run("( X := (1 < z) )");
 		assertTrue(trees.get(0) instanceof MobAssign);
 		assign = (MobAssign) trees.get(0);
-		assertTrue(assign.left() instanceof MobSymbol);
-		assertTrue(((MobSymbol) assign.left()).rawValue().equals("X"));
+		assertTrue(((MobObject) assign.left()).isKindOf(env.getClassByName("Symbol")));
+		assertTrue(((MobObject) assign.left()).rawValue().equals("X"));
 		assertTrue(assign.right() instanceof MobBinaryMessage);
 		MobBinaryMessage right = (MobBinaryMessage) assign.right();
 		assertTrue(right.operator().toString().equals("<"));
 		assertTrue(right.receiver() instanceof MobObject);
-		assertTrue(right.argument() instanceof MobSymbol);
+		assertTrue(((MobObject) right.argument()).isKindOf(env.getClassByName("Symbol")));
 
 	}
 
@@ -125,8 +122,8 @@ class MobTreeBuilderTest {
 		trees = builder.run("( res set: (1 < z) )");
 		assertTrue(trees.get(0) instanceof MobKeywordMessage);
 		MobKeywordMessage kwms = (MobKeywordMessage) trees.get(0);
-		assertTrue(kwms.receiver() instanceof MobSymbol);
-		assertTrue(((MobSymbol) kwms.receiver()).rawValue().equals("res"));
+		assertTrue(((MobObject) kwms.receiver()).isKindOf(env.getClassByName("Symbol")));
+		assertTrue(((MobObject) kwms.receiver()).rawValue().equals("res"));
 		assertTrue(kwms.keywords().length == 1);
 		assertTrue(kwms.keywords()[0].toString().equals("set:"));
 		assertTrue(kwms.arguments().length == 1);
@@ -134,7 +131,7 @@ class MobTreeBuilderTest {
 		MobBinaryMessage right = (MobBinaryMessage) kwms.arguments()[0];
 		assertTrue(right.operator().toString().equals("<"));
 		assertTrue(right.receiver() instanceof MobObject);
-		assertTrue(right.argument() instanceof MobSymbol);
+		assertTrue(((MobObject) right.argument()).isKindOf(env.getClassByName("Symbol")));
 	}
 
 	@Test

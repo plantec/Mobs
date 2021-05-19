@@ -15,11 +15,6 @@ public abstract class MobPrimitiveClass<T> extends MobObjectClass {
 		super.initializePrimitives();
 	}
 	
-	protected void initializeSlots() {
-		this.slots = new String[1];
-		this.slots[0] = "";
-	}
-
 	@Override
 	public MobObject newInstance() {
 		throw new Error("Should not be sent");

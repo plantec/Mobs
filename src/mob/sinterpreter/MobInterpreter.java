@@ -15,13 +15,7 @@ import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
 import mob.model.MobMethodRunner;
 import mob.model.MobObject;
-import mob.model.primitives.MobCharacter;
-import mob.model.primitives.MobFalse;
-import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobSequence;
-import mob.model.primitives.MobString;
-import mob.model.primitives.MobSymbol;
-import mob.model.primitives.MobTrue;
 import mob.model.primitives.MobUnit;
 import stree.parser.SNode;
 import stree.parser.SParser;
@@ -83,64 +77,32 @@ public class MobInterpreter implements MobInterpretableVisitor {
 	}
 	
 	@Override
-	public void visitTrue(MobTrue mobTrue) {
-		MobInterpretableVisitor.super.visitTrue(mobTrue);
-		this.push(mobTrue);
-	}
-
-	@Override
-	public void visitFalse(MobFalse mobFalse) {
-		MobInterpretableVisitor.super.visitFalse(mobFalse);
-		this.push(mobFalse);
-	}
-
-	@Override
-	public void visitFloat(MobFloat mobFloat) {
-		MobInterpretableVisitor.super.visitFloat(mobFloat);
-		this.push(mobFloat);
-	}
-
-	@Override
-	public void visitObject(MobObject mobInteger) {
-		MobInterpretableVisitor.super.visitObject(mobInteger);
-		this.push(mobInteger);
-	}
-
-	@Override
-	public void visitSymbol(MobSymbol mobSymbol) {
-		MobInterpretableVisitor.super.visitSymbol(mobSymbol);
-		MobDataAccess v = context.lookupNamedData(mobSymbol.rawValue());
-		if (v == null) {
-			throw new Error("Undeclared variable '" + mobSymbol.rawValue() + "'");
+	public void visitObject(MobObject mob) {
+		MobInterpretableVisitor.super.visitObject(mob);
+		if (mob.isKindOf(this.topContext().environment().getClassByName("Symbol"))) {
+			MobDataAccess v = context.lookupNamedData((String)mob.rawValue());
+			if (v == null) {
+				throw new Error("Undeclared variable '" + mob.rawValue() + "'");
+			}
+			v.pushInto(this.context);
+			return;
 		}
-		v.pushInto(this.context);
+		this.push(mob);
 	}
 
 	@Override
 	public void visitAssign(MobAssign mobAssign) {
 		MobInterpretableVisitor.super.visitAssign(mobAssign);
 		this.accept(mobAssign.right());
-		MobSymbol n = (MobSymbol) mobAssign.left();
-		MobDataAccess var = context.lookupNamedData(n.rawValue());
+		MobObject n = (MobObject) mobAssign.left();
+		MobDataAccess var = context.lookupNamedData((String)n.rawValue());
 		if (var == null) {
-			context.lookupNamedData(n.rawValue());
+			context.lookupNamedData((String)n.rawValue());
 		}
 		var.setValue(this.pop());
 		this.push(var.value());
 	}
 	
-	@Override
-	public void visitString(MobString mobString) {
-		MobInterpretableVisitor.super.visitString(mobString);
-		this.push(mobString);
-	}
-
-	@Override
-	public void visitCharacter(MobCharacter mobCharacter) {
-		MobInterpretableVisitor.super.visitCharacter(mobCharacter);
-		this.push(mobCharacter);
-	}
-
 	@Override
 	public void visitUnit(MobUnit mobUnit) {
 		MobInterpretableVisitor.super.visitUnit(mobUnit);
@@ -160,13 +122,13 @@ public class MobInterpreter implements MobInterpretableVisitor {
 	@Override
 	public void visitBinaryMessage(MobBinaryMessage mobBinaryMessage) {
 		MobInterpretableVisitor.super.visitBinaryMessage(mobBinaryMessage);
-		MobSymbol name = mobBinaryMessage.operator();
+		String name = mobBinaryMessage.operator();
 		MobAstElement receiver = mobBinaryMessage.receiver();
 		MobAstElement arg = mobBinaryMessage.argument();
 		this.accept(arg);
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		((MobMethodRunner)actualReceiver).lookupAndRun(this.context, name.rawValue());
+		((MobMethodRunner)actualReceiver).lookupAndRun(this.context, name);
 	}
 
 	@Override

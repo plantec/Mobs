@@ -1,5 +1,6 @@
 package mob.test;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import mob.model.MobClass;
 import mob.model.MobMetaClass;
 import mob.model.MobObject;
-import mob.model.primitives.MobString;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobInterpreter;
 
@@ -62,8 +62,8 @@ class MobObjectTest {
 		interpreter.run("( ( (MySubObject class) addMethod: [ ^ 'stuff returned'  ] named: 'stuff' ) )");
 		interpreter.run("( MySubObject stuff )");
 		System.out.println(interpreter.result().size());
-		assertTrue(interpreter.result().get(0) instanceof MobString);
-		MobString s = (MobString) interpreter.result().get(0);
+		assertTrue(((MobObject)interpreter.result().get(0)).isKindOf(env.getClassByName("String")));
+		MobObject s = (MobObject) interpreter.result().get(0);
 		assertTrue(s.rawValue().equals("stuff returned"));
 	}
 

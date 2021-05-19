@@ -3,10 +3,8 @@ package mob.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import mob.model.primitives.MobSymbol;
-
 public class MobKeywordMessage extends MobMessage {
-	private List<MobSymbol> keywords;
+	private List<String> keywords;
 	private List<MobAstElement> arguments;
 
 	public MobKeywordMessage() {
@@ -14,13 +12,13 @@ public class MobKeywordMessage extends MobMessage {
 		this.arguments = new ArrayList<>();
 	}
 
-	public void add(MobSymbol keyword, MobAstElement arg) {
+	public void add(String keyword, MobAstElement arg) {
 		this.keywords.add(keyword);
 		this.arguments.add(arg);
 	}
 
-	public MobSymbol[] keywords() {
-		return this.keywords.toArray(new MobSymbol[this.keywords.size()]);
+	public String[] keywords() {
+		return this.keywords.toArray(new String[this.keywords.size()]);
 	}
 
 	public MobAstElement[] arguments() {
@@ -29,7 +27,7 @@ public class MobKeywordMessage extends MobMessage {
 
 	public String selector() {
 		String s = "";
-		for (MobSymbol e : this.keywords)
+		for (String e : this.keywords)
 			s = s + e.toString();
 		return s;
 	}

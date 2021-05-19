@@ -12,17 +12,13 @@ import mob.model.MobClassDescriptionClass;
 import mob.model.MobMetaClass;
 import mob.model.MobObject;
 import mob.model.MobObjectClass;
-import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobCharacterClass;
 import mob.model.primitives.MobFalseClass;
-import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobFloatClass;
 import mob.model.primitives.MobIntegerClass;
 import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobSequenceClass;
-import mob.model.primitives.MobString;
 import mob.model.primitives.MobStringClass;
-import mob.model.primitives.MobSymbol;
 import mob.model.primitives.MobSymbolClass;
 import mob.model.primitives.MobTrueClass;
 import mob.model.primitives.MobUnit;
@@ -269,7 +265,7 @@ public class MobEnvironment {
 	private MobSequenceClass sequenceClass() { return (MobSequenceClass) this.getClassByName("Sequence"); }
 
 	
-	public MobFloat newFloat(Float p) {
+	public MobObject newFloat(Float p) {
 		return this.floatClass().newInstance(p);
 	}
 
@@ -277,15 +273,15 @@ public class MobEnvironment {
 		return this.integerClass().newInstance(p);
 	}
 
-	public MobCharacter newCharacter(Character p) {
+	public MobObject newCharacter(Character p) {
 		return this.characterClass().newInstance(p);
 	}
 
-	public MobString newString(String p) {
+	public MobObject newString(String p) {
 		return this.stringClass().newInstance(p);
 	}
 
-	public MobSymbol newSymbol(String p) {
+	public MobObject newSymbol(String p) {
 		return this.symbolClass().newInstance(p);
 	}
 

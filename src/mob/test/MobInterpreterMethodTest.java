@@ -21,7 +21,7 @@ class MobInterpreterMethodTest {
 	void testWhileTrue() throws IOException {
 		MobEnvironment env = new MobEnvironment();
 		MobInterpreter interpreter = new MobInterpreter(env);
-		interpreter.run("( ( Unit addMethod: [ u | (self value) ifTrue: [(u value) (self whileTrue: u) ] ] named: 'whileTrue:'))");
+		interpreter.run("( ( Unit addMethod: [ uu | (self value) ifTrue: [(uu value) (self whileTrue: uu) ] ] named: 'whileTrue:'))");
 		interpreter.run("( (var x := 4) ([ x > 0 ] whileTrue: [ (x println) (x := x - 1) ]  ) )");
 	}
 

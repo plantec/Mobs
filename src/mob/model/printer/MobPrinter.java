@@ -17,12 +17,7 @@ import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
 import mob.model.MobObject;
-import mob.model.primitives.MobFalse;
-import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobSequence;
-import mob.model.primitives.MobString;
-import mob.model.primitives.MobSymbol;
-import mob.model.primitives.MobTrue;
 import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobReturnExecuted;
 
@@ -103,40 +98,9 @@ public class MobPrinter implements MobInterpretableVisitor {
 	}
 
 	@Override
-	public void visitTrue(MobTrue mobTrue) {
-		MobInterpretableVisitor.super.visitTrue(mobTrue);
-		this.write("true");
-	}
-
-	@Override
-	public void visitFalse(MobFalse mobFalse) {
-		MobInterpretableVisitor.super.visitFalse(mobFalse);
-		this.write("false");
-	}
-
-	@Override
-	public void visitFloat(MobFloat mobFloat) {
-		MobInterpretableVisitor.super.visitFloat(mobFloat);
-		this.write(mobFloat.rawValue().toString());
-
-	}
-
-	@Override
 	public void visitObject(MobObject mob) {
 		MobInterpretableVisitor.super.visitObject(mob);
 		this.write(mob.rawValue().toString());
-	}
-
-	@Override
-	public void visitString(MobString mobString) {
-		MobInterpretableVisitor.super.visitString(mobString);
-		this.write(mobString.rawValue());
-	}
-
-	@Override
-	public void visitSymbol(MobSymbol mobSymbol) {
-		MobInterpretableVisitor.super.visitSymbol(mobSymbol);
-		this.write(mobSymbol.rawValue());
 	}
 
 	@Override
@@ -211,7 +175,7 @@ public class MobPrinter implements MobInterpretableVisitor {
 		this.write(' ');
 		receiver.accept(this);
 		this.write(' ');
-		this.write(mobBinaryMessage.operator().rawValue());
+		this.write(mobBinaryMessage.operator());
 		this.write(' ');
 		arg.accept(this);
 		this.write(' ');
@@ -227,8 +191,8 @@ public class MobPrinter implements MobInterpretableVisitor {
 		receiver.accept(this);
 		this.write(' ');
 		int idx = 0;
-		for (MobSymbol kw : mobKeywordMessage.keywords()) {
-			this.write(kw.rawValue());
+		for (String kw : mobKeywordMessage.keywords()) {
+			this.write(kw);
 			this.write(' ');
 			mobKeywordMessage.arguments()[idx++].accept(this);
 			if (idx < mobKeywordMessage.keywords().length) {

@@ -1,6 +1,7 @@
 package mob.model.primitives;
 
 import mob.model.MobClass;
+import mob.model.MobObject;
 import mob.sinterpreter.MobEnvironment;
 
 public class MobCharacterClass extends MobPrimitiveClass<Character> {
@@ -10,8 +11,10 @@ public class MobCharacterClass extends MobPrimitiveClass<Character> {
 	}
 
 	@Override
-	public MobCharacter newInstance(Character mob) {
-		return new MobCharacter(this, mob);
+	public MobObject newInstance(Character mob) {
+		MobObject i = new MobObject(this);
+		i.instVarAtPut(0, mob);
+		return i;
 	}
 
 }

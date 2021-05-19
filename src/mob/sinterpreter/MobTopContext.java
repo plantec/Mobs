@@ -43,13 +43,13 @@ public class MobTopContext extends MobContext {
 	}
 
 	@Override
-	public MobFalse newFalse() {
-		return (MobFalse) this.getVariableByName("false").value();
+	public MobObject newFalse() {
+		return (MobObject) this.getVariableByName("false").value();
 	}
 
 	@Override
-	public MobTrue newTrue() {
-		return (MobTrue) this.getVariableByName("true").value();
+	public MobObject newTrue() {
+		return (MobObject) this.getVariableByName("true").value();
 	}
 
 	public MobInterpreter interpreter() {
@@ -68,7 +68,7 @@ public class MobTopContext extends MobContext {
 		return this.env;
 	}
 
-	public MobFloat newFloat(Float p) {
+	public MobObject newFloat(Float p) {
 		return this.env.newFloat(p);
 	}
 
@@ -76,15 +76,15 @@ public class MobTopContext extends MobContext {
 		return this.env.newInteger(p);
 	}
 
-	public MobString newString(String p) {
+	public MobObject newString(String p) {
 		return this.env.newString(p);
 	}
 
-	public MobCharacter newCharacter(Character p) {
+	public MobObject newCharacter(Character p) {
 		return this.env.newCharacter(p);
 	}
 
-	public MobSymbol newSymbol(String p) {
+	public MobObject newSymbol(String p) {
 		return this.env.newSymbol(p);
 	}
 

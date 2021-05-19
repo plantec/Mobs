@@ -51,10 +51,12 @@ public class MobTrueClass extends MobBooleanClass {
 	}
 		
 	@Override
-	public MobTrue newInstance() {
-		return new MobTrue(this);
+	public MobObject newInstance() {
+		MobObject i = new MobObject(this);
+		i.instVarAtPut(0, true);
+		return i;
 	}
-
+	
 	@Override
 	public MobObject newInstance(Boolean mob) {
 		throw new Error("Should not be sent");

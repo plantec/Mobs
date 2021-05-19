@@ -52,10 +52,12 @@ public class MobFalseClass extends MobPrimitiveClass<Boolean> {
 	}
 
 	@Override
-	public MobFalse newInstance() {
-		return new MobFalse(this);
+	public MobObject newInstance() {
+		MobObject i = new MobObject(this);
+		i.instVarAtPut(0, false);
+		return i;
 	}
-
+	
 	@Override
 	public MobObject newInstance(Boolean mob) {
 		throw new Error("Should not be sent");

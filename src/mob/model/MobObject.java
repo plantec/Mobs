@@ -39,6 +39,10 @@ public class MobObject extends MobEntity implements MobAstElement, MobMethodRunn
 	public void setClass(MobClass definition) {
 		this.definition = definition;
 	}
+	
+	public boolean isKindOf(MobClass type) {
+		return this.definition() == type;
+	}
 
 	public void instVarAtPut(Integer pos, Object val) {
 		this.checkCapacity(pos+1);

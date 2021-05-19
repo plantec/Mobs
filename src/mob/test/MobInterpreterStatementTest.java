@@ -9,11 +9,7 @@ import org.junit.jupiter.api.Test;
 import mob.ast.MobAstElement;
 import mob.ast.MobQuoted;
 import mob.model.MobObject;
-import mob.model.primitives.MobFalse;
-import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobSequence;
-import mob.model.primitives.MobString;
-import mob.model.primitives.MobTrue;
 import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobInterpreter;
@@ -47,9 +43,9 @@ class MobInterpreterStatementTest {
 		
 		result = interpreter.run("(1 + (1 + 1.5))");
 		assertTrue(result.size()==1);
-		assertTrue(result.get(0) instanceof MobFloat);
-		MobFloat f = (MobFloat) result.get(0);
-		assertTrue (f.rawValue() == 3.5);
+		assertTrue(((MobObject)result.get(0)).isKindOf(env.getClassByName("Float")));
+		MobObject f = (MobObject) result.get(0);
+		assertTrue (f.rawValue().equals((float)3.5));
 		
 		result = interpreter.run("( (2 * (10 - (4 / 2))) negated )");
 		assertTrue(result.size()==1);
@@ -57,15 +53,15 @@ class MobInterpreterStatementTest {
 		assertTrue((((MobObject)result.get(0)).rawValue().equals(-16)));
 		
 		result = interpreter.run("( (10 > 0) )");
-		assertTrue(result.get(0) instanceof MobTrue);
+		assertTrue(((MobObject)result.get(0)).isKindOf(env.getClassByName("True")));
 		result = interpreter.run("( (10 = 10) )");
-		assertTrue(result.get(0) instanceof MobTrue);
+		assertTrue(((MobObject)result.get(0)).isKindOf(env.getClassByName("True")));
 		result = interpreter.run("( (10 = 10.0) )");
-		assertTrue(result.get(0) instanceof MobFalse);
+		assertTrue(((MobObject)result.get(0)).isKindOf(env.getClassByName("False")));
 		result = interpreter.run("( (10.0 = 10.0) )");
-		assertTrue(result.get(0) instanceof MobTrue);
+		assertTrue(((MobObject)result.get(0)).isKindOf(env.getClassByName("True")));
 		result = interpreter.run("( (10.0 = 10) )");
-		assertTrue(result.get(0) instanceof MobFalse);
+		assertTrue(((MobObject)result.get(0)).isKindOf(env.getClassByName("False")));
 	}
 	
 	@Test
@@ -74,19 +70,19 @@ class MobInterpreterStatementTest {
 		MobInterpreter interpreter = new MobInterpreter(env);
 		List<MobAstElement> result = interpreter.run("(true ifTrue: [ 'TRUE' println ] )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobString);
+		assertTrue(((MobObject)result.get(0)).isKindOf(env.getClassByName("String")));
 		result = interpreter.run("(true ifTrue: [ 'TRUE' println ]  ifFalse: [ 'FALSE' println] ) ");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobString);
+		assertTrue(((MobObject)result.get(0)).isKindOf(env.getClassByName("String")));
 		result = interpreter.run("(false ifFalse: [ 'FALSE' println ] )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobString);
+		assertTrue(((MobObject)result.get(0)).isKindOf(env.getClassByName("String")));
 		result = interpreter.run("(false ifTrue: ['TRUE' println ] ifFalse: [ 'FALSE' println ] )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobString);
+		assertTrue(((MobObject)result.get(0)).isKindOf(env.getClassByName("String")));
 		result = interpreter.run("( false ifTrue: [ 'TRUE' println ] ifFalse: [ 'FALSE' println ] )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobString);
+		assertTrue(((MobObject)result.get(0)).isKindOf(env.getClassByName("String")));
 	}
 	
 	@Test

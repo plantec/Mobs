@@ -1,31 +1,10 @@
 package mob.ast;
 
 import mob.model.MobObject;
-import mob.model.primitives.MobCharacter;
-import mob.model.primitives.MobFalse;
-import mob.model.primitives.MobFloat;
 import mob.model.primitives.MobSequence;
-import mob.model.primitives.MobString;
-import mob.model.primitives.MobSymbol;
-import mob.model.primitives.MobTrue;
 import mob.model.primitives.MobUnit;
 
 public interface MobInterpretableVisitor {
-
-	default void visitTrue(MobTrue mobTrue) {
-	}
-
-	default void visitFalse(MobFalse mobFalse) {
-	}
-
-	default void visitFloat(MobFloat mobFloat) {
-	}
-
-	default void visitString(MobString mobString) {
-	}
-
-	default void visitSymbol(MobSymbol mobSymbol) {
-	}
 
 	default void visitAssign(MobAssign mobAssign) {
 	}
@@ -52,9 +31,6 @@ public interface MobInterpretableVisitor {
 	}
 
 	default void visitQuoted(MobQuoted mobQuoted) {
-	}
-
-	default  void visitCharacter(MobCharacter mobCharacter) {
 	}
 
 	default  void visitObject(MobObject mob) {

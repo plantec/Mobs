@@ -1,16 +1,15 @@
 package mob.ast;
 
-import mob.model.primitives.MobSymbol;
 
 public class MobBinaryMessage extends MobMessage {
-	protected MobSymbol operator;
+	protected String operator;
 	protected MobAstElement argument;
 
-	public MobSymbol operator() {
+	public String operator() {
 		return this.operator;
 	}
 
-	public void setOperator(MobSymbol operator) {
+	public void setOperator(String operator) {
 		this.operator = operator;
 	}
 

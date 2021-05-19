@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import mob.ast.MobAstElement;
-import mob.model.primitives.MobString;
 import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
@@ -61,17 +60,17 @@ public class MobBehavior extends MobObject {
 		});
 		this.addMethod(new MobMethod("addMethod:named:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobString name = (MobString) ctx.pop();
+				MobObject name = (MobObject) ctx.pop();
 				MobUnit code = (MobUnit) ctx.pop();
 				MobClass self = (MobClass) receiver;
-				self.addMethod(new MobObjectMethod(name.rawValue(), code));
+				self.addMethod(new MobObjectMethod((String)name.rawValue(), code));
 			}
 		});
 		this.addMethod(new MobMethod("addSubclassNamed:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobString name = (MobString) ctx.pop();
+				MobObject name = (MobObject) ctx.pop();
 				MobClass self = (MobClass) receiver;
-				MobClass newClass = new MobClass(name.rawValue(), self, ctx.environment(), null);
+				MobClass newClass = new MobClass((String)name.rawValue(), self, ctx.environment(), null);
 				MobMetaClass definition = new MobMetaClass(newClass, self, ctx.environment(),
 						ctx.environment().getClassByName("MetaClass"));
 				newClass.setDefinition(definition);
@@ -80,9 +79,9 @@ public class MobBehavior extends MobObject {
 		});
 		this.addMethod(new MobMethod("addSlotNamed:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobString name = (MobString) ctx.pop();
+				MobObject name = (MobObject) ctx.pop();
 				MobClass self = (MobClass) receiver;
-				self.addSlot(name.rawValue());
+				self.addSlot((String)name.rawValue());
 			}
 		});
 

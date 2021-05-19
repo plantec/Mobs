@@ -19,11 +19,11 @@ public class MobIntegerClass extends MobPrimitiveClass<Integer> {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject arg1 = (MobObject) ctx.pop();
 				MobObject r = (MobObject) receiver;
-				if (arg1.definition() instanceof MobIntegerClass) {
+				MobClass type = ctx.environment().getClassByName("Integer");
+				if (arg1.isKindOf(type)) {
 					ctx.returnElement(ctx.newInteger((Integer)r.rawValue()+(Integer)arg1.rawValue()));
 				} else {
-					MobFloat arg = (MobFloat) arg1;
-					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()+arg.rawValue()));
+					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()+(Float)arg1.rawValue()));
 				}
 			}
 		});
@@ -31,11 +31,11 @@ public class MobIntegerClass extends MobPrimitiveClass<Integer> {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject arg1 = (MobObject) ctx.pop();
 				MobObject r = (MobObject) receiver;
-				if (arg1.definition() instanceof MobIntegerClass) {
+				MobClass type = ctx.environment().getClassByName("Integer");
+				if (arg1.isKindOf(type)) {
 					ctx.returnElement(ctx.newInteger((Integer)r.rawValue()-(Integer)arg1.rawValue()));
 				} else {
-					MobFloat arg = (MobFloat) arg1;
-					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()-arg.rawValue()));
+					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()-(Float)arg1.rawValue()));
 				}
 			}
 		});
@@ -43,11 +43,11 @@ public class MobIntegerClass extends MobPrimitiveClass<Integer> {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject arg1 = (MobObject) ctx.pop();
 				MobObject r = (MobObject) receiver;
-				if (arg1.definition() instanceof MobIntegerClass) {
+				MobClass type = ctx.environment().getClassByName("Integer");
+				if (arg1.isKindOf(type)) {
 					ctx.returnElement(ctx.newInteger((Integer)r.rawValue()*(Integer)arg1.rawValue()));
 				} else {
-					MobFloat arg = (MobFloat) arg1;
-					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()*arg.rawValue()));
+					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()*(Float)arg1.rawValue()));
 				}
 			}
 		});
@@ -55,11 +55,11 @@ public class MobIntegerClass extends MobPrimitiveClass<Integer> {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject arg1 = (MobObject) ctx.pop();
 				MobObject r = (MobObject) receiver;
-				if (arg1.definition() instanceof MobIntegerClass) {
+				MobClass type = ctx.environment().getClassByName("Integer");
+				if (arg1.isKindOf(type)) {
 					ctx.returnElement(ctx.newInteger((Integer)r.rawValue()/(Integer)arg1.rawValue()));
 				} else {
-					MobFloat arg = (MobFloat) arg1;
-					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()/arg.rawValue()));
+					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()/(Float)arg1.rawValue()));
 				}
 			}
 		});
@@ -71,14 +71,13 @@ public class MobIntegerClass extends MobPrimitiveClass<Integer> {
 		});
 		this.addMethod(new MobMethod("<") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobAstElement arg1 = ctx.pop();
-				MobInteger r = (MobInteger) receiver;
-				if (arg1 instanceof MobInteger) {
-					MobInteger arg = (MobInteger) arg1;
-					ctx.returnElement(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				MobObject arg1 = (MobObject) ctx.pop();
+				MobObject r = (MobObject) receiver;
+				MobClass type = ctx.environment().getClassByName("Integer");
+				if (arg1.isKindOf(type)) {
+					ctx.returnElement((Integer)r.rawValue() < (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					MobFloat arg = (MobFloat) arg1;
-					ctx.returnElement(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.rawValue() < (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -86,38 +85,35 @@ public class MobIntegerClass extends MobPrimitiveClass<Integer> {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject arg1 = (MobObject) ctx.pop();
 				MobObject r = (MobObject) receiver;
-				if (arg1.definition() instanceof MobIntegerClass) {
-					ctx.newTrue();
+				MobClass type = ctx.environment().getClassByName("Integer");
+				if (arg1.isKindOf(type)) {
 					ctx.returnElement((Integer)r.rawValue() > (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					MobFloat arg = (MobFloat) arg1;
-					ctx.returnElement((Integer)r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.rawValue() > (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
 		this.addMethod(new MobMethod(">=") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobAstElement arg1 = ctx.pop();
-				MobInteger r = (MobInteger) receiver;
-				if (arg1 instanceof MobInteger) {
-					MobInteger arg = (MobInteger) arg1;
-					ctx.returnElement(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				MobObject arg1 = (MobObject) ctx.pop();
+				MobObject r = (MobObject) receiver;
+				MobClass type = ctx.environment().getClassByName("Integer");
+				if (arg1.isKindOf(type)) {
+					ctx.returnElement((Integer)r.rawValue() >= (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					MobFloat arg = (MobFloat) arg1;
-					ctx.returnElement(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.rawValue() >= (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
 		this.addMethod(new MobMethod("<=") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobAstElement arg1 = ctx.pop();
-				MobInteger r = (MobInteger) receiver;
-				if (arg1 instanceof MobInteger) {
-					MobInteger arg = (MobInteger) arg1;
-					ctx.returnElement(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+				MobObject arg1 = (MobObject) ctx.pop();
+				MobObject r = (MobObject) receiver;
+				MobClass type = ctx.environment().getClassByName("Integer");
+				if (arg1.isKindOf(type)) {
+					ctx.returnElement((Integer)r.rawValue() <= (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					MobFloat arg = (MobFloat) arg1;
-					ctx.returnElement(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.rawValue() <= (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -125,24 +121,23 @@ public class MobIntegerClass extends MobPrimitiveClass<Integer> {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject arg1 = (MobObject) ctx.pop();
 				MobObject r = (MobObject) receiver;
-				if (arg1.definition() instanceof MobIntegerClass) {
+				MobClass type = ctx.environment().getClassByName("Integer");
+				if (arg1.isKindOf(type)) {
 					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newTrue():ctx.newFalse());
 				} else {
-					MobFloat arg = (MobFloat) arg1;
-					ctx.returnElement(r.rawValue().equals(arg.rawValue()) ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
 		this.addMethod(new MobMethod("~=") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobAstElement arg1 = ctx.pop();
-				MobInteger r = (MobInteger) receiver;
-				if (arg1 instanceof MobInteger) {
-					MobInteger arg = (MobInteger) arg1;
-					ctx.returnElement(r.rawValue().equals(arg.rawValue()) ? ctx.newFalse():ctx.newTrue());
+				MobObject arg1 = (MobObject) ctx.pop();
+				MobObject r = (MobObject) receiver;
+				MobClass type = ctx.environment().getClassByName("Integer");
+				if (arg1.isKindOf(type)) {
+					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newFalse():ctx.newTrue());
 				} else {
-					MobFloat arg = (MobFloat) arg1;
-					ctx.returnElement((float)r.rawValue() == (float)arg.rawValue() ? ctx.newFalse():ctx.newTrue());
+					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});

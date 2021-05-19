@@ -1,6 +1,7 @@
 package mob.model.primitives;
 
 import mob.model.MobClass;
+import mob.model.MobObject;
 import mob.sinterpreter.MobEnvironment;
 
 public class MobStringClass extends MobPrimitiveClass<String> {
@@ -11,7 +12,9 @@ public class MobStringClass extends MobPrimitiveClass<String> {
 	}
 
 	@Override
-	public MobString newInstance(String mob) {
-		return new MobString(this, mob);
+	public MobObject newInstance(String mob) {
+		MobObject i = new MobObject(this);
+		i.instVarAtPut(0, mob);
+		return i;
 	}
 }
