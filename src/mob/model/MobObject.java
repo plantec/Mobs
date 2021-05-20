@@ -70,6 +70,14 @@ public class MobObject extends MobEntity implements MobAstElement, MobMethodRunn
 		return this.values.length;
 	}
 	
+	public int size() {
+		return this.valuesCapacity();
+	}
+	
+	public void add(Object e) {
+		this.instVarAtPut(this.valuesCapacity(), e);
+	}
+	
 	public void checkCapacity(int capacity) {
 		if (this.valuesCapacity() < capacity)
 			this.values = Arrays.copyOf(this.values, capacity);

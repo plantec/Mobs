@@ -18,30 +18,30 @@ public class MobSequenceClass extends MobObjectClass {
 		super.initializePrimitives();
 		this.addMethod(new MobMethod("add:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobSequence seq = (MobSequence) receiver;
+				MobObject seq = (MobObject) receiver;
 				MobAstElement obj = ctx.pop();
-				seq.add(obj);
+				seq.add((MobObject) obj);
 			}
 		});
 		this.addMethod(new MobMethod("at:put:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobSequence seq = (MobSequence) receiver;
+				MobObject seq = (MobObject) receiver;
 				MobAstElement obj = ctx.pop();
 				MobObject pos = (MobObject) ctx.pop();
-				seq.set((Integer)pos.rawValue(), obj);
+				seq.instVarAtPut((Integer)pos.rawValue(), obj);
 			}
 		});
 		
 		this.addMethod(new MobMethod("at:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobSequence seq = (MobSequence) receiver;
+				MobObject seq = (MobObject) receiver;
 				MobObject pos = (MobObject) ctx.pop();
-				ctx.returnElement(seq.get((Integer)pos.rawValue()));
+				ctx.returnElement((MobAstElement) seq.instVarAt((Integer)pos.rawValue()));
 			}
 		});
 	}
 
-	public MobSequence newInstance() {
-		return new MobSequence(this);
+	public MobObject newInstance() {
+		return new MobObject(this);
 	}
 }

@@ -3,6 +3,7 @@ package mob.model.primitives;
 import mob.ast.MobAstElement;
 import mob.ast.MobQuoted;
 import mob.model.MobClass;
+import mob.model.MobObject;
 import mob.model.MobObjectClass;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
@@ -75,11 +76,11 @@ public class MobUnitClass extends MobObjectClass {
 				MobUnit unit = (MobUnit) receiver;
 				MobAstElement arg = ctx.pop();
 				MobQuoted quo = (MobQuoted) arg;
-				MobSequence seq = (MobSequence) quo.entity();
+				MobObject seq = (MobObject) quo.entity();
 				MobContext newCtx = new MobContext(ctx.interpreter().topContext());
 				newCtx.setUnit(unit);
 				for (int i = 0; i < seq.size(); i++)
-					newCtx.setParameterValue(i, seq.get(i));
+					newCtx.setParameterValue(i, (MobAstElement) seq.instVarAt(i));
 				ctx.interpreter().pushContext(newCtx);
 				MobAstElement e = unit.code();
 				e.accept(ctx.interpreter());

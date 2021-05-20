@@ -16,7 +16,6 @@ import mob.model.primitives.MobCharacterClass;
 import mob.model.primitives.MobFalseClass;
 import mob.model.primitives.MobFloatClass;
 import mob.model.primitives.MobIntegerClass;
-import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobSequenceClass;
 import mob.model.primitives.MobStringClass;
 import mob.model.primitives.MobSymbolClass;
@@ -299,9 +298,11 @@ public class MobEnvironment {
 		return this.unitClass().newInstance();
 	}
 	
-	public MobSequence newSequence(List<MobAstElement> contents) {
-		MobSequence seq = this.sequenceClass().newInstance();
-		seq.addAll(contents);
+	public MobObject newSequence(List<MobAstElement> contents) {
+		MobObject seq = this.sequenceClass().newInstance();
+		for (MobAstElement e : contents) {
+			seq.add((Object)e);
+		}
 		return seq;
 	}
 }

@@ -16,8 +16,9 @@ import mob.ast.MobQuoted;
 import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
+import mob.model.MobClass;
 import mob.model.MobObject;
-import mob.model.primitives.MobSequence;
+import mob.model.primitives.MobSequenceClass;
 import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobReturnExecuted;
 
@@ -99,6 +100,17 @@ public class MobPrinter implements MobInterpretableVisitor {
 
 	@Override
 	public void visitObject(MobObject mob) {
+		if (mob.definition().name().equals("Sequence")) {
+			this.write('(');
+			this.write(' ');
+			for (Object e : mob.values()) {
+				((MobAstElement) e).accept(this);
+				this.write(' ');
+			}
+			this.write(')');
+			return;
+		}
+
 		MobInterpretableVisitor.super.visitObject(mob);
 		this.write(mob.rawValue().toString());
 	}
@@ -204,18 +216,6 @@ public class MobPrinter implements MobInterpretableVisitor {
 	}
 
 	@Override
-	public void visitSequence(MobSequence mobSequence) {
-		MobInterpretableVisitor.super.visitSequence(mobSequence);
-		this.write('(');
-		this.write(' ');
-		for (MobAstElement e : mobSequence.children()) {
-			e.accept(this);
-			this.write(' ');
-		}
-		this.write(')');
-	}
-
-	@Override
 	public void visitUnit(MobUnit mobUnit) {
 		MobInterpretableVisitor.super.visitUnit(mobUnit);
 		this.write('[');
@@ -230,10 +230,13 @@ public class MobPrinter implements MobInterpretableVisitor {
 		MobAstElement code = mobUnit.code();
 		if (code != null) {
 			this.write(' ');
-			if (code instanceof MobSequence ) {
-				MobSequence seq = (MobSequence) code;
-				for (MobAstElement e : seq.children())
-					e.accept(this);
+			if (code instanceof MobObject) {
+				MobClass def = ((MobObject) code).definition();
+				if (def instanceof MobSequenceClass ) {
+					MobObject seq = (MobObject) code;
+					for (Object e : seq.values())
+						((MobAstElement)e).accept(this);
+				}
 			} else {
 				code.accept(this);
 			}

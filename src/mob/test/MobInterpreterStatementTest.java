@@ -8,8 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import mob.ast.MobAstElement;
 import mob.ast.MobQuoted;
+import mob.model.MobClass;
 import mob.model.MobObject;
-import mob.model.primitives.MobSequence;
+import mob.model.primitives.MobSequenceClass;
 import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobInterpreter;
@@ -160,18 +161,20 @@ class MobInterpreterStatementTest {
 		result = interpreter.run("( `( 10 5 ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobQuoted);
-		assertTrue(((MobQuoted) result.get(0)).entity() instanceof MobSequence);
-		MobSequence seq = (MobSequence) ((MobQuoted) result.get(0)).entity();
-		assertTrue(((MobObject)seq.get(0)).rawValue().equals(10));
-		assertTrue(((MobObject)seq.get(1)).rawValue().equals(5));
+		MobClass def = ((MobObject)((MobQuoted) result.get(0)).entity()).definition();
+		assertTrue(def instanceof MobSequenceClass);
+		MobObject seq = (MobObject) ((MobQuoted) result.get(0)).entity();
+		assertTrue(((MobObject)seq.instVarAt(0)).rawValue().equals(10));
+		assertTrue(((MobObject)seq.instVarAt(1)).rawValue().equals(5));
 		
 		result = interpreter.run("( `( [9 + 1] 5 ) )");
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobQuoted);
-		assertTrue(((MobQuoted) result.get(0)).entity() instanceof MobSequence);
-		seq = (MobSequence) ((MobQuoted) result.get(0)).entity();
-		assertTrue(seq.get(0) instanceof MobUnit);
-		assertTrue(((MobObject)seq.get(1)).rawValue().equals(5));
+		def = ((MobObject)((MobQuoted) result.get(0)).entity()).definition();
+		assertTrue(def instanceof MobSequenceClass);
+		seq = (MobObject) ((MobQuoted) result.get(0)).entity();
+		assertTrue(seq.instVarAt(0) instanceof MobUnit);
+		assertTrue(((MobObject)seq.instVarAt(1)).rawValue().equals(5));
 	}
 	
 	@Test

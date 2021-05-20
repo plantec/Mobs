@@ -15,12 +15,11 @@ import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
 import mob.model.MobMethodRunner;
 import mob.model.MobObject;
-import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobUnit;
 import stree.parser.SNode;
 import stree.parser.SParser;
 
-public class MobInterpreter implements MobInterpretableVisitor {	
+public class MobInterpreter implements MobInterpretableVisitor {
 	private MobContext context;
 
 	public MobInterpreter(MobEnvironment env) {
@@ -34,7 +33,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 	public List<MobAstElement> run(List<SNode> sexps) {
 		this.context.resetStack();
 		List<MobAstElement> progs = new MobTreeBuilder(this.context.environment()).run(sexps);
-		progs.forEach(e->this.accept(e));
+		progs.forEach(e -> this.accept(e));
 		return this.result();
 	}
 
@@ -48,7 +47,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		}
 		return this.run(n);
 	}
-	
+
 	public MobContext topContext() {
 		return this.context;
 	}
@@ -57,34 +56,40 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		ctx.setParent(this.context);
 		this.context = ctx;
 	}
-	
+
 	public MobContext popContext() {
 		MobContext previous = this.context;
 		this.context = this.context.parent();
 		return previous;
 	}
-	
+
 	private void push(MobAstElement exp) {
 		this.context.push(exp);
 	}
-	
+
 	private MobAstElement pop() {
 		return this.context.pop();
 	}
-	
+
 	public void accept(final MobAstElement e) {
 		e.accept(this);
 	}
-	
+
 	@Override
 	public void visitObject(MobObject mob) {
 		MobInterpretableVisitor.super.visitObject(mob);
 		if (mob.isKindOf(this.topContext().environment().getClassByName("Symbol"))) {
-			MobDataAccess v = context.lookupNamedData((String)mob.rawValue());
+			MobDataAccess v = context.lookupNamedData((String) mob.rawValue());
 			if (v == null) {
 				throw new Error("Undeclared variable '" + mob.rawValue() + "'");
 			}
 			v.pushInto(this.context);
+			return;
+		}
+		if (mob.isKindOf(this.topContext().environment().getClassByName("Sequence"))) {
+			for (Object e : mob.values()) {
+				this.accept((MobAstElement) e);
+			}
 			return;
 		}
 		this.push(mob);
@@ -95,14 +100,14 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		MobInterpretableVisitor.super.visitAssign(mobAssign);
 		this.accept(mobAssign.right());
 		MobObject n = (MobObject) mobAssign.left();
-		MobDataAccess var = context.lookupNamedData((String)n.rawValue());
+		MobDataAccess var = context.lookupNamedData((String) n.rawValue());
 		if (var == null) {
-			context.lookupNamedData((String)n.rawValue());
+			context.lookupNamedData((String) n.rawValue());
 		}
 		var.setValue(this.pop());
 		this.push(var.value());
 	}
-	
+
 	@Override
 	public void visitUnit(MobUnit mobUnit) {
 		MobInterpretableVisitor.super.visitUnit(mobUnit);
@@ -128,7 +133,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		this.accept(arg);
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		((MobMethodRunner)actualReceiver).lookupAndRun(this.context, name);
+		((MobMethodRunner) actualReceiver).lookupAndRun(this.context, name);
 	}
 
 	@Override
@@ -140,15 +145,7 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		MobAstElement receiver = mobKeywordMessage.receiver();
 		this.accept(receiver);
 		MobAstElement actualReceiver = this.pop();
-		((MobMethodRunner)actualReceiver).lookupAndRun(this.context, selector);
-	}
-
-	@Override
-	public void visitSequence(MobSequence mobSequence) {
-		MobInterpretableVisitor.super.visitSequence(mobSequence);
-		for (MobAstElement e : mobSequence.children()) {
-			this.accept(e);
-		}
+		((MobMethodRunner) actualReceiver).lookupAndRun(this.context, selector);
 	}
 
 	@Override

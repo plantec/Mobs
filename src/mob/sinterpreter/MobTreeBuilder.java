@@ -16,7 +16,6 @@ import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
 import mob.model.MobObject;
-import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobUnit;
 import stree.parser.SNode;
 import stree.parser.SParser;
@@ -70,7 +69,7 @@ public class MobTreeBuilder implements SVisitor {
 	private Boolean foundParameters(SNode node, ArrayList<MobAstElement> children) {
 		if (node.openTag() != '{')
 			return false;
-		MobSequence parameters = this.env.newSequence(children);
+		MobObject parameters = this.env.newSequence(children);
 		stk.push(parameters);
 		return true;
 	}
@@ -248,7 +247,7 @@ public class MobTreeBuilder implements SVisitor {
 			decl.setName(v);
 			subs.add(decl);
 		}
-		MobSequence sequence = this.env.newSequence(subs);
+		MobObject sequence = this.env.newSequence(subs);
 		stk.push(quoted(sequence, quote));
 		return end;
 	}
@@ -320,7 +319,7 @@ public class MobTreeBuilder implements SVisitor {
 			return;
 		if (foundMessageSend(children, node.quote()))
 			return;
-		MobSequence sequence = this.env.newSequence(children);
+		MobObject sequence = this.env.newSequence(children);
 		stk.push(quoted(sequence, node.quote()));
 	}
 

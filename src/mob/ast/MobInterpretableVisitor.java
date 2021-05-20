@@ -1,7 +1,6 @@
 package mob.ast;
 
 import mob.model.MobObject;
-import mob.model.primitives.MobSequence;
 import mob.model.primitives.MobUnit;
 
 public interface MobInterpretableVisitor {
@@ -19,9 +18,6 @@ public interface MobInterpretableVisitor {
 	}
 
 	default void visitKeywordMessage(MobKeywordMessage mobKeywordMessage) {
-	}
-
-	default void visitSequence(MobSequence mobSequence) {
 	}
 
 	default void visitReturn(MobReturn mobReturn) {

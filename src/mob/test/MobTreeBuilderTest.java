@@ -14,7 +14,7 @@ import mob.ast.MobKeywordMessage;
 import mob.ast.MobReturn;
 import mob.ast.MobVarDecl;
 import mob.model.MobObject;
-import mob.model.primitives.MobSequence;
+import mob.model.primitives.MobSequenceClass;
 import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobTreeBuilder;
@@ -178,12 +178,12 @@ class MobTreeBuilderTest {
 		MobUnit unit = (MobUnit) trees.get(0);
 		assertFalse(unit.hasParameters());
 		MobAstElement e = unit.code();
-		assertTrue(e instanceof MobSequence);
-		MobSequence seq = (MobSequence) e;
-		assertTrue(seq.get(0) instanceof MobVarDecl);
-		assertTrue(seq.get(1) instanceof MobAssign);
-		assertTrue(seq.get(2) instanceof MobReturn);
-		assertTrue(((MobAssign) seq.get(1)).right() instanceof MobBinaryMessage);
+		assertTrue(((MobObject)e).definition() instanceof MobSequenceClass);
+		MobObject seq = (MobObject) e;
+		assertTrue(seq.instVarAt(0) instanceof MobVarDecl);
+		assertTrue(seq.instVarAt(1) instanceof MobAssign);
+		assertTrue(seq.instVarAt(2) instanceof MobReturn);
+		assertTrue(((MobAssign) seq.instVarAt(1)).right() instanceof MobBinaryMessage);
 	}
 
 	@Test
