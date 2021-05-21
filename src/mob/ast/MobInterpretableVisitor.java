@@ -1,7 +1,6 @@
 package mob.ast;
 
 import mob.model.MobObject;
-import mob.model.primitives.MobUnit;
 
 public interface MobInterpretableVisitor {
 
@@ -21,9 +20,6 @@ public interface MobInterpretableVisitor {
 	}
 
 	default void visitReturn(MobReturn mobReturn) {
-	}
-
-	default void visitUnit(MobUnit mobUnit) {
 	}
 
 	default void visitQuoted(MobQuoted mobQuoted) {

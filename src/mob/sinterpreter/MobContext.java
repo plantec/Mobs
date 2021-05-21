@@ -6,34 +6,34 @@ import java.util.List;
 
 import mob.ast.MobAstElement;
 import mob.model.MobObject;
-import mob.model.primitives.MobUnit;
+import mob.model.primitives.MobUnitClass;
 
 public class MobContext {
 	private MobContext parent;
 	private HashMap<String, MobVariable> variables;
 	private List<MobVariable> parameters;
-	MobUnit unit;
+	MobObject unit;
 	MobObject receiver;
 
 	public MobContext(MobContext parent) {
-		if (parent != null && parent == this.parent) throw new Error("Circular context");
 		this.parent = parent;
 		this.variables = new HashMap<>();
 		this.parameters = new ArrayList<>();
 	}
 
-	public void setUnit(MobUnit unit) {
+	public void setUnit(MobObject unit) {
 		this.unit = unit;
-		List<String> pl = unit.parameters();
-		for (int i = 0; i < pl.size(); i++) {
-			this.parameters.add(new MobVariable(pl.get(i)));
-		}
+		MobUnitClass unitCls = (MobUnitClass) unit.definition();
+		unitCls.placeAsUnitInContext(unit, this);
 	}
 
 	public void setReceiver(MobObject receiver) {
 		this.receiver = receiver;
 	}
 
+	public List<MobVariable> parameters() {
+		return this.parameters;
+	}
 	public void setParameterValue(int idx, MobAstElement value) {
 		this.parameters.get(idx).setValue(value);
 	}

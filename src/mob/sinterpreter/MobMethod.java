@@ -6,7 +6,6 @@ public abstract class MobMethod {
 	String selector;
 	
 	public MobMethod(String selector) {
-		// split("(?<=:)");
 		this.selector = selector;
 	}
 	

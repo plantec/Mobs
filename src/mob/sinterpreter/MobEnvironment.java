@@ -17,7 +17,6 @@ import mob.model.primitives.MobSequenceClass;
 import mob.model.primitives.MobStringClass;
 import mob.model.primitives.MobSymbolClass;
 import mob.model.primitives.MobTrueClass;
-import mob.model.primitives.MobUnit;
 import mob.model.primitives.MobUnitClass;
 
 public class MobEnvironment {
@@ -136,8 +135,11 @@ public class MobEnvironment {
 		return o;
 	}
 
-	public MobUnit newUnit() {
-		return this.unitClass().newInstance();
+	public MobObject newUnit() {
+		MobObject unit = this.unitClass().newInstance();
+		MobUnitClass unitCls = (MobUnitClass) unit.definition();
+		unitCls.initParameters(unit);
+		return unit;
 	}
 	
 	public MobObject newSequence(List<MobAstElement> contents) {

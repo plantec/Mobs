@@ -11,7 +11,7 @@ import mob.ast.MobQuoted;
 import mob.model.MobClass;
 import mob.model.MobObject;
 import mob.model.primitives.MobSequenceClass;
-import mob.model.primitives.MobUnit;
+import mob.model.primitives.MobUnitClass;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobInterpreter;
 
@@ -100,7 +100,8 @@ class MobInterpreterStatementTest {
 		assertTrue((((MobObject)result.get(0)).primValue().equals(10)));
 		result = interpreter.run("( [ 10 println ] )");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobUnit);
+		MobObject u = ((MobObject) result.get(0)).definition();
+		assertTrue(u instanceof MobUnitClass);
 	}
 	
 	@Test
@@ -130,7 +131,8 @@ class MobInterpreterStatementTest {
 		
 		result = interpreter.run("( [ 9 + 1 ] ) ");
 		assertTrue(result.size() == 1);
-		assertTrue(result.get(0) instanceof MobUnit);
+		MobObject u = ((MobObject) result.get(0)).definition();
+		assertTrue(u instanceof MobUnitClass);
 		
 		result = interpreter.run("( (var p2 := [ 9 + 1 ] ) ( [ v | (var X := 1) (((v value) + X) println)  ] value: p2 ) )");
 		assertTrue(result.size() == 1);
@@ -173,7 +175,7 @@ class MobInterpreterStatementTest {
 		def = ((MobObject)((MobQuoted) result.get(0)).entity()).definition();
 		assertTrue(def instanceof MobSequenceClass);
 		seq = (MobObject) ((MobQuoted) result.get(0)).entity();
-		assertTrue(seq.primValueAt(0) instanceof MobUnit);
+		assertTrue(((MobObject) seq.primValueAt(0)).definition() instanceof MobUnitClass);
 		assertTrue(((MobObject)seq.primValueAt(1)).primValue().equals(5));
 	}
 	

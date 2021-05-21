@@ -7,7 +7,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import mob.ast.MobAstElement;
-import mob.model.primitives.MobUnit;
 import mob.model.printer.MobPrinter;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobTreeBuilder;
@@ -153,7 +152,6 @@ class MobPrinterTest {
 		MobPrinter printer = new MobPrinter();
 		res = builder.run("[ a b c | (a + b) + c ]");
 		assertTrue(res.size() == 1);
-		assertTrue(res.get(0) instanceof MobUnit);
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
 		assertTrue(printer.result().toString().equals("[ a b c | ( ( a + b ) + c ) ]"));
@@ -161,7 +159,6 @@ class MobPrinterTest {
 		printer = new MobPrinter();
 		res = builder.run("[ a b c | (var X) (X := (a + b) + c) (^ X) ]");
 		assertTrue(res.size() == 1);
-		assertTrue(res.get(0) instanceof MobUnit);
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
 		assertTrue(printer.result().toString().equals("[ a b c | ( var X )( X := ( ( a + b ) + c ) )( ^ X ) ]"));
@@ -169,7 +166,6 @@ class MobPrinterTest {
 		printer = new MobPrinter();
 		res = builder.run("[ a b c | ^ (a + b) + c ]");
 		assertTrue(res.size() == 1);
-		assertTrue(res.get(0) instanceof MobUnit);
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
 		assertTrue(printer.result().toString().equals("[ a b c | ( ^ ( ( a + b ) + c ) ) ]"));
@@ -177,7 +173,6 @@ class MobPrinterTest {
 		printer = new MobPrinter();
 		res = builder.run("[ a b c | (^ (a + b) + c) ]");
 		assertTrue(res.size() == 1);
-		assertTrue(res.get(0) instanceof MobUnit);
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
 		assertTrue(printer.result().toString().equals("[ a b c | ( ^ ( ( a + b ) + c ) ) ]"));
@@ -185,7 +180,6 @@ class MobPrinterTest {
 		printer = new MobPrinter();
 		res = builder.run("[ a b c | ( (a + b) + c) ]");
 		assertTrue(res.size() == 1);
-		assertTrue(res.get(0) instanceof MobUnit);
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
 		assertTrue(printer.result().toString().equals("[ a b c | ( ( a + b ) + c ) ]"));
@@ -193,7 +187,6 @@ class MobPrinterTest {
 		printer = new MobPrinter();
 		res = builder.run("[]");
 		assertTrue(res.size() == 1);
-		assertTrue(res.get(0) instanceof MobUnit);
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
 		assertTrue(printer.result().toString().equals("[ ]"));
@@ -201,7 +194,6 @@ class MobPrinterTest {
 		printer = new MobPrinter();
 		res = builder.run("[ ^ ]");
 		assertTrue(res.size() == 1);
-		assertTrue(res.get(0) instanceof MobUnit);
 		for (MobAstElement s : res) s.accept(printer);
 		System.out.println(printer.result().toString());
 		assertTrue(printer.result().toString().equals("[ ( ^ ) ]"));

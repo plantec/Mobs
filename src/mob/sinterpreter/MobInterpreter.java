@@ -15,7 +15,6 @@ import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
 import mob.model.MobMethodRunner;
 import mob.model.MobObject;
-import mob.model.primitives.MobUnit;
 import stree.parser.SNode;
 import stree.parser.SParser;
 
@@ -106,12 +105,6 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		}
 		var.setValue(this.pop());
 		this.push(var.value());
-	}
-
-	@Override
-	public void visitUnit(MobUnit mobUnit) {
-		MobInterpretableVisitor.super.visitUnit(mobUnit);
-		this.push(mobUnit);
 	}
 
 	@Override

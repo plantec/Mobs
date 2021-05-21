@@ -20,7 +20,7 @@ import mob.model.MobBehavior;
 import mob.model.MobClass;
 import mob.model.MobObject;
 import mob.model.primitives.MobSequenceClass;
-import mob.model.primitives.MobUnit;
+import mob.model.primitives.MobUnitClass;
 import mob.sinterpreter.MobReturnExecuted;
 
 interface Doer {
@@ -109,6 +109,36 @@ public class MobPrinter implements MobInterpretableVisitor {
 				this.write(' ');
 			}
 			this.write(')');
+			return;
+		}
+		if (mob.definition().name().equals("Unit")) {
+			this.write('[');
+			MobUnitClass unitCls = (MobUnitClass) mob.definition();
+			if (unitCls.hasParameters(mob)) {
+				this.write(" ");
+				for (String p : unitCls.formalParameters(mob)) {
+					this.write(p);
+					this.write(' ');
+				}
+				this.write('|');
+			}
+			MobAstElement code = unitCls.code(mob);
+			if (code != null) {
+				this.write(' ');
+				if (code instanceof MobObject) {
+					MobBehavior def = ((MobObject) code).definition();
+					if (def instanceof MobSequenceClass ) {
+						MobObject seq = (MobObject) code;
+						for (Object e : seq.allPrimValues())
+							((MobAstElement)e).accept(this);
+					} else {
+						code.accept(this);
+					}
+				} else {
+					code.accept(this);
+				}
+			}
+			this.write(" ]");
 			return;
 		}
 
@@ -214,37 +244,6 @@ public class MobPrinter implements MobInterpretableVisitor {
 		}
 		this.write(' ');
 		this.write(')');
-	}
-
-	@Override
-	public void visitUnit(MobUnit mobUnit) {
-		MobInterpretableVisitor.super.visitUnit(mobUnit);
-		this.write('[');
-		if (mobUnit.hasParameters()) {
-			this.write(" ");
-			for (String p : mobUnit.parameters()) {
-				this.write(p);
-				this.write(' ');
-			}
-			this.write('|');
-		}
-		MobAstElement code = mobUnit.code();
-		if (code != null) {
-			this.write(' ');
-			if (code instanceof MobObject) {
-				MobBehavior def = ((MobObject) code).definition();
-				if (def instanceof MobSequenceClass ) {
-					MobObject seq = (MobObject) code;
-					for (Object e : seq.allPrimValues())
-						((MobAstElement)e).accept(this);
-				} else {
-					code.accept(this);
-				}
-			} else {
-				code.accept(this);
-			}
-		}
-		this.write(" ]");
 	}
 
 	@Override

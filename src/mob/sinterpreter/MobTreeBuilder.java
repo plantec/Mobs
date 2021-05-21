@@ -16,7 +16,7 @@ import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
 import mob.model.MobObject;
-import mob.model.primitives.MobUnit;
+import mob.model.primitives.MobUnitClass;
 import stree.parser.SNode;
 import stree.parser.SParser;
 import stree.parser.SVisitor;
@@ -92,18 +92,19 @@ public class MobTreeBuilder implements SVisitor {
 		List<MobAstElement> code = new ArrayList<>();
 		if (node.openTag() != '[')
 			return false;
-		MobUnit unit = env.newUnit();
+		MobObject unit = env.newUnit();
 		if (children.size() == 0) {
 			stk.push(quoted(unit, node.quote()));
 			return true;
 		}
 		int start = 0;
 		int mark = this.parametersEnd(children);
+		MobUnitClass unitCls = (MobUnitClass) unit.definition();
 		if (mark > -1) {
 			start = mark + 1;
 			for (int i = 0; i < mark; i++) {
 				MobObject s = (MobObject) children.get(i);
-				unit.addParameter((String)s.primValue());
+				unitCls.addParameter(unit, (String)s.primValue());
 			}	
 		}
 		ArrayList<MobAstElement> subs = new ArrayList<>();
@@ -120,9 +121,9 @@ public class MobTreeBuilder implements SVisitor {
 				code.add(e);
 		}
 		if (code.size() > 1) {
-			unit.setCode(this.env.newSequence(code));
+			unitCls.setCode(unit, this.env.newSequence(code));
 		} else if (code.size() > 0){
-			unit.setCode(code.get(0));
+			unitCls.setCode(unit, code.get(0));
 		}
 		stk.push(quoted(unit, node.quote()));
 		return true;

@@ -17,8 +17,9 @@ public class MobTrueClass extends MobBooleanClass {
 		super.initializePrimitives();
 		this.addMethod(new MobMethod("ifTrue:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobUnit trueArg = (MobUnit) ctx.pop();
-				MobAstElement e = trueArg.code();
+				MobObject trueArg = (MobObject) ctx.pop();
+				MobUnitClass unitCls = (MobUnitClass) trueArg.definition();
+				MobAstElement e = unitCls.code(trueArg);
 				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());
 			}
@@ -31,9 +32,10 @@ public class MobTrueClass extends MobBooleanClass {
 		});
 		this.addMethod(new MobMethod("ifFalse:ifTrue:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobUnit trueArg = (MobUnit) ctx.pop();
+				MobObject trueArg = (MobObject) ctx.pop();
 				ctx.pop();
-				MobAstElement e = trueArg.code();
+				MobUnitClass unitCls = (MobUnitClass) trueArg.definition();
+				MobAstElement e = unitCls.code(trueArg);
 				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());
 			}
@@ -41,8 +43,9 @@ public class MobTrueClass extends MobBooleanClass {
 		this.addMethod(new MobMethod("ifTrue:ifFalse:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				ctx.pop();
-				MobUnit trueArg = (MobUnit) ctx.pop();
-				MobAstElement e = trueArg.code();
+				MobObject trueArg = (MobObject) ctx.pop();
+				MobUnitClass unitCls = (MobUnitClass) trueArg.definition();
+				MobAstElement e = unitCls.code(trueArg);
 				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());
 			}

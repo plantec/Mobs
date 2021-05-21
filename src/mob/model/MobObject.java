@@ -12,25 +12,18 @@ import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobReturnExecuted;
 
 public class MobObject extends MobEntity implements MobAstElement, MobMethodRunner {
-	private MobEnvironment environment;
 	private MobClass definition;
 	private Object[] primValues;
 	private Map<String, MobObject> slotValues;
 
-	public MobObject(MobEnvironment environment, MobClass definition) {
-		this.environment = environment;
+	public MobObject(MobClass definition) {
 		this.definition = definition;
 		this.primValues = new Object[0];
 		this.slotValues = new HashMap<>();
-		System.out.println(this);
 	}
 
 	public Map<String, MobObject> slotValues() {
 		return this.slotValues;
-	}
-
-	public MobObject(MobClass definition) {
-		this(definition.environment(), definition);
 	}
 
 	public MobClass definition() {
@@ -38,7 +31,7 @@ public class MobObject extends MobEntity implements MobAstElement, MobMethodRunn
 	}
 
 	public MobEnvironment environment() {
-		return this.environment;
+		return this.definition.environment();
 	}
 
 	public void setClass(MobClass definition) {
@@ -58,7 +51,7 @@ public class MobObject extends MobEntity implements MobAstElement, MobMethodRunn
 	}
 
 	public Object primValueAt(Integer pos) {
-		this.checkPrimCapacity(pos);
+		this.checkPrimCapacity(pos + 1);
 		return this.primValues[pos];
 	}
 

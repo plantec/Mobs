@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import mob.ast.MobAstElement;
-import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
@@ -25,16 +24,22 @@ import mob.sinterpreter.MobObjectMethod;
  * and querying (i.e., hasMethods, includesSelector, canUnderstand:, inheritsFrom:, isVariable). 
  */
 public class MobBehavior extends MobObject {
+	private MobEnvironment environment;
 	private HashMap<String, MobMethod> methodDict;
 	private MobClass superclass;
 	protected String[] slots;
 
 	public MobBehavior(MobEnvironment environment, MobClass superclass, MobClass definition) {
-		super(environment, definition);
+		super(definition);
+		this.environment = environment;
 		this.methodDict = new HashMap<>();
 		this.superclass = superclass;
 		this.initializeSlots();
 		this.initializePrimitives();
+	}
+	
+	public MobEnvironment environment() {
+		return this.environment;
 	}
 	
 	protected void initializeSlots() {
@@ -62,7 +67,7 @@ public class MobBehavior extends MobObject {
 		this.addMethod(new MobMethod("addMethod:named:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject name = (MobObject) ctx.pop();
-				MobUnit code = (MobUnit) ctx.pop();
+				MobObject code = (MobObject) ctx.pop();
 				MobClass self = (MobClass) receiver;
 				self.addMethod(new MobObjectMethod((String)name.primValue(), code));
 			}
@@ -126,7 +131,7 @@ public class MobBehavior extends MobObject {
 	public boolean receiverEquals(MobObject receiver, MobObject other) {
 		if (super.receiverEquals(receiver, other))
 			return true;
-		if (!(other.isKindOf(receiver.definition())))
+		if (other.definition() != (receiver.definition()))
 			return false;
 		if (receiver.primCapacity() != other.primCapacity())
 			return false;

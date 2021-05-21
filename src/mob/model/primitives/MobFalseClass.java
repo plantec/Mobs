@@ -18,8 +18,9 @@ public class MobFalseClass extends MobBooleanClass {
 
 		this.addMethod(new MobMethod("ifFalse:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobUnit falseArg = (MobUnit) ctx.pop();
-				MobAstElement e = falseArg.code();
+				MobObject falseArg = (MobObject) ctx.pop();
+				MobUnitClass unitCls = (MobUnitClass) falseArg.definition();
+				MobAstElement e = unitCls.code(falseArg);
 				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());
 			}
@@ -32,9 +33,10 @@ public class MobFalseClass extends MobBooleanClass {
 		});
 		this.addMethod(new MobMethod("ifTrue:ifFalse:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
-				MobUnit falseArg = (MobUnit) ctx.pop();
+				MobObject falseArg = (MobObject) ctx.pop();
+				MobUnitClass unitCls = (MobUnitClass) falseArg.definition();
 				ctx.pop();
-				MobAstElement e = falseArg.code();
+				MobAstElement e = unitCls.code(falseArg);
 				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());
 			}
@@ -42,8 +44,9 @@ public class MobFalseClass extends MobBooleanClass {
 		this.addMethod(new MobMethod("ifFalse:ifTrue:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				ctx.pop();
-				MobUnit falseArg = (MobUnit) ctx.pop();
-				MobAstElement e = falseArg.code();
+				MobObject falseArg = (MobObject) ctx.pop();
+				MobUnitClass unitCls = (MobUnitClass) falseArg.definition();
+				MobAstElement e = unitCls.code(falseArg);
 				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());
 			}
