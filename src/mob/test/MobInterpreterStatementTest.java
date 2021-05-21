@@ -10,8 +10,8 @@ import mob.ast.MobAstElement;
 import mob.ast.MobQuoted;
 import mob.model.MobClass;
 import mob.model.MobObject;
-import mob.model.primitives.MobSequenceClass;
-import mob.model.primitives.MobUnitClass;
+import mob.model.primitives.MobSequence;
+import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobInterpreter;
 
@@ -101,7 +101,7 @@ class MobInterpreterStatementTest {
 		result = interpreter.run("( [ 10 println ] )");
 		assertTrue(result.size() == 1);
 		MobObject u = ((MobObject) result.get(0)).definition();
-		assertTrue(u instanceof MobUnitClass);
+		assertTrue(u instanceof MobUnit);
 	}
 	
 	@Test
@@ -132,7 +132,7 @@ class MobInterpreterStatementTest {
 		result = interpreter.run("( [ 9 + 1 ] ) ");
 		assertTrue(result.size() == 1);
 		MobObject u = ((MobObject) result.get(0)).definition();
-		assertTrue(u instanceof MobUnitClass);
+		assertTrue(u instanceof MobUnit);
 		
 		result = interpreter.run("( (var p2 := [ 9 + 1 ] ) ( [ v | (var X := 1) (((v value) + X) println)  ] value: p2 ) )");
 		assertTrue(result.size() == 1);
@@ -164,7 +164,7 @@ class MobInterpreterStatementTest {
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobQuoted);
 		MobClass def = ((MobObject)((MobQuoted) result.get(0)).entity()).definition();
-		assertTrue(def instanceof MobSequenceClass);
+		assertTrue(def instanceof MobSequence);
 		MobObject seq = (MobObject) ((MobQuoted) result.get(0)).entity();
 		assertTrue(((MobObject)seq.primValueAt(0)).primValue().equals(10));
 		assertTrue(((MobObject)seq.primValueAt(1)).primValue().equals(5));
@@ -173,9 +173,9 @@ class MobInterpreterStatementTest {
 		assertTrue(result.size() == 1);
 		assertTrue(result.get(0) instanceof MobQuoted);
 		def = ((MobObject)((MobQuoted) result.get(0)).entity()).definition();
-		assertTrue(def instanceof MobSequenceClass);
+		assertTrue(def instanceof MobSequence);
 		seq = (MobObject) ((MobQuoted) result.get(0)).entity();
-		assertTrue(((MobObject) seq.primValueAt(0)).definition() instanceof MobUnitClass);
+		assertTrue(((MobObject) seq.primValueAt(0)).definition() instanceof MobUnit);
 		assertTrue(((MobObject)seq.primValueAt(1)).primValue().equals(5));
 	}
 	

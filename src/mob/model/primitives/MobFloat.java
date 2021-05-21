@@ -8,9 +8,9 @@ import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
-public class MobFloatClass extends MobObjectClass {
+public class MobFloat extends MobObjectClass {
 
-	public MobFloatClass(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
+	public MobFloat(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
 		super(name, environment, superclass, def);
 	}
 	

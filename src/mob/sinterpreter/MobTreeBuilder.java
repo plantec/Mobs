@@ -16,7 +16,7 @@ import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
 import mob.model.MobObject;
-import mob.model.primitives.MobUnitClass;
+import mob.model.primitives.MobUnit;
 import stree.parser.SNode;
 import stree.parser.SParser;
 import stree.parser.SVisitor;
@@ -99,7 +99,7 @@ public class MobTreeBuilder implements SVisitor {
 		}
 		int start = 0;
 		int mark = this.parametersEnd(children);
-		MobUnitClass unitCls = (MobUnitClass) unit.definition();
+		MobUnit unitCls = (MobUnit) unit.definition();
 		if (mark > -1) {
 			start = mark + 1;
 			for (int i = 0; i < mark; i++) {

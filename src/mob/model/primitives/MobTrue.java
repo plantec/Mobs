@@ -7,9 +7,9 @@ import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
-public class MobTrueClass extends MobBooleanClass {
+public class MobTrue extends MobBoolean {
 
-	public MobTrueClass(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
+	public MobTrue(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
 		super(name, environment, superclass, def);
 	}
 
@@ -18,7 +18,7 @@ public class MobTrueClass extends MobBooleanClass {
 		this.addMethod(new MobMethod("ifTrue:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject trueArg = (MobObject) ctx.pop();
-				MobUnitClass unitCls = (MobUnitClass) trueArg.definition();
+				MobUnit unitCls = (MobUnit) trueArg.definition();
 				MobAstElement e = unitCls.code(trueArg);
 				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());
@@ -34,7 +34,7 @@ public class MobTrueClass extends MobBooleanClass {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject trueArg = (MobObject) ctx.pop();
 				ctx.pop();
-				MobUnitClass unitCls = (MobUnitClass) trueArg.definition();
+				MobUnit unitCls = (MobUnit) trueArg.definition();
 				MobAstElement e = unitCls.code(trueArg);
 				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());
@@ -44,7 +44,7 @@ public class MobTrueClass extends MobBooleanClass {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				ctx.pop();
 				MobObject trueArg = (MobObject) ctx.pop();
-				MobUnitClass unitCls = (MobUnitClass) trueArg.definition();
+				MobUnit unitCls = (MobUnit) trueArg.definition();
 				MobAstElement e = unitCls.code(trueArg);
 				e.accept(ctx.interpreter());
 				ctx.returnElement(ctx.pop());

@@ -6,7 +6,7 @@ import java.util.List;
 
 import mob.ast.MobAstElement;
 import mob.model.MobObject;
-import mob.model.primitives.MobUnitClass;
+import mob.model.primitives.MobUnit;
 
 public class MobContext {
 	private MobContext parent;
@@ -23,7 +23,7 @@ public class MobContext {
 
 	public void setUnit(MobObject unit) {
 		this.unit = unit;
-		MobUnitClass unitCls = (MobUnitClass) unit.definition();
+		MobUnit unitCls = (MobUnit) unit.definition();
 		unitCls.placeAsUnitInContext(unit, this);
 	}
 

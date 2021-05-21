@@ -14,8 +14,8 @@ import mob.ast.MobKeywordMessage;
 import mob.ast.MobReturn;
 import mob.ast.MobVarDecl;
 import mob.model.MobObject;
-import mob.model.primitives.MobSequenceClass;
-import mob.model.primitives.MobUnitClass;
+import mob.model.primitives.MobSequence;
+import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobTreeBuilder;
 
@@ -175,11 +175,11 @@ class MobTreeBuilderTest {
 		List<MobAstElement> trees;
 		trees = builder.run("[ (var X := 0) (X := (X + 1)) (^ X) ]");
 		MobObject unit = ((MobObject) trees.get(0));
-		assertTrue(unit.definition() instanceof MobUnitClass);
-		MobUnitClass unitCls = (MobUnitClass) unit.definition();
+		assertTrue(unit.definition() instanceof MobUnit);
+		MobUnit unitCls = (MobUnit) unit.definition();
 		assertFalse(unitCls.hasParameters(unit));
 		MobAstElement e = unitCls.code(unit);
-		assertTrue(((MobObject)e).definition() instanceof MobSequenceClass);
+		assertTrue(((MobObject)e).definition() instanceof MobSequence);
 		MobObject seq = (MobObject) e;
 		assertTrue(seq.primValueAt(0) instanceof MobVarDecl);
 		assertTrue(seq.primValueAt(1) instanceof MobAssign);
@@ -194,8 +194,8 @@ class MobTreeBuilderTest {
 		List<MobAstElement> trees;
 		trees = builder.run("[ a b | ( (a + b) + b ) ]");
 		MobObject unit = ((MobObject) trees.get(0));
-		assertTrue(unit.definition() instanceof MobUnitClass);
-		MobUnitClass unitCls = (MobUnitClass) unit.definition();
+		assertTrue(unit.definition() instanceof MobUnit);
+		MobUnit unitCls = (MobUnit) unit.definition();
 		assertTrue(unitCls.formalParameters(unit).size() == 2);
 		assertTrue(unitCls.formalParameters(unit).get(0).equals("a"));
 		assertTrue(unitCls.formalParameters(unit).get(1).equals("b"));
@@ -206,8 +206,8 @@ class MobTreeBuilderTest {
 		
 		trees = builder.run("[ a b | (a + b) + b ]");
 		unit = ((MobObject) trees.get(0));
-		assertTrue(unit.definition() instanceof MobUnitClass);
-		unitCls = (MobUnitClass) unit.definition();
+		assertTrue(unit.definition() instanceof MobUnit);
+		unitCls = (MobUnit) unit.definition();
 		assertTrue(unitCls.formalParameters(unit).size() == 2);
 		assertTrue(unitCls.formalParameters(unit).get(0).equals("a"));
 		assertTrue(unitCls.formalParameters(unit).get(1).equals("b"));

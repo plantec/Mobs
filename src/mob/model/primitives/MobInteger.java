@@ -8,9 +8,9 @@ import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 
-public class MobIntegerClass extends MobObjectClass {
+public class MobInteger extends MobObjectClass {
 
-	public MobIntegerClass(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
+	public MobInteger(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
 		super(name, environment, superclass, def);
 	}
 

@@ -9,72 +9,79 @@ import mob.model.MobClass;
 import mob.model.MobMetaClass;
 import mob.model.MobObject;
 import mob.model.MobObjectClass;
-import mob.model.primitives.MobCharacterClass;
-import mob.model.primitives.MobFalseClass;
-import mob.model.primitives.MobFloatClass;
-import mob.model.primitives.MobIntegerClass;
-import mob.model.primitives.MobSequenceClass;
-import mob.model.primitives.MobStringClass;
-import mob.model.primitives.MobSymbolClass;
-import mob.model.primitives.MobTrueClass;
-import mob.model.primitives.MobUnitClass;
+import mob.model.primitives.MobCharacter;
+import mob.model.primitives.MobFalse;
+import mob.model.primitives.MobFloat;
+import mob.model.primitives.MobInteger;
+import mob.model.primitives.MobSequence;
+import mob.model.primitives.MobString;
+import mob.model.primitives.MobSymbol;
+import mob.model.primitives.MobTrue;
+import mob.model.primitives.MobUnit;
 
 public class MobEnvironment {
 	private Map<String, MobClass> classes;
 		
 	public MobEnvironment() {
-		classes = new HashMap<>();
+		this.classes = new HashMap<>();
 		MobClass mobMetaClass = new MobClass("MetaClass", this, null, null);
 		MobMetaClass mobMetaClassClass = new MobMetaClass(mobMetaClass, this, null, mobMetaClass);
-		mobMetaClassClass.setClass(mobMetaClass);
 		mobMetaClass.setClass(mobMetaClassClass);
 		this.recordClass(mobMetaClass);
 		
-		MobClass objectClass = new MobObjectClass(null, this, null, mobMetaClass);
-		MobClass object = new MobClass("Object", this, null, objectClass);
+		MobClass object = new MobClass("Object", this, null, null);
+		MobClass objectClass = new MobMetaClass(object, this, null, mobMetaClass);
+		object.setClass(objectClass);
 		this.recordClass(object);
 		
-		MobMetaClass behaviorClass = new MobMetaClass(null, this, objectClass, mobMetaClass);
-		MobClass behavior = new MobClass("Behavior", this, object, behaviorClass);
+		MobClass behavior = new MobClass("Behavior", this, object, null);
+		MobMetaClass behaviorClass = new MobMetaClass(behavior, this, objectClass, mobMetaClass);
+		behavior.setClass(behaviorClass);
 		this.recordClass(behavior);
 				
 		mobMetaClassClass.setSuperclass(behaviorClass);
 		mobMetaClass.setSuperclass(behavior);
 		
-		MobMetaClass mobClassClass = new MobMetaClass(null, this, behaviorClass, mobMetaClass);
-		MobClass mobClass = new MobClass("Class", this, behavior, mobClassClass);
+		MobClass mobClass = new MobClass("Class", this, behavior, null);
+		MobMetaClass mobClassClass = new MobMetaClass(mobClass, this, behaviorClass, mobMetaClass);
+		mobClass.setClass(mobClassClass);
 		this.recordClass(mobClass);
 		
 		objectClass.setSuperclass(mobClass);
-		this.recordClass(new MobFloatClass("Float", this, object, null));
+		
+		this.recordClass(new MobFloat("Float", this, object, null));
 		MobMetaClass floatClassClass = new MobMetaClass(this.getClassByName("Float"), this, objectClass, mobMetaClass);
 		this.getClassByName("Float").setClass(floatClassClass);
 		
-		this.recordClass(new MobIntegerClass("Integer", this, object, null));
+		this.recordClass(new MobInteger("Integer", this, object, null));
 		MobMetaClass integerClassClass = new MobMetaClass(this.getClassByName("Integer"), this, objectClass, mobMetaClass);
 		this.getClassByName("Integer").setClass(integerClassClass);
 		
-		this.recordClass(new MobCharacterClass("Character", this, object, null));
+		this.recordClass(new MobCharacter("Character", this, object, null));
 		MobMetaClass characterClassClass = new MobMetaClass(this.getClassByName("Character"), this, objectClass, mobMetaClass);
 		this.getClassByName("Character").setClass(characterClassClass);
 		
-		this.recordClass(new MobStringClass("String", this, object, null));
+		this.recordClass(new MobString("String", this, object, null));
 		MobMetaClass stringClassClass = new MobMetaClass(this.getClassByName("String"), this, objectClass, mobMetaClass);
 		this.getClassByName("String").setClass(stringClassClass);
 		
-		this.recordClass(new MobSymbolClass("Symbol", this, object, null));
+		this.recordClass(new MobSymbol("Symbol", this, object, null));
 		MobMetaClass symbolClassClass = new MobMetaClass(this.getClassByName("Symbol"), this, objectClass, mobMetaClass);
 		this.getClassByName("Symbol").setClass(symbolClassClass);		
 		
-		this.recordClass(new MobUnitClass("Unit", this, object, null));
+		this.recordClass(new MobUnit("Unit", this, object, null));
 		MobMetaClass unitClassClass = new MobMetaClass(this.getClassByName("Unit"), this, objectClass, mobMetaClass);
 		this.getClassByName("Unit").setClass(unitClassClass);
 		
-		this.recordClass(new MobFalseClass("False", this, object, null));
+		this.recordClass(new MobFalse("Boolean", this, object, null));
+		MobMetaClass booleanClassClass = new MobMetaClass(this.getClassByName("Boolean"), this, objectClass, mobMetaClass);
+		this.getClassByName("Boolean").setClass(booleanClassClass);
+		
+		this.recordClass(new MobFalse("False", this, this.getClassByName("Boolean"), null));
 		MobMetaClass falseClassClass = new MobMetaClass(this.getClassByName("False"), this, objectClass, mobMetaClass);
 		this.getClassByName("False").setClass(falseClassClass);
 		
-		this.recordClass(new MobTrueClass("True", this, object, null));
+		this.recordClass(new MobTrue("True", this, this.getClassByName("Boolean"), null));
 		MobMetaClass trueClassClass = new MobMetaClass(this.getClassByName("True"), this, objectClass, mobMetaClass);
 		this.getClassByName("True").setClass(trueClassClass);
 		
@@ -82,7 +89,7 @@ public class MobEnvironment {
 		MobMetaClass undefinedObjectClassClass = new MobMetaClass(this.getClassByName("UndefinedObject"), this, objectClass, mobMetaClass);
 		this.getClassByName("UndefinedObject").setClass(undefinedObjectClassClass);
 		
-		this.recordClass(new MobSequenceClass("Sequence", this, object, null));
+		this.recordClass(new MobSequence("Sequence", this, object, null));
 		MobMetaClass sequenceClassClass = new MobMetaClass(this.getClassByName("Sequence"), this, objectClass, mobMetaClass);
 		this.getClassByName("Sequence").setClass(sequenceClassClass);
 	}
@@ -96,13 +103,13 @@ public class MobEnvironment {
 		return this.classes.get(name);
 	}
 
-	private MobFloatClass floatClass() { return (MobFloatClass) this.getClassByName("Float"); }
-	private MobIntegerClass integerClass() { return (MobIntegerClass) this.getClassByName("Integer"); }
-	private MobCharacterClass characterClass() { return (MobCharacterClass) this.getClassByName("Character"); }
-	private MobStringClass stringClass() { return (MobStringClass) this.getClassByName("String"); }
-	private MobSymbolClass symbolClass() { return (MobSymbolClass) this.getClassByName("Symbol"); }
-	private MobUnitClass unitClass() { return (MobUnitClass) this.getClassByName("Unit"); }
-	private MobSequenceClass sequenceClass() { return (MobSequenceClass) this.getClassByName("Sequence"); }
+	private MobFloat floatClass() { return (MobFloat) this.getClassByName("Float"); }
+	private MobInteger integerClass() { return (MobInteger) this.getClassByName("Integer"); }
+	private MobCharacter characterClass() { return (MobCharacter) this.getClassByName("Character"); }
+	private MobString stringClass() { return (MobString) this.getClassByName("String"); }
+	private MobSymbol symbolClass() { return (MobSymbol) this.getClassByName("Symbol"); }
+	private MobUnit unitClass() { return (MobUnit) this.getClassByName("Unit"); }
+	private MobSequence sequenceClass() { return (MobSequence) this.getClassByName("Sequence"); }
 
 	
 	public MobObject newFloat(Float p) {
@@ -137,7 +144,7 @@ public class MobEnvironment {
 
 	public MobObject newUnit() {
 		MobObject unit = this.unitClass().newInstance();
-		MobUnitClass unitCls = (MobUnitClass) unit.definition();
+		MobUnit unitCls = (MobUnit) unit.definition();
 		unitCls.initParameters(unit);
 		return unit;
 	}

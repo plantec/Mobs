@@ -13,9 +13,9 @@ import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobMethod;
 import mob.sinterpreter.MobVariable;
 
-public class MobUnitClass extends MobObjectClass {
+public class MobUnit extends MobObjectClass {
 
-	public MobUnitClass(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
+	public MobUnit(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
 		super(name, environment, superclass, def);
 	}
 
@@ -24,7 +24,7 @@ public class MobUnitClass extends MobObjectClass {
 		this.addMethod(new MobMethod("value") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject unit = (MobObject) receiver;
-				MobUnitClass unitCls = (MobUnitClass) unit.definition();
+				MobUnit unitCls = (MobUnit) unit.definition();
 				MobContext newCtx = new MobContext(ctx.interpreter().topContext());
 				newCtx.setUnit(unit);
 				ctx.interpreter().pushContext(newCtx);
@@ -38,7 +38,7 @@ public class MobUnitClass extends MobObjectClass {
 		this.addMethod(new MobMethod("value:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject unit = (MobObject) receiver;
-				MobUnitClass unitCls = (MobUnitClass) unit.definition();
+				MobUnit unitCls = (MobUnit) unit.definition();
 				MobAstElement arg = ctx.pop();
 				if (!unitCls.hasParameters(unit)) 
 					throw new Error("0 intended formal parameters but 1 arguments actually passed");
@@ -59,7 +59,7 @@ public class MobUnitClass extends MobObjectClass {
 		this.addMethod(new MobMethod("value:value:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject unit = (MobObject) receiver;
-				MobUnitClass unitCls = (MobUnitClass) unit.definition();
+				MobUnit unitCls = (MobUnit) unit.definition();
 				MobAstElement arg2 = ctx.pop();
 				MobAstElement arg1 = ctx.pop();
 				if (!unitCls.hasParameters(unit)) 
@@ -81,7 +81,7 @@ public class MobUnitClass extends MobObjectClass {
 		this.addMethod(new MobMethod("values:") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject unit = (MobObject) receiver;
-				MobUnitClass unitCls = (MobUnitClass) unit.definition();
+				MobUnit unitCls = (MobUnit) unit.definition();
 				MobAstElement arg = ctx.pop();
 				MobQuoted quo = (MobQuoted) arg;
 				MobObject seq = (MobObject) quo.entity();

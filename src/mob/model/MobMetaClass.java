@@ -23,17 +23,20 @@ public class MobMetaClass extends MobClass {
 	}
 	
 	public MobClass newInstance() {
-		if (thisclass != null) throw new Error("A Metaclass should only have one instance!");
-		thisclass = (MobClass) super.newInstance();
-		return thisclass;
+		throw new Error("A Metaclass should only have one instance!");
 	}
 	
 	public MobClass soleInstance() {
 		return (MobClass) thisclass;
 	}
 	
+	public void setSoleInstance(MobClass thisclass) {
+		this.thisclass = thisclass;
+	}
+	
 	public String name() {
 		if (thisclass == null) return super.name();
 		return this.thisclass.name() + " class";
 	}
+		
 }

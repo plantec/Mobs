@@ -13,6 +13,13 @@ import mob.sinterpreter.MobEnvironment;
 public class MobClass extends MobBehavior {
 	private String name;
 
+	public static void setUpInEnvironment (MobEnvironment env) { 
+		MobClass cls = new MobClass("MetaClass", env, null, null);
+		MobMetaClass clsClass = new MobMetaClass(cls, env, null, cls);
+		cls.setClass(clsClass);
+		env.recordClass(cls);
+	}
+	
 	public String name() {
 		return this.name;
 	}
@@ -28,6 +35,7 @@ public class MobClass extends MobBehavior {
 	
 	public MobObject newInstance() {
 		return new MobObject(this);
-	}	
+	}
+	
 
 }

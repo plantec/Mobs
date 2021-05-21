@@ -19,8 +19,8 @@ import mob.ast.MobVarDecl;
 import mob.model.MobBehavior;
 import mob.model.MobClass;
 import mob.model.MobObject;
-import mob.model.primitives.MobSequenceClass;
-import mob.model.primitives.MobUnitClass;
+import mob.model.primitives.MobSequence;
+import mob.model.primitives.MobUnit;
 import mob.sinterpreter.MobReturnExecuted;
 
 interface Doer {
@@ -113,7 +113,7 @@ public class MobPrinter implements MobInterpretableVisitor {
 		}
 		if (mob.definition().name().equals("Unit")) {
 			this.write('[');
-			MobUnitClass unitCls = (MobUnitClass) mob.definition();
+			MobUnit unitCls = (MobUnit) mob.definition();
 			if (unitCls.hasParameters(mob)) {
 				this.write(" ");
 				for (String p : unitCls.formalParameters(mob)) {
@@ -127,7 +127,7 @@ public class MobPrinter implements MobInterpretableVisitor {
 				this.write(' ');
 				if (code instanceof MobObject) {
 					MobBehavior def = ((MobObject) code).definition();
-					if (def instanceof MobSequenceClass ) {
+					if (def instanceof MobSequence ) {
 						MobObject seq = (MobObject) code;
 						for (Object e : seq.allPrimValues())
 							((MobAstElement)e).accept(this);
