@@ -35,7 +35,7 @@ public class MobMetaClass extends MobClass {
 	}
 	
 	public String name() {
-		if (thisclass == null) return super.name();
+		if (thisclass == null) return "MetaClass";
 		return this.thisclass.name() + " class";
 	}
 		

@@ -8,7 +8,6 @@ import mob.ast.MobAstElement;
 import mob.model.MobClass;
 import mob.model.MobMetaClass;
 import mob.model.MobObject;
-import mob.model.MobObjectClass;
 import mob.model.primitives.MobCharacter;
 import mob.model.primitives.MobFalse;
 import mob.model.primitives.MobFloat;
@@ -24,7 +23,7 @@ public class MobEnvironment {
 		
 	public MobEnvironment() {
 		this.classes = new HashMap<>();
-		MobClass mobMetaClass = new MobClass("MetaClass", this, null, null);
+		MobMetaClass mobMetaClass = new MobMetaClass(null, this, null, null);
 		MobMetaClass mobMetaClassClass = new MobMetaClass(mobMetaClass, this, null, mobMetaClass);
 		mobMetaClass.setClass(mobMetaClassClass);
 		this.recordClass(mobMetaClass);

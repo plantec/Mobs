@@ -12,13 +12,13 @@ import mob.sinterpreter.MobInterpreter;
 
 class MobEnvironmentTest {
 	static MobEnvironment env;
-	static MobClass mobMetaCls;
+	static MobMetaClass mobMetaCls;
 	
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		env = new MobEnvironment();
 		new MobInterpreter(env);
-		mobMetaCls = env.getClassByName("MetaClass");
+		mobMetaCls = (MobMetaClass) env.getClassByName("MetaClass");
 	}
 
 	@Test
