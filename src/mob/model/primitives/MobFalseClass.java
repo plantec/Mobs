@@ -54,7 +54,7 @@ public class MobFalseClass extends MobBooleanClass {
 	@Override
 	public MobObject newInstance() {
 		MobObject i = new MobObject(this);
-		i.instVarAtPut(0, false);
+		i.primValueAtPut(0, false);
 		return i;
 	}
 	

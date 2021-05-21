@@ -47,7 +47,7 @@ class MobObjectTest {
 		System.out.println("myObjInstance.definition().definition(): " + myObjInstance.definition().definition().name());
 		System.out.println("myObjInstance.definition().definition().definition(): " + myObjInstance.definition().definition().definition().name());
 		System.out.println("myObjInstance.definition().definition().definition().definition(): " + myObjInstance.definition().definition().definition().definition().name());
-		assertTrue(myObjInstance.definition().definition().definition() instanceof MobMetaClass);
+		assertTrue(myObjInstance.definition().definition().definition() instanceof MobClass);
 		interpreter.run("( ( MyObject addMethod: [ i | 0 + i ] named: '+' ) )");
 		interpreter.run("( MyObject new )");
 		System.out.println(interpreter.result().size());
@@ -57,13 +57,13 @@ class MobObjectTest {
 		System.out.println(interpreter.result().size());
 		assertTrue(interpreter.result().get(0) instanceof MobObject);
 		MobObject i = (MobObject) interpreter.result().get(0);
-		assertTrue(i.rawValue().equals(5));
+		assertTrue(i.primValue().equals(5));
 		interpreter.run("( ( (MySubObject class) addMethod: [ ^ 'stuff returned'  ] named: 'stuff' ) )");
 		interpreter.run("( MySubObject stuff )");
 		System.out.println(interpreter.result().size());
 		assertTrue(((MobObject)interpreter.result().get(0)).isKindOf(env.getClassByName("String")));
 		MobObject s = (MobObject) interpreter.result().get(0);
-		assertTrue(s.rawValue().equals("stuff returned"));
+		assertTrue(s.primValue().equals("stuff returned"));
 	}
 
 }

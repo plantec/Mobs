@@ -79,15 +79,15 @@ public class MobInterpreter implements MobInterpretableVisitor {
 	public void visitObject(MobObject mob) {
 		MobInterpretableVisitor.super.visitObject(mob);
 		if (mob.isKindOf(this.topContext().environment().getClassByName("Symbol"))) {
-			MobDataAccess v = context.lookupNamedData((String) mob.rawValue());
+			MobDataAccess v = context.lookupNamedData((String) mob.primValue());
 			if (v == null) {
-				throw new Error("Undeclared variable '" + mob.rawValue() + "'");
+				throw new Error("Undeclared variable '" + mob.primValue() + "'");
 			}
 			v.pushInto(this.context);
 			return;
 		}
 		if (mob.isKindOf(this.topContext().environment().getClassByName("Sequence"))) {
-			for (Object e : mob.values()) {
+			for (Object e : mob.allPrimValues()) {
 				this.accept((MobAstElement) e);
 			}
 			return;
@@ -100,9 +100,9 @@ public class MobInterpreter implements MobInterpretableVisitor {
 		MobInterpretableVisitor.super.visitAssign(mobAssign);
 		this.accept(mobAssign.right());
 		MobObject n = (MobObject) mobAssign.left();
-		MobDataAccess var = context.lookupNamedData((String) n.rawValue());
+		MobDataAccess var = context.lookupNamedData((String) n.primValue());
 		if (var == null) {
-			context.lookupNamedData((String) n.rawValue());
+			context.lookupNamedData((String) n.primValue());
 		}
 		var.setValue(this.pop());
 		this.push(var.value());

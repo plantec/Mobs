@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import mob.ast.MobAstElement;
-import mob.model.MobBehaviorClass;
 import mob.model.MobClass;
-import mob.model.MobClassClass;
-import mob.model.MobClassDescriptionClass;
 import mob.model.MobMetaClass;
 import mob.model.MobObject;
 import mob.model.MobObjectClass;
@@ -28,9 +25,8 @@ public class MobEnvironment {
 		
 	public MobEnvironment() {
 		classes = new HashMap<>();
-		MobMetaClass mobMetaClass = new MobMetaClass(null, this, null, null);
-		mobMetaClass.setName("MetaClass");
-		MobMetaClass mobMetaClassClass = new MobMetaClass(mobMetaClass, this, null, null);
+		MobClass mobMetaClass = new MobClass("MetaClass", this, null, null);
+		MobMetaClass mobMetaClassClass = new MobMetaClass(mobMetaClass, this, null, mobMetaClass);
 		mobMetaClassClass.setClass(mobMetaClass);
 		mobMetaClass.setClass(mobMetaClassClass);
 		this.recordClass(mobMetaClass);
@@ -39,32 +35,21 @@ public class MobEnvironment {
 		MobClass object = new MobClass("Object", this, null, objectClass);
 		this.recordClass(object);
 		
-		MobBehaviorClass behaviorClass = new MobBehaviorClass(null, this, objectClass, mobMetaClass);
+		MobMetaClass behaviorClass = new MobMetaClass(null, this, objectClass, mobMetaClass);
 		MobClass behavior = new MobClass("Behavior", this, object, behaviorClass);
 		this.recordClass(behavior);
+				
+		mobMetaClassClass.setSuperclass(behaviorClass);
+		mobMetaClass.setSuperclass(behavior);
 		
-		MobClassDescriptionClass classDescriptionClass = new MobClassDescriptionClass(null, this, behaviorClass, mobMetaClass);
-		MobClass classDescription = new MobClass("ClassDescription", this, behavior, classDescriptionClass);
-		this.recordClass(classDescription);
-		
-		mobMetaClassClass.setSuperclass(classDescriptionClass);
-		mobMetaClass.setSuperclass(classDescription);
-		
-		MobClassClass mobClassClass = new MobClassClass(null, this, classDescriptionClass, mobMetaClass);
-		MobClass mobClass = new MobClass("Class", this, classDescription, mobClassClass);
+		MobMetaClass mobClassClass = new MobMetaClass(null, this, behaviorClass, mobMetaClass);
+		MobClass mobClass = new MobClass("Class", this, behavior, mobClassClass);
 		this.recordClass(mobClass);
 		
 		objectClass.setSuperclass(mobClass);
 		this.recordClass(new MobFloatClass("Float", this, object, null));
 		MobMetaClass floatClassClass = new MobMetaClass(this.getClassByName("Float"), this, objectClass, mobMetaClass);
 		this.getClassByName("Float").setClass(floatClassClass);
-		
-		
-		MobClass intClass = new MobObjectClass("Int", this, object, null);
-		MobMetaClass intClassClass = new MobMetaClass(intClass, this, object.definition(), mobMetaClass);
-		intClass.setClass(intClassClass);
-		this.recordClass(intClass);	
-		this.initInteger();
 		
 		this.recordClass(new MobIntegerClass("Integer", this, object, null));
 		MobMetaClass integerClassClass = new MobMetaClass(this.getClassByName("Integer"), this, objectClass, mobMetaClass);
@@ -101,151 +86,8 @@ public class MobEnvironment {
 		this.recordClass(new MobSequenceClass("Sequence", this, object, null));
 		MobMetaClass sequenceClassClass = new MobMetaClass(this.getClassByName("Sequence"), this, objectClass, mobMetaClass);
 		this.getClassByName("Sequence").setClass(sequenceClassClass);
-		
 	}
 	
-	private void initInteger() {
-		MobClass intCls = (MobClass) this.getClassByName("Int");
-		intCls.addMethod(new MobMethod("+") {
-			public void run(MobContext ctx, MobAstElement receiver) {
-				Object arg1 = ((MobObject) ctx.pop()).instVarAt(0);
-				Object r = ((MobObject) receiver).instVarAt(0);
-				MobObject result = intCls.newInstance();
-				if (arg1 instanceof Integer) {
-					result.instVarAtPut(0, ((Integer) r) + ((Integer) arg1));
-				} else {
-					throw new Error("incompatible argument");
-				}
-				ctx.push(result);
-			}
-		});
-		/*
-		intCls.addMethod(new MobMethod("-") {
-				public void run(MobContext ctx, MobAstElement receiver) {
-					MobAstElement arg1 = ctx.pop();
-					MobInteger r = (MobInteger) receiver;
-					if (arg1 instanceof MobInteger) {
-						MobInteger arg = (MobInteger) arg1;
-						ctx.returnElement(ctx.newInteger(r.rawValue()-arg.rawValue()));
-					} else {
-						MobFloat arg = (MobFloat) arg1;
-						ctx.returnElement(ctx.newFloat(r.rawValue()-arg.rawValue()));
-					}
-				}
-			});
-		intCls.addMethod(new MobMethod("*") {
-				public void run(MobContext ctx, MobAstElement receiver) {
-					MobAstElement arg1 = ctx.pop();
-					MobInteger r = (MobInteger) receiver;
-					if (arg1 instanceof MobInteger) {
-						MobInteger arg = (MobInteger) arg1;
-						ctx.returnElement(ctx.newInteger(r.rawValue()*arg.rawValue()));
-					} else {
-						MobFloat arg = (MobFloat) arg1;
-						ctx.returnElement(ctx.newFloat(r.rawValue()*arg.rawValue()));
-					}
-				}
-			});
-		intCls.addMethod(new MobMethod("/") {
-				public void run(MobContext ctx, MobAstElement receiver) {
-					MobAstElement arg1 = ctx.pop();
-					MobInteger r = (MobInteger) receiver;
-					if (arg1 instanceof MobInteger) {
-						MobInteger arg = (MobInteger) arg1;
-						ctx.returnElement(ctx.newInteger(r.rawValue()/arg.rawValue()));
-					} else {
-						MobFloat arg = (MobFloat) arg1;
-						ctx.returnElement(ctx.newFloat(r.rawValue()/arg.rawValue()));
-					}
-				}
-			});
-		intCls.addMethod(new MobMethod("negated") {
-				public void run(MobContext ctx, MobAstElement receiver) {
-					MobAstElement r = (MobInteger) receiver;
-					ctx.returnElement(ctx.newInteger(((MobInteger)r).rawValue()*-1));
-				}
-			});
-		intCls.addMethod(new MobMethod("<") {
-				public void run(MobContext ctx, MobAstElement receiver) {
-					MobAstElement arg1 = ctx.pop();
-					MobInteger r = (MobInteger) receiver;
-					if (arg1 instanceof MobInteger) {
-						MobInteger arg = (MobInteger) arg1;
-						ctx.returnElement(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
-					} else {
-						MobFloat arg = (MobFloat) arg1;
-						ctx.returnElement(r.rawValue() < arg.rawValue() ? ctx.newTrue():ctx.newFalse());
-					}
-				}
-			});
-		intCls.addMethod(new MobMethod(">") {
-				public void run(MobContext ctx, MobAstElement receiver) {
-					MobAstElement arg1 = ctx.pop();
-					MobInteger r = (MobInteger) receiver;
-					if (arg1 instanceof MobInteger) {
-						ctx.newTrue();
-						MobInteger arg = (MobInteger) arg1;
-						ctx.returnElement(r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
-					} else {
-						MobFloat arg = (MobFloat) arg1;
-						ctx.returnElement(r.rawValue() > arg.rawValue() ? ctx.newTrue():ctx.newFalse());
-					}
-				}
-			});
-		intCls.addMethod(new MobMethod(">=") {
-				public void run(MobContext ctx, MobAstElement receiver) {
-					MobAstElement arg1 = ctx.pop();
-					MobInteger r = (MobInteger) receiver;
-					if (arg1 instanceof MobInteger) {
-						MobInteger arg = (MobInteger) arg1;
-						ctx.returnElement(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
-					} else {
-						MobFloat arg = (MobFloat) arg1;
-						ctx.returnElement(r.rawValue() >= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
-					}
-				}
-			});
-		intCls.addMethod(new MobMethod("<=") {
-				public void run(MobContext ctx, MobAstElement receiver) {
-					MobAstElement arg1 = ctx.pop();
-					MobInteger r = (MobInteger) receiver;
-					if (arg1 instanceof MobInteger) {
-						MobInteger arg = (MobInteger) arg1;
-						ctx.returnElement(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
-					} else {
-						MobFloat arg = (MobFloat) arg1;
-						ctx.returnElement(r.rawValue() <= arg.rawValue() ? ctx.newTrue():ctx.newFalse());
-					}
-				}
-			});
-		intCls.addMethod(new MobMethod("=") {
-				public void run(MobContext ctx, MobAstElement receiver) {
-					MobAstElement arg1 = ctx.pop();
-					MobInteger r = (MobInteger) receiver;
-					if (arg1 instanceof MobInteger) {
-						MobInteger arg = (MobInteger) arg1;
-						ctx.returnElement(r.rawValue() == arg.rawValue() ? ctx.newTrue():ctx.newFalse());
-					} else {
-						MobFloat arg = (MobFloat) arg1;
-						ctx.returnElement((float)r.rawValue() == (float)arg.rawValue() ? ctx.newTrue():ctx.newFalse());
-					}
-				}
-			});
-		intCls.addMethod(new MobMethod("~=") {
-				public void run(MobContext ctx, MobAstElement receiver) {
-					MobAstElement arg1 = ctx.pop();
-					MobInteger r = (MobInteger) receiver;
-					if (arg1 instanceof MobInteger) {
-						MobInteger arg = (MobInteger) arg1;
-						ctx.returnElement(r.rawValue().equals(arg.rawValue()) ? ctx.newFalse():ctx.newTrue());
-					} else {
-						MobFloat arg = (MobFloat) arg1;
-						ctx.returnElement((float)r.rawValue() == (float)arg.rawValue() ? ctx.newFalse():ctx.newTrue());
-					}
-				}
-			});
-*/
-	}
 	
 	public void recordClass(MobClass clazz) {
 		this.classes.put(clazz.name(), clazz);
@@ -266,31 +108,31 @@ public class MobEnvironment {
 	
 	public MobObject newFloat(Float p) {
 		MobObject o = this.floatClass().newInstance();
-		o.instVarAtPut(0, p);
+		o.primValueAtPut(0, p);
 		return o;
 	}
 
 	public MobObject newInteger(Integer p) {
 		MobObject o = this.integerClass().newInstance();
-		o.instVarAtPut(0, p);
+		o.primValueAtPut(0, p);
 		return o;
 	}
 
 	public MobObject newCharacter(Character p) {
 		MobObject o = this.characterClass().newInstance();
-		o.instVarAtPut(0, p);
+		o.primValueAtPut(0, p);
 		return o;
 	}
 
 	public MobObject newString(String p) {
 		MobObject o = this.stringClass().newInstance();
-		o.instVarAtPut(0, p);
+		o.primValueAtPut(0, p);
 		return o;
 	}
 
 	public MobObject newSymbol(String p) {
 		MobObject o = this.symbolClass().newInstance();
-		o.instVarAtPut(0, p);
+		o.primValueAtPut(0, p);
 		return o;
 	}
 
@@ -301,7 +143,7 @@ public class MobEnvironment {
 	public MobObject newSequence(List<MobAstElement> contents) {
 		MobObject seq = this.sequenceClass().newInstance();
 		for (MobAstElement e : contents) {
-			seq.add((Object)e);
+			seq.addPrimValue((Object)e);
 		}
 		return seq;
 	}

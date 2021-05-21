@@ -86,7 +86,7 @@ public class MobContext {
 			}
 			int pos = this.positionOfSlot(name);
 			if (pos > -1 ) {
-				return new MobSlotData(this.receiver, pos);
+				return new MobSlotData(this.receiver, name);
 			}
 		}
 		if (this.parent == null)

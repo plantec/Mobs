@@ -53,7 +53,7 @@ public class MobTrueClass extends MobBooleanClass {
 	@Override
 	public MobObject newInstance() {
 		MobObject i = new MobObject(this);
-		i.instVarAtPut(0, true);
+		i.primValueAtPut(0, true);
 		return i;
 	}
 }

@@ -22,9 +22,9 @@ public class MobIntegerClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(ctx.newInteger((Integer)r.rawValue()+(Integer)arg1.rawValue()));
+					ctx.returnElement(ctx.newInteger((Integer)r.primValue()+(Integer)arg1.primValue()));
 				} else {
-					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()+(Float)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Integer)r.primValue()+(Float)arg1.primValue()));
 				}
 			}
 		});
@@ -34,9 +34,9 @@ public class MobIntegerClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(ctx.newInteger((Integer)r.rawValue()-(Integer)arg1.rawValue()));
+					ctx.returnElement(ctx.newInteger((Integer)r.primValue()-(Integer)arg1.primValue()));
 				} else {
-					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()-(Float)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Integer)r.primValue()-(Float)arg1.primValue()));
 				}
 			}
 		});
@@ -46,9 +46,9 @@ public class MobIntegerClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(ctx.newInteger((Integer)r.rawValue()*(Integer)arg1.rawValue()));
+					ctx.returnElement(ctx.newInteger((Integer)r.primValue()*(Integer)arg1.primValue()));
 				} else {
-					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()*(Float)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Integer)r.primValue()*(Float)arg1.primValue()));
 				}
 			}
 		});
@@ -58,16 +58,16 @@ public class MobIntegerClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(ctx.newInteger((Integer)r.rawValue()/(Integer)arg1.rawValue()));
+					ctx.returnElement(ctx.newInteger((Integer)r.primValue()/(Integer)arg1.primValue()));
 				} else {
-					ctx.returnElement(ctx.newFloat((Integer)r.rawValue()/(Float)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Integer)r.primValue()/(Float)arg1.primValue()));
 				}
 			}
 		});
 		this.addMethod(new MobMethod("negated") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject r = (MobObject) receiver;
-				ctx.returnElement(ctx.newInteger((Integer)r.rawValue()*-1));
+				ctx.returnElement(ctx.newInteger((Integer)r.primValue()*-1));
 			}
 		});
 		this.addMethod(new MobMethod("<") {
@@ -76,9 +76,9 @@ public class MobIntegerClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement((Integer)r.rawValue() < (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Integer)r.primValue() < (Integer)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					ctx.returnElement((Float)r.rawValue() < (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() < (Float)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -88,9 +88,9 @@ public class MobIntegerClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement((Integer)r.rawValue() > (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Integer)r.primValue() > (Integer)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					ctx.returnElement((Float)r.rawValue() > (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() > (Float)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -100,9 +100,9 @@ public class MobIntegerClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement((Integer)r.rawValue() >= (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Integer)r.primValue() >= (Integer)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					ctx.returnElement((Float)r.rawValue() >= (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() >= (Float)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -112,9 +112,9 @@ public class MobIntegerClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement((Integer)r.rawValue() <= (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Integer)r.primValue() <= (Integer)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					ctx.returnElement((Float)r.rawValue() <= (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() <= (Float)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -124,9 +124,9 @@ public class MobIntegerClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.primValue().equals(arg1.primValue()) ? ctx.newTrue():ctx.newFalse());
 				} else {
-					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.primValue().equals(arg1.primValue()) ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -136,9 +136,9 @@ public class MobIntegerClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newFalse():ctx.newTrue());
+					ctx.returnElement(r.primValue().equals(arg1.primValue()) ? ctx.newFalse():ctx.newTrue());
 				} else {
-					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.primValue().equals(arg1.primValue()) ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});

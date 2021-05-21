@@ -10,14 +10,24 @@ import mob.sinterpreter.MobEnvironment;
  * (addClassVarName:, addSharedPool:, initialize). 
  * Class knows how to create instances, so all metaclasses should inherit ultimately from Class.
  */
-public class MobClass extends MobClassDescription {
+public class MobClass extends MobBehavior {
+	private String name;
+
+	public String name() {
+		return this.name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public MobClass(String name, MobEnvironment environment, MobClass superclass, MobClass def) {
-		super(name, environment, superclass, def);
+		super(environment, superclass, def);
+		this.setName(name);
 	}
 	
 	public MobObject newInstance() {
 		return new MobObject(this);
-	}
-	
+	}	
+
 }

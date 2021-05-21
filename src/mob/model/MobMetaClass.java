@@ -22,8 +22,10 @@ public class MobMetaClass extends MobClass {
 		super.initializePrimitives();
 	}
 	
-	public MobObject newInstance() {
-		throw new Error("A Metaclass should only have one instance!");
+	public MobClass newInstance() {
+		if (thisclass != null) throw new Error("A Metaclass should only have one instance!");
+		thisclass = (MobClass) super.newInstance();
+		return thisclass;
 	}
 	
 	public MobClass soleInstance() {
@@ -34,9 +36,4 @@ public class MobMetaClass extends MobClass {
 		if (thisclass == null) return super.name();
 		return this.thisclass.name() + " class";
 	}
-	public void setName(String name) {
-		if (thisclass != null) throw new Error("Can't set a MetaClass name");
-		super.setName(name);
-	}
-
 }

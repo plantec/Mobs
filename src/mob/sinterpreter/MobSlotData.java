@@ -5,21 +5,21 @@ import mob.model.MobObject;
 
 public class MobSlotData implements MobDataAccess {
 	MobObject receiver;
-	int pos;
+	String name;
 	
-	public MobSlotData(MobObject receiver, int pos) {
+	public MobSlotData(MobObject receiver, String name) {
 		this.receiver = receiver;
-		this.pos = pos;
+		this.name = name;
 	}
 	
 	@Override
 	public MobAstElement value() {
-		return (MobAstElement) this.receiver.instVarAt(this.pos);
+		return (MobAstElement) this.receiver.getSlot(this.name);
 	}
 
 	@Override
 	public void setValue(MobAstElement mobExp) {
-		this.receiver.instVarAtPut(this.pos, mobExp);
+		this.receiver.setSlot(this.name, (MobObject)mobExp);
 	}
 
 	@Override

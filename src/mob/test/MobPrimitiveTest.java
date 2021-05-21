@@ -16,25 +16,25 @@ class MobPrimitiveTest {
 	void testPrimitiveTypes() {
 		MobIntegerClass n = new MobIntegerClass(null,null, null, null);
 		MobObject ii = n.newInstance();
-		ii.instVarAtPut(0, 1);
-		assertTrue(ii.rawValue() instanceof Integer);
-		assertTrue((Integer)ii.rawValue() == 1);
+		ii.primValueAtPut(0, 1);
+		assertTrue(ii.primValue() instanceof Integer);
+		assertTrue((Integer)ii.primValue() == 1);
 		MobTrueClass td = new MobTrueClass(null,null, null, null);
 		MobObject t = td.newInstance();
-		assertTrue(t.rawValue() instanceof Boolean);
-		assertTrue((Boolean)t.rawValue());
+		assertTrue(t.primValue() instanceof Boolean);
+		assertTrue((Boolean)t.primValue());
 		MobFalseClass fd = new MobFalseClass(null,null, null, null);
 		MobObject f = fd.newInstance();
-		assertFalse((Boolean)f.rawValue());
+		assertFalse((Boolean)f.primValue());
 		MobStringClass sd = new MobStringClass(null,null, null, null);
 		MobObject s = sd.newInstance();
-		s.instVarAtPut(0, "Hello");
-		assertTrue(s.rawValue() instanceof String);
-		assertTrue(s.rawValue().equals("Hello"));
+		s.primValueAtPut(0, "Hello");
+		assertTrue(s.primValue() instanceof String);
+		assertTrue(s.primValue().equals("Hello"));
 		MobSymbolClass syd = new MobSymbolClass(null,null,null, null);
 		MobObject sy = syd.newInstance();
-		sy.instVarAtPut(0, "X");
-		assertTrue(sy.rawValue() instanceof String);
-		assertTrue(sy.rawValue().equals("X"));
+		sy.primValueAtPut(0, "X");
+		assertTrue(sy.primValue() instanceof String);
+		assertTrue(sy.primValue().equals("X"));
 	}
 }

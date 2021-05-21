@@ -16,6 +16,7 @@ import mob.ast.MobQuoted;
 import mob.ast.MobReturn;
 import mob.ast.MobUnaryMessage;
 import mob.ast.MobVarDecl;
+import mob.model.MobBehavior;
 import mob.model.MobClass;
 import mob.model.MobObject;
 import mob.model.primitives.MobSequenceClass;
@@ -103,7 +104,7 @@ public class MobPrinter implements MobInterpretableVisitor {
 		if (mob.definition().name().equals("Sequence")) {
 			this.write('(');
 			this.write(' ');
-			for (Object e : mob.values()) {
+			for (Object e : mob.allPrimValues()) {
 				((MobAstElement) e).accept(this);
 				this.write(' ');
 			}
@@ -112,7 +113,7 @@ public class MobPrinter implements MobInterpretableVisitor {
 		}
 
 		MobInterpretableVisitor.super.visitObject(mob);
-		this.write(mob.rawValue().toString());
+		this.write(mob.primValue().toString());
 	}
 
 	@Override
@@ -231,11 +232,13 @@ public class MobPrinter implements MobInterpretableVisitor {
 		if (code != null) {
 			this.write(' ');
 			if (code instanceof MobObject) {
-				MobClass def = ((MobObject) code).definition();
+				MobBehavior def = ((MobObject) code).definition();
 				if (def instanceof MobSequenceClass ) {
 					MobObject seq = (MobObject) code;
-					for (Object e : seq.values())
+					for (Object e : seq.allPrimValues())
 						((MobAstElement)e).accept(this);
+				} else {
+					code.accept(this);
 				}
 			} else {
 				code.accept(this);

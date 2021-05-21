@@ -20,7 +20,13 @@ public class MobSequenceClass extends MobObjectClass {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject seq = (MobObject) receiver;
 				MobAstElement obj = ctx.pop();
-				seq.add((MobObject) obj);
+				seq.addPrimValue((MobObject) obj);
+			}
+		});
+		this.addMethod(new MobMethod("size") {
+			public void run(MobContext ctx, MobAstElement receiver) {
+				MobObject seq = (MobObject) receiver;
+				ctx.returnElement(ctx.newInteger(seq.primCapacity()));
 			}
 		});
 		this.addMethod(new MobMethod("at:put:") {
@@ -28,7 +34,7 @@ public class MobSequenceClass extends MobObjectClass {
 				MobObject seq = (MobObject) receiver;
 				MobAstElement obj = ctx.pop();
 				MobObject pos = (MobObject) ctx.pop();
-				seq.instVarAtPut((Integer)pos.rawValue(), obj);
+				seq.primValueAtPut((Integer)pos.primValue(), obj);
 			}
 		});
 		
@@ -36,12 +42,9 @@ public class MobSequenceClass extends MobObjectClass {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject seq = (MobObject) receiver;
 				MobObject pos = (MobObject) ctx.pop();
-				ctx.returnElement((MobAstElement) seq.instVarAt((Integer)pos.rawValue()));
+				ctx.returnElement((MobAstElement) seq.primValueAt((Integer)pos.primValue()));
 			}
 		});
 	}
 
-	public MobObject newInstance() {
-		return new MobObject(this);
-	}
 }

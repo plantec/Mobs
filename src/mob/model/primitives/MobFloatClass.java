@@ -22,9 +22,9 @@ public class MobFloatClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(ctx.newFloat((Float)r.rawValue()+(Integer)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Float)r.primValue()+(Integer)arg1.primValue()));
 				} else {
-					ctx.returnElement(ctx.newFloat((Float)r.rawValue()+(Float)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Float)r.primValue()+(Float)arg1.primValue()));
 				}
 			}
 		});
@@ -34,9 +34,9 @@ public class MobFloatClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(ctx.newFloat((Float)r.rawValue()-(Integer)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Float)r.primValue()-(Integer)arg1.primValue()));
 				} else {
-					ctx.returnElement(ctx.newFloat((Float)r.rawValue()-(Float)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Float)r.primValue()-(Float)arg1.primValue()));
 				}
 			}
 		});
@@ -46,9 +46,9 @@ public class MobFloatClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(ctx.newFloat((Float)r.rawValue()*(Integer)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Float)r.primValue()*(Integer)arg1.primValue()));
 				} else {
-					ctx.returnElement(ctx.newFloat((Float)r.rawValue()*(Float)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Float)r.primValue()*(Float)arg1.primValue()));
 				}
 			}
 		});
@@ -58,9 +58,9 @@ public class MobFloatClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(ctx.newFloat((Float)r.rawValue()/(Integer)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Float)r.primValue()/(Integer)arg1.primValue()));
 				} else {
-					ctx.returnElement(ctx.newFloat((Float)r.rawValue()/(Float)arg1.rawValue()));
+					ctx.returnElement(ctx.newFloat((Float)r.primValue()/(Float)arg1.primValue()));
 				}
 			}
 		});
@@ -68,7 +68,7 @@ public class MobFloatClass extends MobObjectClass {
 		this.addMethod(new MobMethod("negated") {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject r = (MobObject) receiver;
-				ctx.returnElement(ctx.newFloat((Float)r.rawValue()*-1));
+				ctx.returnElement(ctx.newFloat((Float)r.primValue()*-1));
 			}
 		});
 		
@@ -78,9 +78,9 @@ public class MobFloatClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement((Float)r.rawValue() < (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() < (Integer)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					ctx.returnElement((Float)r.rawValue() < (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() < (Float)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -90,9 +90,9 @@ public class MobFloatClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement((Float)r.rawValue() > (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() > (Integer)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					ctx.returnElement((Float)r.rawValue() > (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() > (Float)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -102,9 +102,9 @@ public class MobFloatClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement((Float)r.rawValue() >= (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() >= (Integer)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					ctx.returnElement((Float)r.rawValue() >= (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() >= (Float)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -114,9 +114,9 @@ public class MobFloatClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement((Float)r.rawValue() <= (Integer)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() <= (Integer)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				} else {
-					ctx.returnElement((Float)r.rawValue() <= (Float)arg1.rawValue() ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement((Float)r.primValue() <= (Float)arg1.primValue() ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -126,9 +126,9 @@ public class MobFloatClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.primValue().equals(arg1.primValue()) ? ctx.newTrue():ctx.newFalse());
 				} else {
-					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newTrue():ctx.newFalse());
+					ctx.returnElement(r.primValue().equals(arg1.primValue()) ? ctx.newTrue():ctx.newFalse());
 				}
 			}
 		});
@@ -138,9 +138,9 @@ public class MobFloatClass extends MobObjectClass {
 				MobObject r = (MobObject) receiver;
 				MobClass type = ctx.environment().getClassByName("Integer");
 				if (arg1.isKindOf(type)) {
-					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newFalse():ctx.newTrue());
+					ctx.returnElement(r.primValue().equals(arg1.primValue()) ? ctx.newFalse():ctx.newTrue());
 				} else {
-					ctx.returnElement(r.rawValue().equals(arg1.rawValue()) ? ctx.newFalse():ctx.newTrue());
+					ctx.returnElement(r.primValue().equals(arg1.primValue()) ? ctx.newFalse():ctx.newTrue());
 				}
 			}
 		});

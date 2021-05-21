@@ -79,8 +79,8 @@ public class MobUnitClass extends MobObjectClass {
 				MobObject seq = (MobObject) quo.entity();
 				MobContext newCtx = new MobContext(ctx.interpreter().topContext());
 				newCtx.setUnit(unit);
-				for (int i = 0; i < seq.size(); i++)
-					newCtx.setParameterValue(i, (MobAstElement) seq.instVarAt(i));
+				for (int i = 0; i < seq.allPrimValues().length; i++)
+					newCtx.setParameterValue(i, (MobAstElement) seq.primValueAt(i));
 				ctx.interpreter().pushContext(newCtx);
 				MobAstElement e = unit.code();
 				e.accept(ctx.interpreter());

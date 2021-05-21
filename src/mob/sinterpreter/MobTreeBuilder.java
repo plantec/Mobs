@@ -81,7 +81,7 @@ public class MobTreeBuilder implements SVisitor {
 				return -1;
 			if (!(((MobObject) c).isKindOf(env.getClassByName("Symbol"))))
 				return -1;
-			if (((MobObject) c).rawValue().equals("|")) {
+			if (((MobObject) c).primValue().equals("|")) {
 				return pos;
 			}
 		}
@@ -103,7 +103,7 @@ public class MobTreeBuilder implements SVisitor {
 			start = mark + 1;
 			for (int i = 0; i < mark; i++) {
 				MobObject s = (MobObject) children.get(i);
-				unit.addParameter((String)s.rawValue());
+				unit.addParameter((String)s.primValue());
 			}	
 		}
 		ArrayList<MobAstElement> subs = new ArrayList<>();
@@ -135,7 +135,7 @@ public class MobTreeBuilder implements SVisitor {
 			return false;
 		if (!((MobObject)children.get(0)).isKindOf(env.getClassByName("Symbol"))) 
 			return false;
-		if (!(((MobObject) children.get(0)).rawValue().equals("^")))
+		if (!(((MobObject) children.get(0)).primValue().equals("^")))
 			return false;
 
 		ArrayList<MobAstElement> subs = new ArrayList<>();
@@ -158,7 +158,7 @@ public class MobTreeBuilder implements SVisitor {
 			return false;
 		if (!((MobObject)children.get(1)).isKindOf(env.getClassByName("Symbol"))) 
 			return false;
-		if (!(((MobObject) children.get(1)).rawValue().equals(":=")))
+		if (!(((MobObject) children.get(1)).primValue().equals(":=")))
 			return false;
 		MobAssign assign = new MobAssign();
 		assign.setLeft((MobObject) children.get(0));
@@ -187,14 +187,14 @@ public class MobTreeBuilder implements SVisitor {
 			return false;
 		if (!((MobObject)children.get(1)).isKindOf(env.getClassByName("Symbol"))) 
 			return false;
-		String symb0 = (String) ((MobObject)children.get(0)).rawValue();
-		String symb1 = (String) ((MobObject)children.get(1)).rawValue();
+		String symb0 = (String) ((MobObject)children.get(0)).primValue();
+		String symb1 = (String) ((MobObject)children.get(1)).primValue();
 		if (!symb0.equals("var"))
 			return false;
 		MobVarDecl decl = new MobVarDecl();
 		decl.setName(symb1);
 		if (children.size() >= 4 && ((MobObject)children.get(2)).isKindOf(env.getClassByName("Symbol"))) {
-			String symb2 = (String) ((MobObject)children.get(2)).rawValue();
+			String symb2 = (String) ((MobObject)children.get(2)).primValue();
 			if (symb2.equals(":=")) {
 				ArrayList<MobAstElement> subs = new ArrayList<>();
 				for (int i = 3; i < children.size(); i++)
@@ -219,7 +219,7 @@ public class MobTreeBuilder implements SVisitor {
 			if (!(c).isKindOf(env.getClassByName("Symbol"))) {
 				return -1;
 			}
-			if (c.rawValue().equals("|")) {
+			if (c.primValue().equals("|")) {
 				return pos;
 			}
 		}
@@ -233,7 +233,7 @@ public class MobTreeBuilder implements SVisitor {
 			return -1;
 		if (!((MobObject)children.get(0)).isKindOf(env.getClassByName("Symbol"))) 
 			return -1;
-		String symb0 = (String) ((MobObject)children.get(0)).rawValue();
+		String symb0 = (String) ((MobObject)children.get(0)).primValue();
 		if (!symb0.equals("|"))
 			return -1;		
 		int end = this.enclosedDeclEnd(children);
@@ -242,7 +242,7 @@ public class MobTreeBuilder implements SVisitor {
 		int pos = 1;
 		ArrayList<MobAstElement> subs = new ArrayList<>();
 		while (pos < end) {
-			String v = (String) ((MobObject)children.get(pos)).rawValue();
+			String v = (String) ((MobObject)children.get(pos)).primValue();
 			MobVarDecl decl = new MobVarDecl();
 			decl.setName(v);
 			subs.add(decl);
@@ -261,23 +261,23 @@ public class MobTreeBuilder implements SVisitor {
 			return false;
 		if (children.size() == 2) {
 			MobUnaryMessage unary = new MobUnaryMessage();
-			unary.setKeyword((String)(((MobObject) children.get(1)).rawValue()));
+			unary.setKeyword((String)(((MobObject) children.get(1)).primValue()));
 			unary.setReceiver(children.get(0));
 			stk.push(quoted(unary, quote));
 			return true;
 		}
 		if (children.size() == 3) {
 			MobObject s = (MobObject) children.get(1);
-			String op = (String)s.rawValue();
+			String op = (String)s.primValue();
 			if (op.charAt(op.length() - 1) == ':') {
 				MobKeywordMessage keyword = new MobKeywordMessage();
-				keyword.add((String)((MobObject) children.get(1)).rawValue(), children.get(2));
+				keyword.add((String)((MobObject) children.get(1)).primValue(), children.get(2));
 				keyword.setReceiver(children.get(0));
 				stk.push(quoted(keyword, quote));
 				return true;
 			}
 			MobBinaryMessage binary = new MobBinaryMessage();
-			binary.setOperator(((String) ((MobObject)children.get(1)).rawValue()));
+			binary.setOperator(((String) ((MobObject)children.get(1)).primValue()));
 			binary.setArgument(children.get(2));
 			binary.setReceiver(children.get(0));
 			stk.push(quoted(binary, quote));
@@ -285,13 +285,13 @@ public class MobTreeBuilder implements SVisitor {
 		}
 		if (children.size() > 3) {
 			for (int i = 1; i < children.size(); i += 2) {
-				String kw = ((String)((MobObject) children.get(i)).rawValue());
+				String kw = ((String)((MobObject) children.get(i)).primValue());
 				if (kw.charAt(kw.length() - 1) != ':')
 					return false;
 			}
 			MobKeywordMessage keyword = new MobKeywordMessage();
 			for (int i = 1; i < children.size(); i += 2) {
-				keyword.add((String)((MobObject) children.get(i)).rawValue(), children.get(i + 1));
+				keyword.add((String)((MobObject) children.get(i)).primValue(), children.get(i + 1));
 			}
 			keyword.setReceiver(children.get(0));
 			stk.push(quoted(keyword, quote));

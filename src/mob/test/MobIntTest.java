@@ -14,6 +14,7 @@ import mob.sinterpreter.MobContext;
 import mob.sinterpreter.MobEnvironment;
 import mob.sinterpreter.MobInterpreter;
 import mob.sinterpreter.MobMethod;
+import mob.sinterpreter.MobReturnExecuted;
 
 class MobIntTest {
 	static MobEnvironment env = new MobEnvironment();
@@ -22,7 +23,7 @@ class MobIntTest {
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		MobClass object = env.getClassByName("Object");
-		MobClass intClass = new MobObjectClass("MyInt", env, object, null);
+		MobClass intClass = new MobClass("MyInt", env, object, null);
 		MobMetaClass intClassClass = new MobMetaClass(intClass, env, object.definition(), object.definition().definition());
 		intClass.setClass(intClassClass);
 		env.recordClass(intClass);	
@@ -59,15 +60,16 @@ class MobIntTest {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobObject arg1 = (MobObject) ctx.pop();
 				MobObject self = (MobObject) receiver;
-				self.instVarAtPut(0,arg1.rawValue());
+				self.primValueAtPut(0,arg1.primValue());
 			}
 		});		
 		interpreter.run("( (MyInt new) be: 5 )");
 		assertTrue(interpreter.result().get(0) instanceof Object);
 		MobObject obj = (MobObject) interpreter.result().get(0);
 		assertTrue(obj.definition().name().equals("MyInt"));
-		assertTrue((int)obj.instVarAt(0) == 5);
+		assertTrue((int)obj.primValue() == 5);
 	}
+
 	@Test
 	void testMyIntNew()  {
 		MobClass intCls = env.getClassByName("MyInt");
@@ -81,7 +83,7 @@ class MobIntTest {
 			public void run(MobContext ctx, MobAstElement receiver) {
 				MobClass self = (MobClass) receiver;
 				MobObject res = self.newInstance();
-				res.instVarAtPut(0,0);
+				res.primValueAtPut(0,0);
 				ctx.returnElement(res);
 			}
 		});		
@@ -89,34 +91,30 @@ class MobIntTest {
 		assertTrue(interpreter.result().get(0) instanceof Object);
 		MobObject obj = (MobObject) interpreter.result().get(0);
 		assertTrue(obj.definition().name().equals("MyInt"));
-		assertTrue((int)obj.instVarAt(0) == 0);
+		assertTrue((int)obj.primValue() == 0);
 	}
-	
-	@Test
-	void testMyIntNew2()  {
-		interpreter.run("( (MyInt class) addMethod: [ (var res := super new) (res prim_instVarAt: 0 put: 0) (^ res) ] named: 'new' )");
-		interpreter.run("(MyInt new)");
-		assertTrue(interpreter.result().get(0) instanceof Object);
-		MobObject obj = (MobObject) interpreter.result().get(0);
-		assertTrue(obj.definition().name().equals("MyInt"));
-		assertTrue((int)obj.instVarAt(0) == 0);
-	}
-	
+
+		
 	@Test
 	void testIntPlus()  {
-		MobClass intCls = env.getClassByName("Int");
+		MobClass intCls = env.getClassByName("Integer");
 		MobObject intReceiver = intCls.newInstance();
-		intReceiver.instVarAtPut(0, (Integer)5);
+		intReceiver.primValueAtPut(0, (Integer)5);
 		MobObject intArg = intCls.newInstance();
-		intArg.instVarAtPut(0, (Integer)5);
+		intArg.primValueAtPut(0, (Integer)5);
 		
 		MobMethod plus = intReceiver.definition().methodNamed("+");
 		assertTrue(plus != null);
 		interpreter.topContext().push(intArg);
-		plus.run(interpreter.topContext(), intReceiver);
-		MobObject intRes = (MobObject) interpreter.topContext().pop();
-		assertTrue(intRes.instVarAt(0) instanceof Integer);
-		Integer i = (Integer) intRes.instVarAt(0);
-		assertTrue(i == 10);
+		try {
+			plus.run(interpreter.topContext(), intReceiver);
+			assertTrue(false);
+		} catch (MobReturnExecuted e) {
+			assertTrue(true);
+			MobObject intRes = (MobObject) interpreter.topContext().pop();
+			assertTrue(intRes.primValue() instanceof Integer);
+			Integer i = (Integer) intRes.primValue();
+			assertTrue(i == 10);
+		}
 	}
 }
